@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#237A57">
+  <title>PetKarnem</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" href="icon.svg">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div id="app">
+  <header class="topbar">
+    <div>
+      <div class="brand"><span class="brandPets">🐱🐶</span> PetKarnem</div>
+      <div class="subtitle">Dostlarının Sağlık Karnesi</div>
+    </div>
+</header>
+
+  <main>
+    <section id="homeView" class="view active">
+      <div class="welcomeHero">
+        <div class="heroPets"><div class="heroPet">🐱</div><div class="heroPet dog">🐶</div></div>
+        <div><h2>PetKarnem’e Hoş Geldin</h2><div class="muted">Patili dostunun sağlık takibi tek yerde.</div></div>
+      </div>
+      <button class="primary big" id="addPetBtn">＋ Pet Ekle</button>
+
+      <h2>Dostlarım</h2>
+      <div id="petsList" class="stack"></div>
+    </section>
+
+    <section id="calendarView" class="view">
+      <div class="sectionHead"><h2>Takvim</h2><button class="secondary compactBtn" onclick="window.addAppointment()">＋ Randevu</button></div>
+      <div class="card calendarCard">
+        <div class="calendarTop"><button class="iconbtn" onclick="changeCalendarMonth(-1)">‹</button><h3 id="calendarMonthLabel"></h3><button class="iconbtn" onclick="changeCalendarMonth(1)">›</button></div>
+        <div class="weekHead"><span>Pzt</span><span>Sal</span><span>Çar</span><span>Per</span><span>Cum</span><span>Cmt</span><span>Paz</span></div>
+        <div id="monthGrid" class="monthGrid"></div>
+      </div>
+      <div class="calendarTabs"><button class="chip active" onclick="setCalendarTab('upcoming',this)">Yaklaşan</button><button class="chip" onclick="setCalendarTab('past',this)">Geçmiş</button></div>
+      <div id="selectedDayTitle" class="muted selectedDayTitle"></div>
+      <div id="calendarList" class="stack"></div>
+    </section>
+
+    <section id="healthView" class="view">
+      <h2>Sağlık</h2>
+      <div id="healthPetPicker" class="chips"></div>
+      <div id="petHealthSummary" class="card" style="margin-top:14px"></div>
+      <div id="healthActions" class="grid2"></div>
+      <div class="sectionHead"><h3>Sağlık Geçmişi</h3></div>
+      <div id="healthHistoryFilters" class="chips historyChips"></div>
+      <div id="healthHistory" class="stack"></div>
+    </section>
+
+    <section id="vetView" class="view">
+      <h2>Veterinerim</h2>
+      <div id="vetCard"></div>
+      <button class="primary big" id="addVetBtn">＋ Veteriner / Klinik Ekle</button>
+    </section>
+
+    <section id="profileView" class="view">
+      <h2>Profil & Ayarlar</h2>
+      <div class="card basicCard"><div class="basicBadge">PetKarnem Basic</div><h3>Ücretsiz</h3><div class="muted">Temel sağlık takibi, takvim ve veteriner kayıtları ücretsiz.</div></div>
+
+      <div class="settingsGroup"><h3>Hesabım</h3><div class="card settingsCard">
+        <label>Ad</label><input id="profileName" placeholder="Adınız">
+        <label>E-posta</label><input id="profileEmail" type="email" placeholder="ornek@email.com">
+        <label>Telefon</label><input id="profilePhone" inputmode="tel" placeholder="05xx xxx xx xx">
+        <button class="primary big" id="saveProfileBtn">Profili Kaydet</button>
+      </div></div>
+
+      <div class="settingsGroup"><h3>Petlerim</h3><div id="profilePetsList" class="stack"></div></div>
+
+      <div class="settingsGroup"><h3>Bildirim Ayarları</h3><div class="card settingsCard">
+        <label>Varsayılan hatırlatma</label>
+        <select id="defaultReminder"><option value="1">1 gün önce</option><option value="3">3 gün önce</option><option value="7">7 gün önce</option><option value="14">14 gün önce</option></select>
+        <label class="toggleRow"><span>Gecikenleri tekrar göster</span><input id="repeatOverdue" type="checkbox"></label>
+        <div class="muted settingsNote">Web testinde ayarlar kaydedilir; gerçek iPhone bildirimi native/TestFlight sürümünde test edilir.</div>
+      </div></div>
+
+      <div class="settingsGroup"><h3>Veriler & Gizlilik</h3><div class="card">
+        <b>Veriler bu cihazda saklanır</b><div class="muted">Bu web testinde bilgiler yalnızca tarayıcı belleğinde tutulur.</div>
+        <button class="danger big" id="resetBtn" style="margin-top:14px">Tüm Test Verilerini Sil</button>
+      </div></div>
+
+      <div class="settingsGroup"><h3>Hakkında</h3><div class="card">
+        <div class="settingsRow"><span>Uygulama</span><b>PetKarnem</b></div>
+        <div class="settingsRow"><span>Sürüm</span><b>Web Test v2.2.4</b></div>
+        <div class="settingsRow"><span>Plan</span><b>Basic • Ücretsiz</b></div>
+        <div class="settingsLink">Gizlilik Politikası <span>›</span></div>
+        <div class="settingsLink">Kullanım Koşulları <span>›</span></div>
+      </div></div>
+    </section>
+  </main>
+
+  <nav class="bottomnav">
+    <button data-view="homeView" class="navitem active" onclick="switchView('homeView',this)">🏠<span>Ana Sayfa</span></button>
+    <button data-view="vetView" class="navitem" onclick="switchView('vetView',this)">🩺<span>Veterinerim</span></button>
+    <button data-view="healthView" class="navitem" onclick="switchView('healthView',this)">❤️<span>Sağlık</span></button>
+    <button data-view="calendarView" class="navitem" onclick="switchView('calendarView',this)">📅<span>Takvim</span></button>
+    <button data-view="profileView" class="navitem" onclick="switchView('profileView',this)">👤<span>Profil</span></button>
+  </nav>
+</div>
+
+<dialog id="modal">
+  <form method="dialog" id="modalForm">
+    <div class="modalHead">
+      <h3 id="modalTitle">Yeni Kayıt</h3>
+      <button value="cancel" class="iconbtn">✕</button>
+    </div>
+    <div id="modalBody"></div>
+    <div class="modalActions">
+      <button value="cancel" class="secondary">Vazgeç</button>
+      <button value="default" class="primary" id="saveModalBtn">Kaydet</button>
+    </div>
+  </form>
+</dialog>
+
+<script src="app.js"></script>
+</body>
+</html>

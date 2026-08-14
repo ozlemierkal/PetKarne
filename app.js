@@ -1,0 +1,671 @@
+
+const $ = (s) => document.querySelector(s);
+const $$ = (s) => [...document.querySelectorAll(s)];
+const storeKey = 'petkarnem_web_test_v1';
+
+let state = loadState();
+function normalizeState(){ state.profile ||= {name:'',email:'',phone:''}; state.settings ||= {defaultReminder:1,repeatOverdue:true}; }
+normalizeState();
+let selectedPetId = state.pets[0]?.id || null;
+let healthHistoryFilter='all';
+let calendarCursor=new Date();
+let selectedCalendarDate=null;
+let calendarTab='upcoming';
+let modalSave = null;
+
+function loadState(){
+  try { return JSON.parse(localStorage.getItem(storeKey)) || baseState(); }
+  catch { return baseState(); }
+}
+function baseState(){ return {pets:[], records:[], vets:[], meds:[], weights:[], docs:[], profile:{name:'',email:'',phone:''}, settings:{defaultReminder:1,repeatOverdue:true}}; }
+function saveState(){ localStorage.setItem(storeKey, JSON.stringify(state)); renderAll(); }
+function uid(){ return crypto.randomUUID ? crypto.randomUUID() : String(Date.now()+Math.random()); }
+function todayISO(){ return new Date().toISOString().slice(0,10); }
+function fmt(d){ if(!d) return '—'; const x=new Date(d+'T12:00:00'); return x.toLocaleDateString('tr-TR'); }
+function petById(id){ return state.pets.find(p=>p.id===id); }
+
+
+
+
+window.switchView=(viewId,btn)=>{
+  $$('.navitem').forEach(b=>b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  $$('.view').forEach(v=>v.classList.toggle('active',v.id===viewId));
+  renderAll();
+};
+
+function openModal(title, bodyHtml, onSave){
+  resetModalActions();
+  $('#modalTitle').textContent = title;
+  $('#modalBody').innerHTML = bodyHtml;
+  modalSave = onSave;
+  $('#modal').showModal();
+}
+
+function openInfoModal(title, bodyHtml){
+  $('#modalTitle').textContent=title;
+  $('#modalBody').innerHTML=bodyHtml;
+  modalSave=null;
+  const save=$('#saveModalBtn');
+  const cancel=$('#modalForm .modalActions button[value="cancel"]');
+  save.style.display='none';
+  if(cancel) cancel.textContent='Kapat';
+  $('#modal').showModal();
+}
+
+function resetModalActions(){
+  const save=$('#saveModalBtn');
+  const cancel=$('#modalForm .modalActions button[value="cancel"]');
+  save.style.display='';
+  if(cancel) cancel.textContent='Vazgeç';
+}
+
+$('#modalForm').addEventListener('submit',(e)=>{
+  const submitter=e.submitter;
+  if(submitter?.id==='saveModalBtn'){
+    e.preventDefault();
+    if(modalSave && modalSave()!==false) $('#modal').close();
+  }
+});
+
+$('#addPetBtn').onclick = ()=>openModal('Pet Ekle',`
+  <label>Adı *</label><input id="petName" placeholder="Örn. Misket">
+  <label>Türü *</label><select id="petType"><option value="cat">Kedi</option><option value="dog">Köpek</option></select>
+  <label>Cinsiyet</label><select id="petSex"><option>Dişi</option><option>Erkek</option></select>
+  <label>Kilo (kg)</label><input id="petWeight" inputmode="decimal" placeholder="4,8">
+  <label>Mikroçip no (isteğe bağlı)</label><input id="petChip">
+`,()=>{
+  const name=$('#petName').value.trim(); if(!name) return false;
+  const p={id:uid(),name,type:$('#petType').value,sex:$('#petSex').value,weight:$('#petWeight').value,chip:$('#petChip').value};
+  state.pets.push(p); if(p.weight){state.weights.push({id:uid(),petId:p.id,value:p.weight,date:todayISO(),createdAt:new Date().toISOString(),initial:true});} selectedPetId=p.id; saveState();
+});
+
+$('#addVetBtn').onclick=()=>openModal('Veteriner / Klinik Ekle',`
+  <label>Klinik adı *</label><input id="vetName">
+  <label>Veteriner hekim</label><input id="vetDoctor">
+  <label>Telefon</label><input id="vetPhone" inputmode="tel">
+  <label>Adres</label><textarea id="vetAddress"></textarea>
+`,()=>{
+  const name=$('#vetName').value.trim(); if(!name) return false;
+  state.vets.push({id:uid(),name,doctor:$('#vetDoctor').value,phone:$('#vetPhone').value,address:$('#vetAddress').value,primary:state.vets.length===0});
+  saveState();
+});
+
+$('#resetBtn').onclick=()=>{
+  if(confirm('Tüm PetKarnem test verileri silinsin mi?')){
+    state=baseState(); normalizeState(); selectedPetId=null; saveState();
+  }
+};
+
+function healthAction(type){
+  if(!selectedPetId){ alert('Önce bir pet ekle.'); return; }
+  const pet=petById(selectedPetId);
+
+  if(['vaccine','internal','external'].includes(type)){
+    const labels={vaccine:'Aşı',internal:'İç Parazit',external:'Dış Parazit'};
+    const titleLabel=labels[type];
+    openModal(`${pet.name} • ${titleLabel}`,`
+      <label>${titleLabel} adı / ürün *</label><input id="recTitle" placeholder="${type==='vaccine'?'Örn. Karma Aşı':'Uygulanan ürün'}">
+      <label>Uygulama tarihi</label><input id="recDate" type="date" value="${todayISO()}">
+      <label>Uygulayan</label><select id="recBy"><option value="home">Evde</option><option value="vet">Veteriner</option></select>
+      <div id="vetSelectWrap" style="display:none">
+        <label>Veteriner kliniği</label>
+        <select id="recVet"><option value="">Seçiniz</option>${state.vets.map(v=>`<option value="${v.id}" ${v.primary?'selected':''}>${v.primary?'⭐ ':''}${v.name}</option>`).join('')}</select>
+      </div>
+      <label>Sonraki tarih</label><input id="recNext" type="date">
+      <label>Hatırlatma</label><select id="recReminder">
+        <option value="0">Hatırlatma yok</option>
+        <option value="1" selected>1 gün önce</option>
+        <option value="3">3 gün önce</option>
+        <option value="7">7 gün önce</option>
+        <option value="14">14 gün önce</option>
+      </select>
+      <label>Not</label><textarea id="recNote"></textarea>
+    `,()=>{
+      const title=$('#recTitle').value.trim(); if(!title) return false;
+      if(type==='vaccine' && /iç\\s*parazit|dış\\s*parazit/i.test(title)){
+        alert('Bu alan aşı kaydı içindir. İç/Dış Parazit için ilgili butonu kullan.');
+        return false;
+      }
+      const by=$('#recBy').value;
+      state.records.push({id:uid(),petId:pet.id,type,title,date:$('#recDate').value,by,
+        vetId:by==='vet'?$('#recVet').value:'',next:$('#recNext').value,reminderDays:+$('#recReminder').value,note:$('#recNote').value,done:true});
+      saveState();
+    });
+    setTimeout(()=>{
+      const by=$('#recBy'), wrap=$('#vetSelectWrap');
+      const rr=$('#recReminder'), nextDate=$('#recNext');
+      if(rr){
+        const preferred=Number(state.settings?.defaultReminder);
+        rr.value=String(preferred>0?preferred:1);
+      }
+      if(nextDate && rr){
+        nextDate.addEventListener('change',()=>{
+          if(nextDate.value && Number(rr.value)===0){
+            const preferred=Number(state.settings?.defaultReminder);
+            rr.value=String(preferred>0?preferred:1);
+          }
+        });
+      }
+      const sync=()=>wrap.style.display=by.value==='vet'?'block':'none';
+      by.addEventListener('change',sync); sync();
+    },0);
+  } else if(type==='weight'){
+    openModal(`${pet.name} • Kilo Ekle`,`
+      <label>Kilo (kg) *</label><input id="wValue" inputmode="decimal">
+      <label>Tarih</label><input id="wDate" type="date" value="${todayISO()}">
+    `,()=>{
+      const val=$('#wValue').value.trim(); if(!val) return false;
+      const weightDate=$('#wDate').value;
+      state.weights.push({id:uid(),petId:pet.id,value:val,date:weightDate,createdAt:new Date().toISOString()});
+      const latestWeight=state.weights
+        .map((x,index)=>({...x,_index:index}))
+        .filter(x=>x.petId===pet.id && x.date)
+        .sort((a,b)=>{
+          const dateCompare=b.date.localeCompare(a.date);
+          if(dateCompare!==0) return dateCompare;
+          if(a.createdAt && b.createdAt){
+            const createdCompare=b.createdAt.localeCompare(a.createdAt);
+            if(createdCompare!==0) return createdCompare;
+          }
+          return b._index-a._index;
+        })[0];
+
+      if(latestWeight) pet.weight=latestWeight.value;
+      saveState();
+    });
+  } else if(type==='med'){
+    openModal(`${pet.name} • İlaç Ekle`,`
+      <label>İlaç adı *</label><input id="mName">
+      <label>Doz</label><input id="mDose" placeholder="Örn. 1/2 tablet">
+      <label>Saatler</label><input id="mTimes" value="09:00,21:00">
+      <label>Kaç gün?</label><input id="mDays" type="number" min="1" value="7">
+      <label>Hatırlatma</label><select id="mReminder">
+        <option value="on" selected>İlaç saatlerinde hatırlat</option>
+        <option value="off">Hatırlatma yok</option>
+      </select>
+    `,()=>{
+      const name=$('#mName').value.trim(); if(!name) return false;
+      state.meds.push({id:uid(),petId:pet.id,name,dose:$('#mDose').value,times:$('#mTimes').value,days:+$('#mDays').value||7,start:todayISO(),reminder:$('#mReminder').value==='on'}); saveState();
+    });
+  }
+}
+
+function editPet(id){
+  const p=petById(id); if(!p)return;
+  openModal('Profili Düzenle',`
+    <label>Adı *</label><input id="editPetName" value="${p.name}">
+    <label>Türü</label><select id="editPetType"><option value="cat" ${p.type==='cat'?'selected':''}>Kedi</option><option value="dog" ${p.type==='dog'?'selected':''}>Köpek</option></select>
+    <label>Cinsiyet</label><select id="editPetSex"><option ${p.sex==='Dişi'?'selected':''}>Dişi</option><option ${p.sex==='Erkek'?'selected':''}>Erkek</option></select>
+    <label>Kilo (kg)</label><input id="editPetWeight" value="${p.weight||''}">
+    <label>Mikroçip no</label><input id="editPetChip" value="${p.chip||''}">
+    <button type="button" class="danger big" id="deletePetBtn" style="margin-top:18px">Profili Sil</button>
+  `,()=>{
+    const name=$('#editPetName').value.trim(); if(!name)return false;
+    Object.assign(p,{name,type:$('#editPetType').value,sex:$('#editPetSex').value,weight:$('#editPetWeight').value,chip:$('#editPetChip').value});
+    saveState();
+  });
+  setTimeout(()=>$('#deletePetBtn').onclick=()=>{
+    if(confirm(`${p.name} profili silinsin mi?`)){
+      state.pets=state.pets.filter(x=>x.id!==id);
+      state.records=state.records.filter(x=>x.petId!==id);
+      state.weights=state.weights.filter(x=>x.petId!==id);
+      state.meds=state.meds.filter(x=>x.petId!==id);
+      selectedPetId=state.pets[0]?.id||null; saveState(); $('#modal').close();
+    }
+  },0);
+}
+
+function petTodaySummary(petId){
+  const now=new Date(); now.setHours(0,0,0,0);
+  const relevant=state.records.filter(r=>r.petId===petId && r.next).map(r=>{
+    const d=new Date(r.next+'T00:00:00');
+    const diff=Math.round((d-now)/86400000);
+    return {...r,diff};
+  });
+  const today=relevant.filter(r=>r.diff===0);
+  const late=relevant.filter(r=>r.diff<0);
+  const upcoming=relevant.filter(r=>r.diff>0);
+
+  const meds=state.meds.filter(m=>{
+    if(m.petId!==petId) return false;
+    const start=new Date(m.start+'T00:00:00');
+    const end=new Date(start); end.setDate(end.getDate()+(m.days||1)-1);
+    return now>=start && now<=end;
+  });
+
+  const bits=[];
+  if(today.length) bits.push(`Bugün ${today.length} işlem`);
+  if(late.length) bits.push(`${late.length} geciken`);
+  if(upcoming.length) bits.push(`${upcoming.length} yaklaşan`);
+  if(meds.length) bits.push(`${meds.length} aktif ilaç`);
+  return {today,late,upcoming,meds,text:bits.length?bits.join(' • '):'Bugün için kayıt yok.'};
+}
+
+window.showPetTodaySummary=(petId)=>{
+  const p=petById(petId); if(!p)return;
+  const s=petTodaySummary(petId);
+  const rows=[];
+
+  [...s.late,...s.today,...s.upcoming].forEach(r=>{
+    const when=r.diff<0?`${Math.abs(r.diff)} gün gecikti`:r.diff===0?'Bugün':`${r.diff} gün sonra`;
+    const icon=r.type==='appointment'?'🩺':r.type==='vaccine'?'💉':r.type==='internal'?'🪱':'🛡️';
+    const reminderText=r.type==='appointment' && r.reminder!==0
+      ? `<div class="muted">🔔 ${r.reminder===60?'1 saat önce':r.reminder===120?'2 saat önce':'1 gün önce'} hatırlat</div>`
+      : (['vaccine','internal','external'].includes(r.type) && r.reminderDays>0
+        ? `<div class="muted">🔔 ${r.reminderDays} gün önce hatırlat</div>` : '');
+    rows.push(`<div class="card"><b>${icon} ${r.title}${r.type==='appointment' && r.reminder!==0?' 🔔':''}</b><div class="muted">${fmt(r.next)}${r.time?' • '+r.time:''} • ${when}</div>${reminderText}</div>`);
+  });
+  s.meds.forEach(m=>{
+    rows.push(`<div class="card"><b>💊 ${m.name}${m.reminder?' 🔔':''}</b><div class="muted">${m.dose||''}${m.times?' • '+m.times:''}</div>${m.reminder?'<div class="muted">🔔 İlaç saatlerinde hatırlat</div>':''}</div>`);
+  });
+
+  openInfoModal(`${p.name} • Bugünkü Özet`,
+    rows.length?`<div class="stack">${rows.join('')}</div>`:'<div class="empty">Bugün için gösterilecek kayıt yok.</div>');
+};
+
+function renderPets(){
+  const el=$('#petsList');
+  if(!state.pets.length){el.innerHTML='<div class="card empty">Henüz bir pet eklemedin.</div>';return;}
+
+  el.innerHTML=state.pets.map(p=>{
+    const sum=petTodaySummary(p.id);
+    return `
+      <div class="petHomeGroup">
+        <div class="card petcard" data-pet="${p.id}">
+          <div class="avatar">${p.type==='cat'?'🐱':'🐶'}</div>
+          <div class="petmeta"><div class="petname">${p.name}</div><div class="muted">${p.type==='cat'?'Kedi':'Köpek'} • ${p.sex}${p.weight?' • '+p.weight+' kg':''}</div></div>
+          <div>›</div>
+        </div>
+        <div class="card petSummaryCard">
+          <h3>${p.name} • Bugünkü Özet</h3>
+          <div class="muted">${sum.text}</div>
+          <button class="secondary big" style="margin-top:10px" onclick="showPetTodaySummary('${p.id}')">Detayları Gör</button>
+        </div>
+      </div>`;
+  }).join('');
+
+  $$('#petsList [data-pet]').forEach(x=>x.onclick=()=>editPet(x.dataset.pet));
+}
+window.setHealthHistoryFilter=(key)=>{healthHistoryFilter=key;renderHealth();};
+
+function renderHealth(){
+  const pick=$('#healthPetPicker');
+  pick.innerHTML=state.pets.map(p=>`<button class="chip ${p.id===selectedPetId?'active':''}" data-id="${p.id}">${p.type==='cat'?'🐱':'🐶'} ${p.name}</button>`).join('');
+  $$('#healthPetPicker .chip').forEach(b=>b.onclick=()=>{selectedPetId=b.dataset.id;renderHealth();});
+
+  const summary=$('#petHealthSummary');
+  if(selectedPetId){
+    const pet=petById(selectedPetId);
+    const recs=state.records.filter(r=>r.petId===selectedPetId);
+    const latest=(type)=>recs.filter(r=>r.type===type && r.date).sort((a,b)=>b.date.localeCompare(a.date))[0];
+    const next=(type)=>recs.filter(r=>r.type===type && r.next).sort((a,b)=>a.next.localeCompare(b.next))[0];
+    const vax=latest('vaccine'), intp=latest('internal'), extp=latest('external');
+    const petWeights=state.weights
+      .map((x,index)=>({...x,_index:index}))
+      .filter(x=>x.petId===selectedPetId && x.date);
+
+    const sortedWeights=[...petWeights].sort((a,b)=>{
+      const dateCompare=b.date.localeCompare(a.date);
+      if(dateCompare!==0) return dateCompare;
+
+      // Aynı gün birden fazla kilo girildiyse:
+      // createdAt varsa en son girilen öne gelir.
+      if(a.createdAt && b.createdAt){
+        const createdCompare=b.createdAt.localeCompare(a.createdAt);
+        if(createdCompare!==0) return createdCompare;
+      }
+
+      // Eski test verilerinde createdAt yoksa,
+      // listede daha sonra eklenen kayıt daha güncel kabul edilir.
+      return b._index-a._index;
+    });
+
+    const w=sortedWeights[0];
+    const prevW=sortedWeights[1];
+    const meds=state.meds.filter(x=>x.petId===selectedPetId);
+    const vet=state.vets.find(v=>v.primary)||state.vets[0];
+    summary.innerHTML=`<h3>${pet?.name||''} Sağlık Özeti</h3>
+      <div class="summaryLine">💉 <b>Son aşı:</b> ${vax?`${vax.title} • ${fmt(vax.date)}`:'Kayıt yok'}${next('vaccine')?` • Sonraki ${fmt(next('vaccine').next)}`:''}</div>
+      <div class="summaryLine">🪱 <b>İç parazit:</b> ${intp?fmt(intp.date):'Kayıt yok'}${next('internal')?` • Sonraki ${fmt(next('internal').next)}`:''}</div>
+      <div class="summaryLine">🛡️ <b>Dış parazit:</b> ${extp?fmt(extp.date):'Kayıt yok'}${next('external')?` • Sonraki ${fmt(next('external').next)}`:''}</div>
+      <div class="summaryLine">💊 <b>Aktif ilaç:</b> ${meds.length?meds.map(m=>m.name).join(', '):'Yok'}</div>
+      <div class="summaryLine">⚖️ <b>Güncel Kilo:</b> ${w?`${w.value} kg • ${fmt(w.date)}`:(pet?.weight?pet.weight+' kg':'Kayıt yok')}${prevW?`<div class="muted" style="margin-left:24px">Önceki: ${prevW.value} kg • ${fmt(prevW.date)}</div>`:''}</div>
+      <div class="summaryLine">🩺 <b>Ana veteriner:</b> ${vet?`⭐ ${vet.name}`:'Kayıt yok'}</div>`;
+  } else {
+    summary.innerHTML='<div class="empty">Özet için bir pet seç.</div>';
+  }
+
+  $('#healthActions').innerHTML=`
+    <button class="actionCard" onclick="healthAction('internal')">🪱<b>İç Parazit Kaydı Gir</b></button>
+    <button class="actionCard" onclick="healthAction('external')">🛡️<b>Dış Parazit Kaydı Gir</b></button>
+    <button class="actionCard" onclick="healthAction('vaccine')">💉<b>Aşı Kaydı Gir</b></button>
+    <button class="actionCard" onclick="healthAction('med')">💊<b>İlaç Kaydı Gir</b></button>
+    <button class="actionCard" onclick="healthAction('weight')">⚖️<b>Kilo Kaydı Gir</b></button>
+  `;
+  const filters=$('#healthHistoryFilters');
+  const defs=[['all','Tümü'],['internal','İç Parazit'],['external','Dış Parazit'],['vaccine','Aşılar'],['med','İlaçlar'],['weight','Kilo'],['vet','Veteriner/Muayene']];
+  filters.innerHTML=defs.map(([k,l])=>`<button class="chip ${healthHistoryFilter===k?'active':''}" onclick="setHealthHistoryFilter('${k}')">${l}</button>`).join('');
+
+  const hist=$('#healthHistory');
+  if(!selectedPetId){hist.innerHTML='<div class="card empty">Önce bir pet ekle.</div>';return;}
+
+  const recs=state.records.filter(r=>r.petId===selectedPetId && r.type!=='appointment').map(r=>({...r,category:r.type}));
+  const weights=state.weights.filter(r=>r.petId===selectedPetId).map(w=>({title:`Kilo • ${w.value} kg`,date:w.date,type:'weight',category:'weight'}));
+  const meds=state.meds.filter(r=>r.petId===selectedPetId).map(m=>({title:`İlaç • ${m.name}`,date:m.start,type:'med',category:'med'}));
+  const vets=state.records.filter(r=>r.petId===selectedPetId && r.type==='appointment').map(r=>({...r,category:'vet'}));
+
+  let all=[...recs,...weights,...meds,...vets].sort((a,b)=>(b.date||b.next||'').localeCompare(a.date||a.next||''));
+  if(healthHistoryFilter!=='all') all=all.filter(r=>r.category===healthHistoryFilter);
+
+  hist.innerHTML=all.length?all.map(r=>{
+    const label=r.type==='vaccine'?'💉 Aşı':r.type==='internal'?'🪱 İç Parazit':r.type==='external'?'🛡️ Dış Parazit':r.type==='med'?'💊 İlaç':r.type==='weight'?'⚖️ Kilo':'🩺 Veteriner';
+    return `<div class="card"><b>${label} • ${r.title}</b><div class="muted">${fmt(r.date||r.next)}${r.next&&r.date?` • Sonraki ${fmt(r.next)}`:''}</div></div>`;
+  }).join(''):'<div class="card empty">Bu kategoride henüz kayıt yok.</div>';
+}
+
+window.addAppointment=()=>{
+  if(!state.pets.length){
+    alert('Önce bir pet ekle.');
+    return;
+  }
+
+  openModal('Veteriner Randevusu',`
+    <label>Pet *</label>
+    <select id="apptPet">
+      ${state.pets.map(p=>`<option value="${p.id}">${p.type==='cat'?'🐱':'🐶'} ${p.name}</option>`).join('')}
+    </select>
+
+    <label>Randevu başlığı *</label>
+    <input id="apptTitle" value="Veteriner Randevusu">
+
+    <label>Tarih *</label>
+    <input id="apptDate" type="date">
+
+    <label>Saat</label>
+    <input id="apptTime" type="time">
+
+    <label>Klinik</label>
+    <select id="apptVet">
+      <option value="">Seçilmedi</option>
+      ${state.vets.map(v=>`<option value="${v.id}" ${v.primary?'selected':''}>${v.primary?'⭐ ':''}${v.name}</option>`).join('')}
+    </select>
+
+    <label>Hatırlatma</label>
+    <select id="apptReminder">
+      <option value="1440" selected>1 gün önce</option>
+      <option value="120">2 saat önce</option>
+      <option value="60">1 saat önce</option>
+      <option value="0">Hatırlatma yok</option>
+    </select>
+
+    <div class="muted" style="margin-top:6px">
+      Web testinde gerçek iPhone bildirimi gönderilmez; hatırlatma tercihi kayda eklenir.
+    </div>
+
+    <label>Not</label>
+    <textarea id="apptNote"></textarea>
+  `,()=>{
+    const title=$('#apptTitle').value.trim();
+    const date=$('#apptDate').value;
+
+    if(!title || !date){
+      alert('Randevu başlığı ve tarih gerekli.');
+      return false;
+    }
+
+    state.records.push({
+      id:uid(),
+      petId:$('#apptPet').value,
+      type:'appointment',
+      title,
+      date:'',
+      by:'vet',
+      vetId:$('#apptVet').value,
+      next:date,
+      time:$('#apptTime').value,
+      reminder:+$('#apptReminder').value,
+      note:$('#apptNote').value,
+      done:false
+    });
+
+    saveState();
+  });
+};
+
+
+window.showHealthCalendarDetail=(id)=>{
+  const r=state.records.find(x=>x.id===id);
+  if(!r)return;
+  const pet=petById(r.petId);
+  const vet=state.vets.find(v=>v.id===r.vetId);
+
+  const typeLabel=r.type==='vaccine'
+    ? '💉 Aşı'
+    : r.type==='internal'
+      ? '🪱 İç Parazit'
+      : r.type==='external'
+        ? '🛡️ Dış Parazit'
+        : 'Sağlık Kaydı';
+
+  const reminderText=r.reminderDays>0
+    ? `🔔 ${r.reminderDays} gün önce hatırlat`
+    : '🔕 Hatırlatma yok';
+
+  openInfoModal('Kayıt Detayı',`
+    <div class="card">
+      <h3>${pet?.name||''} • ${typeLabel}</h3>
+      <div><b>${r.title||''}</b></div>
+      ${r.date?`<div class="muted" style="margin-top:6px">Uygulama: ${fmt(r.date)}</div>`:''}
+      ${r.next?`<div class="muted">Sonraki tarih: ${fmt(r.next)}</div>`:''}
+      <div class="muted">Uygulayan: ${r.by==='vet'?'Veteriner':'Evde'}</div>
+      ${r.by==='vet'?`<div class="muted">Klinik: ${vet?.name||'Seçilmedi'}</div>`:''}
+      <div class="muted">${reminderText}</div>
+      ${r.note?`<div style="margin-top:10px">${r.note}</div>`:''}
+    </div>
+  `);
+};
+
+
+window.changeRecordDate=(id)=>{
+  const r=state.records.find(x=>x.id===id);
+  if(!r)return;
+
+  openModal(r.type==='appointment'?'Randevuyu Düzenle':'Tarihi Değiştir',`
+    ${r.type==='appointment'?`<label>Başlık</label><input id="editCalTitle" value="${r.title||''}">`:''}
+    <label>Tarih *</label><input id="editCalDate" type="date" value="${r.next||''}">
+    ${r.type==='appointment'?`
+      <label>Saat</label><input id="editCalTime" type="time" value="${r.time||''}">
+      <label>Hatırlatma</label>
+      <select id="editCalReminder">
+        <option value="1440" ${(r.reminder??1440)===1440?'selected':''}>1 gün önce</option>
+        <option value="120" ${r.reminder===120?'selected':''}>2 saat önce</option>
+        <option value="60" ${r.reminder===60?'selected':''}>1 saat önce</option>
+        <option value="0" ${r.reminder===0?'selected':''}>Hatırlatma yok</option>
+      </select>
+      <label>Not</label><textarea id="editCalNote">${r.note||''}</textarea>
+    `:`
+      <label>Hatırlatma</label>
+      <select id="editHealthReminder">
+        <option value="0" ${(r.reminderDays||0)===0?'selected':''}>Hatırlatma yok</option>
+        <option value="1" ${(r.reminderDays||0)===1?'selected':''}>1 gün önce</option>
+        <option value="3" ${(r.reminderDays||0)===3?'selected':''}>3 gün önce</option>
+        <option value="7" ${(r.reminderDays||0)===7?'selected':''}>7 gün önce</option>
+        <option value="14" ${(r.reminderDays||0)===14?'selected':''}>14 gün önce</option>
+      </select>
+    `}
+  `,()=>{
+    const d=$('#editCalDate').value;
+    if(!d)return false;
+    r.next=d;
+
+    if(r.type==='appointment'){
+      r.title=$('#editCalTitle').value.trim()||'Veteriner Randevusu';
+      r.time=$('#editCalTime').value;
+      r.reminder=+$('#editCalReminder').value;
+      r.note=$('#editCalNote').value;
+    } else {
+      r.reminderDays=+$('#editHealthReminder').value;
+    }
+
+    saveState();
+  });
+};
+
+
+window.showCalendarDetail=(id)=>{
+  const r=state.records.find(x=>x.id===id);
+  if(!r)return;
+  const pet=petById(r.petId);
+  const vet=state.vets.find(v=>v.id===r.vetId);
+
+  openInfoModal('Randevu Detayı',`
+    <div class="card">
+      <h3>${pet?.name||''} • ${r.title}</h3>
+      <div>📅 ${fmt(r.next)}${r.time?' • '+r.time:''}</div>
+      <div>🩺 ${vet?.name||'Klinik seçilmedi'}</div>
+      <div>🔔 ${r.reminder===0?'Hatırlatma yok':r.reminder===60?'1 saat önce':r.reminder===120?'2 saat önce':'1 gün önce'}</div>
+      ${r.note?`<div style="margin-top:8px">${r.note}</div>`:''}
+    </div>
+  `);
+};
+
+window.changeCalendarMonth=(delta)=>{calendarCursor=new Date(calendarCursor.getFullYear(),calendarCursor.getMonth()+delta,1);selectedCalendarDate=null;renderCalendar();};
+window.setCalendarTab=(tab,btn)=>{calendarTab=tab;$$('.calendarTabs .chip').forEach(x=>x.classList.remove('active'));if(btn)btn.classList.add('active');selectedCalendarDate=null;renderCalendar();};
+window.selectCalendarDay=(dateStr)=>{selectedCalendarDate=dateStr;renderCalendar();};
+
+function calendarItems(){
+  const allowed=new Set(['vaccine','internal','external','appointment']);
+  return state.records.filter(r=>r.next&&allowed.has(r.type)).map(r=>({...r,calendarDate:r.next}));
+}
+
+function renderCalendar(){
+  const label=$('#calendarMonthLabel'),grid=$('#monthGrid'); if(!label||!grid)return;
+  const y=calendarCursor.getFullYear(),m=calendarCursor.getMonth();
+  label.textContent=new Intl.DateTimeFormat('tr-TR',{month:'long',year:'numeric'}).format(new Date(y,m,1));
+  const first=new Date(y,m,1), days=new Date(y,m+1,0).getDate(), offset=(first.getDay()+6)%7;
+  const items=calendarItems();
+  let cells='';
+  for(let i=0;i<offset;i++)cells+='<div class="dayCell blank"></div>';
+  for(let d=1;d<=days;d++){
+    const ds=`${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const di=items.filter(x=>x.calendarDate===ds);
+    cells+=`<button class="dayCell${selectedCalendarDate===ds?' selected':''}${ds===todayISO()?' today':''}" onclick="selectCalendarDay('${ds}')"><span>${d}</span>${di.length?`<span class="dayDots">${di.slice(0,3).map(x=>`<i class="${x.type}"></i>`).join('')}</span>`:''}</button>`;
+  }
+  grid.innerHTML=cells;
+
+  const now=new Date();now.setHours(0,0,0,0);
+  let list=items.map(r=>{const d=new Date(r.calendarDate+'T00:00:00');return {...r,diff:Math.round((d-now)/86400000)};});
+  if(selectedCalendarDate){list=list.filter(r=>r.calendarDate===selectedCalendarDate);$('#selectedDayTitle').textContent=`${fmt(selectedCalendarDate)} kayıtları`;}
+  else{list=calendarTab==='past'?list.filter(r=>r.diff<0):list.filter(r=>r.diff>=0);$('#selectedDayTitle').textContent=calendarTab==='past'?'Geçmiş kayıtlar':'Yaklaşan kayıtlar';}
+  list.sort((a,b)=>a.calendarDate.localeCompare(b.calendarDate));
+
+  $('#calendarList').innerHTML=list.length?list.map(r=>{
+    const p=petById(r.petId), petIcon=p?.type==='dog'?'🐶':'🐱';
+    const typeLabel=r.type==='appointment'?'🩺 Randevu':r.type==='vaccine'?'💉 Aşı':r.type==='internal'?'🪱 İç Parazit':'🛡️ Dış Parazit';
+    const when=r.diff<0?`${Math.abs(r.diff)} gün önce`:r.diff===0?'Bugün':`${r.diff} gün sonra`;
+    const bell=(r.type==='appointment'&&r.reminder!==0)||(['vaccine','internal','external'].includes(r.type)&&r.reminderDays>0)?' 🔔':'';
+    return `<div class="card"><div class="calendarPetTitle">${petIcon} <b>${p?.name||''}</b></div><div><b>${typeLabel} • ${r.title}${bell}</b></div><div class="muted">${fmt(r.calendarDate)}${r.time?' • '+r.time:''} • ${when}</div><div class="calendarActions" style="margin-top:10px">${r.type==='appointment'
+  ? `<button class="secondary smallbtn" onclick="showCalendarDetail('${r.id}')">Detay</button>
+     <button class="secondary smallbtn" onclick="changeRecordDate('${r.id}')">Düzenle</button>
+     <button class="primary smallbtn" onclick="completeRecord('${r.id}')">Tamamlandı</button>`
+  : `<button class="secondary smallbtn" onclick="showHealthCalendarDetail('${r.id}')">Detay</button>
+     <button class="primary smallbtn" onclick="completeRecord('${r.id}')">Yapıldı</button>
+     <button class="secondary smallbtn" onclick="changeRecordDate('${r.id}')">Tarihi Değiştir</button>`}</div></div>`;
+  }).join(''):'<div class="card empty">Bu görünümde kayıt yok.</div>';
+}
+
+window.completeRecord=(id)=>{
+  const r=state.records.find(x=>x.id===id); if(!r)return;
+  r.date=todayISO(); r.next=''; saveState();
+};
+window.snoozeRecord=(id,days)=>{
+  const r=state.records.find(x=>x.id===id); if(!r||!r.next)return;
+  const d=new Date(r.next+'T12:00:00'); d.setDate(d.getDate()+days); r.next=d.toISOString().slice(0,10); saveState();
+};
+
+
+window.editVet=(id)=>{
+  const v=state.vets.find(x=>x.id===id); if(!v)return;
+  openModal('Kliniği Düzenle',`
+    <label>Klinik adı *</label><input id="evName" value="${v.name}">
+    <label>Veteriner hekim</label><input id="evDoctor" value="${v.doctor||''}">
+    <label>Telefon</label><input id="evPhone" value="${v.phone||''}">
+    <label>Adres</label><textarea id="evAddress">${v.address||''}</textarea>
+    ${v.primary?'':`<button type="button" class="secondary big" id="makePrimary" style="margin-top:14px">⭐ Ana Veterinerim Yap</button>`}
+    <button type="button" class="danger big" id="deleteVet" style="margin-top:10px">Kliniği Sil</button>
+  `,()=>{
+    const name=$('#evName').value.trim(); if(!name)return false;
+    Object.assign(v,{name,doctor:$('#evDoctor').value,phone:$('#evPhone').value,address:$('#evAddress').value}); saveState();
+  });
+  setTimeout(()=>{
+    const mp=$('#makePrimary'); if(mp) mp.onclick=()=>{state.vets.forEach(x=>x.primary=x.id===id);saveState();$('#modal').close();};
+    $('#deleteVet').onclick=()=>{if(confirm('Bu klinik silinsin mi?')){state.vets=state.vets.filter(x=>x.id!==id);if(state.vets.length&&!state.vets.some(x=>x.primary))state.vets[0].primary=true;saveState();$('#modal').close();}};
+  },0);
+};
+
+function renderVet(){
+  if(!state.vets.length){
+    $('#vetCard').innerHTML='<div class="card empty">Henüz veteriner eklenmedi.</div>';
+    return;
+  }
+
+  const primary=state.vets.find(v=>v.primary)||state.vets[0];
+  const others=state.vets.filter(v=>v.id!==primary.id);
+
+  $('#vetCard').innerHTML=`
+    <div class="card" onclick="editVet('${primary.id}')" style="cursor:pointer">
+      <div class="muted">⭐ Ana Veteriner</div>
+      <h3>${primary.name}</h3>
+      <div>${primary.doctor||''}</div>
+      <div class="muted">${primary.phone||''}</div>
+      <div class="muted">${primary.address||''}</div>
+      <div class="muted" style="margin-top:8px">Düzenlemek için dokun</div>
+    </div>
+    ${others.length?`
+      <h3 style="margin:18px 0 10px">Diğer Kayıtlı Klinikler</h3>
+      <div class="stack">
+        ${others.map(v=>`
+          <div class="card" onclick="editVet('${v.id}')" style="cursor:pointer">
+            <h3>${v.name}</h3>
+            <div>${v.doctor||''}</div>
+            <div class="muted">${v.phone||''}</div>
+            <div class="muted">${v.address||''}</div>
+            <div class="muted" style="margin-top:8px">Düzenlemek için dokun</div>
+          </div>
+        `).join('')}
+      </div>`:''}
+  `;
+}
+
+
+
+
+function renderProfile(){
+  normalizeState();
+  if($('#profileName')) $('#profileName').value=state.profile.name||'';
+  if($('#profileEmail')) $('#profileEmail').value=state.profile.email||'';
+  if($('#profilePhone')) $('#profilePhone').value=state.profile.phone||'';
+  if($('#defaultReminder')) $('#defaultReminder').value=String(state.settings.defaultReminder??1);
+  if($('#repeatOverdue')) $('#repeatOverdue').checked=state.settings.repeatOverdue!==false;
+
+  const list=$('#profilePetsList');
+  if(list) list.innerHTML=state.pets.length?state.pets.map(p=>`
+    <div class="card petcard profilePet" onclick="editPet('${p.id}')">
+      <div class="avatar">${p.type==='cat'?'🐱':'🐶'}</div>
+      <div class="petmeta"><div class="petname">${p.name}</div><div class="muted">${p.type==='cat'?'Kedi':'Köpek'} • ${p.sex}</div></div><div>›</div>
+    </div>`).join(''):'<div class="card empty">Henüz bir pet eklenmedi.</div>';
+}
+function bindProfileSettings(){
+  const save=$('#saveProfileBtn');
+  if(save&&!save.dataset.bound){save.dataset.bound='1';save.onclick=()=>{state.profile={name:$('#profileName').value.trim(),email:$('#profileEmail').value.trim(),phone:$('#profilePhone').value.trim()};saveState();alert('Profil bilgileri kaydedildi.');};}
+  const rem=$('#defaultReminder');
+  if(rem&&!rem.dataset.bound){rem.dataset.bound='1';rem.onchange=()=>{state.settings.defaultReminder=+rem.value;saveState();};}
+  const rep=$('#repeatOverdue');
+  if(rep&&!rep.dataset.bound){rep.dataset.bound='1';rep.onchange=()=>{state.settings.repeatOverdue=rep.checked;saveState();};}
+}
+
+function renderAll(){ renderPets(); renderHealth(); renderCalendar(); renderVet(); renderProfile(); bindProfileSettings(); }
+renderAll();
+
+if('serviceWorker' in navigator){ navigator.serviceWorker.register('sw.js').catch(()=>{}); }
