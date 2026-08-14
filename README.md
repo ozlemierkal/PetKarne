@@ -239,3 +239,12 @@ Gerçek bildirim testi native/TestFlight sürümünde yapılacaktır.
 - Kayıt Ekle alanı 5 büyük kart yerine kompakt hızlı aksiyonlar olarak yeniden kuruldu.
 - Sağlık Geçmişi filtreleri ve liste daha sade hale getirildi.
 - Fotoğraflara ve diğer ekranlara dokunulmadı.
+
+## v2.24 — Sağlık Referans Tasarımı
+- Sağlık sayfası kullanıcının onayladığı yeşil-beyaz referans görsele göre mobil uyarlanarak yeniden tasarlandı.
+- Tek sayfa başlığı: Sağlık.
+- Pet seçici kartları üstte yatay şerit halinde.
+- Seçili pet için tek Sağlık Bilgileri kartı: son aşı, iç/dış parazit, aktif ilaç, güncel kilo, ana veteriner.
+- Kayıt Ekle bölümü 5 kompakt ikon butonundan oluşur.
+- Sağlık Geçmişi kartı filtreler ve satır liste düzenine yaklaştırıldı.
+- Diğer ekranlara dokunulmadı.

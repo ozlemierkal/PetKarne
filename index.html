@@ -87,31 +87,32 @@
       <div id="calendarList" class="stack"></div>
     </section>
 
-    <section id="healthView" class="view healthRebuildView">
-  <div class="healthTopRow">
-    <div>
+    <section id="healthView" class="view healthReferenceView">
+  <div class="healthRefPageTitle">Sağlık</div>
+
+  <div class="healthRefPetStrip">
+    <div id="healthPetPicker" class="healthRefPetPicker"></div>
+  </div>
+
+  <div class="healthRefCard">
+    <div class="healthRefCardTitle">
+      <span class="healthRefTitleIcon">🩺</span>
       <h2 id="healthMainTitle">Sağlık Bilgileri</h2>
-      <div class="healthTopHint">Güncel durum ve son kayıtlar</div>
     </div>
-    <div id="healthPetPicker" class="chips healthPetPickerCompact"></div>
+    <div id="petHealthSummary" class="healthRefSummary"></div>
   </div>
 
-  <div id="petHealthSummary" class="healthOverviewCard"></div>
-
-  <div class="healthAddSection">
-    <div class="healthSectionTitle">
-      <h3>Kayıt Ekle</h3>
-      <span>Sağlık kaydı oluştur</span>
-    </div>
-    <div id="healthActions" class="healthQuickActions"></div>
+  <div class="healthRefCard healthRefAddCard">
+    <div class="healthRefSectionTitle">Kayıt Ekle</div>
+    <div id="healthActions" class="healthRefActions"></div>
   </div>
 
-  <div class="healthHistorySection">
-    <div class="healthHistoryTop">
+  <div class="healthRefCard healthRefHistoryCard">
+    <div class="healthRefHistoryHeader">
       <h3 id="healthHistoryTitle">Sağlık Geçmişi</h3>
     </div>
-    <div id="healthHistoryFilters" class="chips historyChips healthHistoryFiltersCompact"></div>
-    <div id="healthHistory" class="stack healthHistoryListCompact"></div>
+    <div id="healthHistoryFilters" class="healthRefFilters"></div>
+    <div id="healthHistory" class="healthRefHistoryList"></div>
   </div>
 </section>
 

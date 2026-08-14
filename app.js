@@ -437,32 +437,44 @@ function renderHealth(){
     const meds=state.meds.filter(x=>x.petId===selectedPetId);
     const vet=state.vets.find(v=>v.primary)||state.vets[0];
     summary.innerHTML=`
-    <div class="healthOverviewHeader">
-      <div>
-        <b>${pet?.name||''}</b>
-        <span>${pet?.breed|| (pet?.type==='cat'?'Kedi':'Köpek')}</span>
+    <div class="healthRefGrid">
+      <div class="healthRefMetric">
+        <span class="metricIcon">🛡️</span>
+        <div><small>Son Aşı</small><b>${lastVaccine?(lastVaccine.title||'Aşı'):'Kayıt yok'}</b><em>${lastVaccine?fmt(lastVaccine.date||lastVaccine.next):'—'}</em></div>
       </div>
-      <div class="healthPetMini">${pet?.type==='cat'?'🐱':'🐶'}</div>
+      <div class="healthRefMetric">
+        <span class="metricIcon">🪱</span>
+        <div><small>İç Parazit</small><b>${lastInternal?(lastInternal.title||'Kayıt var'):'Kayıt yok'}</b><em>${lastInternal?fmt(lastInternal.date||lastInternal.next):'—'}</em></div>
+      </div>
+      <div class="healthRefMetric">
+        <span class="metricIcon">🐞</span>
+        <div><small>Dış Parazit</small><b>${lastExternal?(lastExternal.title||'Kayıt var'):'Kayıt yok'}</b><em>${lastExternal?fmt(lastExternal.date||lastExternal.next):'—'}</em></div>
+      </div>
+      <div class="healthRefMetric">
+        <span class="metricIcon">💊</span>
+        <div><small>Aktif İlaç</small><b>${activeMed?activeMed.name:'Yok'}</b><em>${activeMed?'Aktif':'—'}</em></div>
+      </div>
+      <div class="healthRefMetric">
+        <span class="metricIcon">⚖️</span>
+        <div><small>Güncel Kilo</small><b>${w?`${w.value} kg`:(pet?.weight?pet.weight+' kg':'Kayıt yok')}</b><em>${w?.date?fmt(w.date):'—'}</em></div>
+      </div>
+      <div class="healthRefMetric">
+        <span class="metricIcon">🩺</span>
+        <div><small>Ana Veteriner</small><b>${mainVet?mainVet.name:'Belirtilmedi'}</b><em>${mainVet?.doctor||'—'}</em></div>
+      </div>
     </div>
-    <div class="healthOverviewGrid">
-      <div class="healthStat"><span>💉 Son Aşı</span><b>${lastVaccine?`${lastVaccine.title||'Aşı'} • ${fmt(lastVaccine.date||lastVaccine.next)}`:'Kayıt yok'}</b></div>
-      <div class="healthStat"><span>🪱 İç Parazit</span><b>${lastInternal?fmt(lastInternal.date||lastInternal.next):'Kayıt yok'}</b></div>
-      <div class="healthStat"><span>🛡️ Dış Parazit</span><b>${lastExternal?fmt(lastExternal.date||lastExternal.next):'Kayıt yok'}</b></div>
-      <div class="healthStat"><span>💊 Aktif İlaç</span><b>${activeMed?activeMed.name:'Yok'}</b></div>
-      <div class="healthStat"><span>⚖️ Güncel Kilo</span><b>${w?`${w.value} kg`:(pet?.weight?pet.weight+' kg':'Kayıt yok')}</b></div>
-      <div class="healthStat"><span>🩺 Ana Veteriner</span><b>${mainVet?mainVet.name:'Belirtilmedi'}</b></div>
-    </div>
+    <div class="healthRefAutoNote">ⓘ Bilgiler son kayıtlara göre otomatik güncellenir.</div>
   `;
   } else {
     summary.innerHTML='<div class="empty">Özet için bir pet seç.</div>';
   }
 
   $('#healthActions').innerHTML=`
-    <button class="healthQuickBtn internal" onclick="healthAction('internal')"><span>🪱</span><b>İç Parazit</b><em>＋</em></button>
-    <button class="healthQuickBtn external" onclick="healthAction('external')"><span>🛡️</span><b>Dış Parazit</b><em>＋</em></button>
-    <button class="healthQuickBtn vaccine" onclick="healthAction('vaccine')"><span>💉</span><b>Aşı</b><em>＋</em></button>
-    <button class="healthQuickBtn med" onclick="healthAction('med')"><span>💊</span><b>İlaç</b><em>＋</em></button>
-    <button class="healthQuickBtn weight" onclick="healthAction('weight')"><span>⚖️</span><b>Kilo</b><em>＋</em></button>
+    <button class="healthRefAction" onclick="healthAction('internal')"><span>🪱</span><b>İç Parazit</b></button>
+    <button class="healthRefAction" onclick="healthAction('external')"><span>🐞</span><b>Dış Parazit</b></button>
+    <button class="healthRefAction" onclick="healthAction('vaccine')"><span>🛡️</span><b>Aşı</b></button>
+    <button class="healthRefAction" onclick="healthAction('med')"><span>💊</span><b>İlaç</b></button>
+    <button class="healthRefAction" onclick="healthAction('weight')"><span>⚖️</span><b>Kilo</b></button>
   `;
   const filters=$('#healthHistoryFilters');
   const defs=[['all','Tümü'],['internal','İç Parazit'],['external','Dış Parazit'],['vaccine','Aşılar'],['med','İlaçlar'],['weight','Kilo'],['vet','Veteriner/Muayene']];
