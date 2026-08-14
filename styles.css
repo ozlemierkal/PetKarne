@@ -358,3 +358,25 @@ body{
   background:#4F9E20 !important;border-color:#4F9E20 !important;color:#fff !important
 }
 .basicBadge{background:#EDF7E6;color:#397C1B}
+
+/* v3.0 — onaylanan konsept görünümü */
+#app{max-width:430px;background:#fff;box-shadow:0 0 50px rgba(25,65,25,.06)}
+main{padding:12px 14px 18px}
+.topbar{padding:8px 14px;background:#fff;min-height:58px}
+.brand img{display:block;width:155px;height:44px;object-fit:cover;object-position:left center}
+.subtitle,.brandMark,.brandPet,.brandKarnem{display:none!important}
+.welcomeHero{min-height:105px;border-radius:14px;padding:15px 16px;margin:6px 0 14px;background:linear-gradient(135deg,#62A91A,#82B91E);display:flex;flex-direction:row-reverse;justify-content:space-between}
+.welcomeHero h2{font-size:17px;margin:0 0 5px}.welcomeHero .heroCopy{font-size:12px;line-height:1.45;max-width:225px}
+.heroBrandMark{width:100px;height:70px;object-fit:cover;object-position:left center;border-radius:10px;mix-blend-mode:multiply}
+.friendsHead{margin:10px 0 7px}.friendsHead h2{font-size:16px;margin:0}.textAdd{font-size:11px;color:#5E9E16;padding:5px}
+#petsList.stack{gap:9px}.petHomeGroup{margin-bottom:7px;gap:7px}
+.petcard{padding:9px;border-radius:13px;min-height:82px;box-shadow:0 3px 10px rgba(37,77,31,.06)}
+.avatar{width:57px;height:62px;border-radius:10px;background:#F5F0E7;font-size:37px}
+.petname{font-size:14px}.petTypeLine{font-size:10px;color:#3D7E1E;font-weight:700;margin:2px 0}.petmeta .muted{font-size:10px}
+.petPaw{font-size:14px;background:#6BAA23;width:25px;height:25px;border-radius:50%;display:grid;place-items:center}
+.petSummaryCard{margin-left:0;padding:10px 11px;border-radius:12px;background:#FBFCF8}
+.summaryTitle{display:flex;justify-content:space-between;align-items:center;font-size:12px;font-weight:800;margin-bottom:5px}
+.summaryTitle button{border:0;background:transparent;color:#5C961D;font-size:10px;font-weight:700}.summaryText{font-size:11px;color:#667064;line-height:1.4}
+.view>h2,.sectionHead h2{font-size:18px}.card{border-radius:13px;box-shadow:0 3px 12px rgba(32,66,28,.05)}
+.calendarCard{border-radius:14px}.bottomnav{max-width:430px;padding:7px 4px calc(7px + env(safe-area-inset-bottom))}
+.navitem{font-size:16px}.navitem span{font-size:9px}.navitem.active{background:transparent;color:#5E9E16}

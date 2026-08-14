@@ -278,13 +278,16 @@ function renderPets(){
       <div class="petHomeGroup">
         <div class="card petcard" data-pet="${p.id}">
           <div class="avatar">${p.type==='cat'?'🐱':'🐶'}</div>
-          <div class="petmeta"><div class="petname">${p.name}</div><div class="muted">${p.type==='cat'?'Kedi':'Köpek'} • ${p.sex}${p.weight?' • '+p.weight+' kg':''}</div></div>
-          <div>›</div>
+          <div class="petmeta">
+            <div class="petname">${p.name}</div>
+            <div class="petTypeLine">${p.type==='cat'?'Kedi':'Köpek'}${p.breed?` • ${p.breed}`:''}</div>
+            <div class="muted">${p.sex||''}${p.neutered==='yes'?' • Kısır':p.neutered==='no'?' • Kısır değil':''}${p.weight?' • '+p.weight+' kg':''}</div>
+          </div>
+          <div class="petPaw">🐾</div>
         </div>
         <div class="card petSummaryCard">
-          <h3>${p.name} • Bugünkü Özet</h3>
-          <div class="muted">${sum.text}</div>
-          <button class="secondary big" style="margin-top:10px" onclick="showPetTodaySummary('${p.id}')">Detayları Gör</button>
+          <div class="summaryTitle"><span>${p.name} • Yaklaşan</span><button onclick="showPetTodaySummary('${p.id}')">Detay ›</button></div>
+          <div class="summaryText">${sum.text}</div>
         </div>
       </div>`;
   }).join('');

@@ -178,3 +178,10 @@ Gerçek bildirim testi native/TestFlight sürümünde yapılacaktır.
 - Seçenekler: Belirtilmedi, Kısır, Kısır değil
 - Kısırlaştırma bilgisi sonradan profil düzenlemeden değiştirilebilir
 - Pet özet bilgisinde seçim yapıldıysa Kısır / Kısır değil bilgisi gösterilir
+
+## v3.0
+- Onaylanan PetKarnem konsept ekranı ana tasarım referansı yapıldı
+- Emoji marka işareti yerine onaylanan altın köpek + gri-beyaz kedi + takvim markası kullanıldı
+- Ana sayfa ve dost kartları konsepte yaklaştırıldı
+- Cinsi ve kısırlaştırma alanları korunur
+- v2.5.1 işlevleri korunarak arayüz yenilendi
