@@ -60,6 +60,9 @@ function resetModalActions(){
   if(cancel) cancel.textContent='Vazgeç';
 }
 
+const modalCloseX=$('#modalCloseX');
+if(modalCloseX) modalCloseX.onclick=(e)=>{ e.preventDefault(); $('#modal').close(); };
+
 $('#modalForm').addEventListener('submit',(e)=>{
   const submitter=e.submitter;
   if(submitter?.id==='saveModalBtn'){
@@ -297,7 +300,7 @@ function renderPets(){
     const age=refPetAge(p);
     const meta=[age,p.weight?`${p.weight} kg`:null].filter(Boolean).join(' • ');
     return `<button type="button" class="refPetCard" data-ref-pet="${p.id}">
-      <div class="refPetVisual ${p.type}"><span class="refPetEmoji">${p.type==='cat'?'🐱':'🐶'}</span><span class="refPawBadge">🐾</span></div>
+      <div class="refPetVisual ${p.type}"><img class="refPetPhoto" src="${p.type==='cat'?'pet-cat.jpg':'pet-dog.jpg'}" alt=""><span class="refPawBadge">🐾</span></div>
       <div class="refPetName">${p.name}</div>
       <span class="refSpecies">${p.type==='cat'?'Kedi':'Köpek'}</span>
       <div class="refPetMeta">${meta || (p.breed || 'Bilgileri görüntüle')}</div>

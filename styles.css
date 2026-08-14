@@ -305,3 +305,46 @@ dialog{
 .srOnly{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
 .bottomnav{box-shadow:0 -3px 12px rgba(40,69,34,.05);padding-top:6px}.navitem{font-size:17px}.navitem span{font-size:9px}.navitem.active{color:#66A21F;background:transparent}
 @media(max-width:370px){.refPetsGrid{gap:6px}.refPetCard,.refAddCard{height:204px;padding:6px}.refPetVisual{height:113px}.refPetEmoji{font-size:64px}.refWelcome{height:112px;padding:15px}.refWelcome p{font-size:12px}}
+
+/* v2.11 fixes */
+.refTopbar{min-height:78px!important;padding:6px 18px!important;overflow:visible!important}
+.refBrand{height:66px!important;overflow:visible!important}
+.refBrand img{
+  width:82px!important;
+  height:66px!important;
+  object-fit:contain!important;
+  object-position:center!important;
+  flex:0 0 82px!important;
+  overflow:visible!important;
+}
+.refWordmark{font-size:27px!important}
+.refPetVisual{
+  padding:0!important;
+  background:#F5F2EA!important;
+  overflow:hidden!important;
+}
+.refPetPhoto{
+  width:100%!important;
+  height:100%!important;
+  object-fit:cover!important;
+  object-position:center!important;
+  display:block!important;
+}
+.refPetCard{
+  overflow:hidden!important;
+}
+.refPetName,.refSpecies,.refPetMeta{
+  position:relative!important;
+  z-index:2!important;
+}
+#modalCloseX{
+  cursor:pointer;
+  font-size:22px;
+  line-height:1;
+  min-width:42px;
+  min-height:42px;
+  display:grid;
+  place-items:center;
+  position:relative;
+  z-index:20;
+}
