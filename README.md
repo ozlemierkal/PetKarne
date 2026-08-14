@@ -179,3 +179,25 @@ Gerçek bildirim testi native/TestFlight sürümünde yapılacaktır.
 - Dost Bilgileri açıldığında üst marka başlığı gizlenir; ekran doğrudan geri oku / Dost Bilgileri / Düzenle ile başlar.
 - Fotoğraf, ad, meta bilgi, bilgi kartı ve üç bağlantı kartının ölçü/boşlukları referansa göre düzenlendi.
 - Sağlık sekmesi Dost Bilgileri ekranında yeşil aktif görünür.
+
+## v2.14
+- Dost Bilgileri ekranındaki kamera kaldırıldı.
+- Düzenleme ekranında Dost Bilgileri ile aynı pet portresi kullanılır.
+- İlk test sürümünde fotoğraf değiştirme/yükleme özelliği yoktur.
+
+## v2.15
+- Dost Bilgileri ekranından Aşı Takvimi satırı kaldırıldı.
+- Geçmiş Kayıtlar adı Sağlık Geçmişi olarak değiştirildi.
+
+## v2.16
+- iPhone Safari'de Veteriner Randevusu formunun aşağı/yukarı kayma hissi azaltıldı.
+- Modal ekranda sabit tutulur; yalnızca form gövdesi kendi içinde kayar.
+- Başlık ve alt butonlar sabit kalır.
+- Input/select/textarea 16px yapılarak iOS otomatik zoom davranışı azaltıldı.
+- Tarih/saat/select alanlarında genişlik taşması engellendi.
+
+## v2.17
+- Dost Bilgileri ekranındaki iPhone/Safari aşağı-yukarı oynama azaltıldı.
+- Tüm sayfa yerine yalnızca Dost Bilgileri içeriği kendi içinde scroll olur.
+- Detail ekranına geçerken üst alanın display değişiminden kaynaklanan yükseklik sıçraması engellendi.
+- Alt menü ve safe-area yüksekliği sabitlendi.

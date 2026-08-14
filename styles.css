@@ -548,3 +548,179 @@ body.petDetailMode .bottomnav .navitem[data-view="healthView"]{
   .petDetailView .detailIdentity{margin-top:8px;margin-bottom:24px}
   .petDetailView .detailInfoRow{min-height:48px}
 }
+
+/* v2.14 photo consistency */
+.cameraBadge{display:none!important}
+.editPetPortrait{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  text-align:center;
+  margin:0 0 18px;
+  padding-bottom:17px;
+  border-bottom:1px solid #ECEDE8;
+}
+.editPetPortrait img{
+  width:126px;
+  height:126px;
+  object-fit:cover;
+  object-position:center;
+  border-radius:50%;
+  background:#F2EEE5;
+  display:block;
+  margin-bottom:10px;
+}
+.editPetPortrait b{font-size:20px;line-height:1.2}
+.editPetPortrait span{margin-top:4px;color:#6B726C;font-size:12px}
+
+/* v2.16 — iPhone/Safari randevu formu zıplama düzeltmesi */
+
+/* Dialog ekranda sabit, kendi içinde taşar */
+dialog#modal{
+  width:min(94vw,430px);
+  max-width:430px;
+  max-height:88dvh;
+  margin:auto;
+  padding:0;
+  overflow:hidden;
+  border-radius:20px;
+}
+
+/* iOS eski viewport davranışı için fallback */
+@supports not (height: 1dvh){
+  dialog#modal{
+    max-height:88vh;
+  }
+}
+
+/* Form gövdesi sabit yükseklik mantığıyla kendi içinde scroll olur */
+#modalForm{
+  display:flex;
+  flex-direction:column;
+  max-height:88dvh;
+  overflow:hidden;
+  overscroll-behavior:contain;
+  background:#fff;
+}
+
+@supports not (height: 1dvh){
+  #modalForm{
+    max-height:88vh;
+  }
+}
+
+/* Başlık ve alt butonlar sabit; sadece orta içerik kayar */
+#modalTitle{
+  flex:0 0 auto;
+}
+
+#modalBody{
+  flex:1 1 auto;
+  min-height:0;
+  overflow-y:auto;
+  overflow-x:hidden;
+  -webkit-overflow-scrolling:touch;
+  overscroll-behavior:contain;
+  padding-bottom:18px;
+}
+
+/* Alt aksiyonlar klavye açıldığında da yerinde kalsın */
+#modalForm .modalActions{
+  flex:0 0 auto;
+  position:sticky;
+  bottom:0;
+  background:#fff;
+  padding-top:10px;
+  padding-bottom:max(10px, env(safe-area-inset-bottom));
+  z-index:5;
+  border-top:1px solid #ECEDE8;
+}
+
+/* iOS form alanlarında otomatik zoom/zıplamayı azalt */
+#modalBody input,
+#modalBody select,
+#modalBody textarea{
+  font-size:16px;
+}
+
+/* Tarih/saat/select alanlarının beklenmedik genişlemesini önle */
+#modalBody input,
+#modalBody select,
+#modalBody textarea{
+  width:100%;
+  max-width:100%;
+  box-sizing:border-box;
+}
+
+/* Randevu formunda üst-alt ani layout değişimini azalt */
+#modalBody label{
+  display:block;
+}
+
+body:has(dialog#modal[open]){
+  overflow:hidden;
+}
+
+/* v2.17 — Dost Bilgileri ekranı iPhone dikey kayma/zıplama düzeltmesi */
+
+/* Detail ekranı açıldığında üst uygulama alanının yüksekliği değişmesin. */
+body.petDetailMode .refTopbar{
+  display:block!important;
+  height:0!important;
+  min-height:0!important;
+  padding:0!important;
+  margin:0!important;
+  border:0!important;
+  overflow:hidden!important;
+}
+
+/* Ana taşıyıcı sabit viewport yüksekliği kullanır. */
+body.petDetailMode main{
+  height:calc(100dvh - 70px);
+  min-height:0;
+  overflow:hidden;
+  padding:0 22px 0!important;
+}
+
+@supports not (height:1dvh){
+  body.petDetailMode main{
+    height:calc(100vh - 70px);
+  }
+}
+
+/* Dost Bilgileri kendi içinde scroll olur; tüm sayfa yukarı-aşağı oynamaz. */
+body.petDetailMode #petDetailView{
+  height:100%;
+  min-height:0;
+  overflow-y:auto;
+  overflow-x:hidden;
+  -webkit-overflow-scrolling:touch;
+  overscroll-behavior-y:contain;
+  padding-bottom:24px;
+  box-sizing:border-box;
+}
+
+/* Sabit alt menü yüksekliği ve safe-area. */
+body.petDetailMode .bottomnav{
+  min-height:70px;
+  height:calc(70px + env(safe-area-inset-bottom));
+  box-sizing:border-box;
+  padding-bottom:env(safe-area-inset-bottom);
+}
+
+/* İçerik ölçü değişimlerinin scroll pozisyonunu sıçratmasını azalt. */
+.petDetailView .detailPhotoWrap,
+.petDetailView .detailInfoCard,
+.petDetailView .detailMenuCard{
+  flex-shrink:0;
+}
+.petDetailView img{
+  content-visibility:auto;
+}
+
+@media(max-width:390px){
+  body.petDetailMode main{
+    padding-left:17px!important;
+    padding-right:17px!important;
+  }
+}
