@@ -776,3 +776,10 @@ body.petDetailMode .bottomnav{
   padding:0!important;
   transform:none!important;
 }
+
+/* v2.20 — one pet image source everywhere */
+.petDetailView .detailPhotoWrap img,
+.editPetPortrait img{
+  object-fit:cover!important;
+  object-position:center!important;
+}

@@ -213,3 +213,9 @@ Gerçek bildirim testi native/TestFlight sürümünde yapılacaktır.
 - Fotoğraf kapsayıcı ve görsel kesin 154x154 daireye sabitlendi; oval/eğri görünüm engellendi.
 - Sağlık ekranının üst başlığı seçili pet adına bağlandı: örn. Misket Sağlık Bilgileri.
 - Sağlık Geçmişi başlığı seçili pet adına bağlandı: örn. Misket Sağlık Geçmişi.
+
+## v2.20
+- Ana ekran, Dost Bilgileri ve Düzenle ekranı aynı pet görsel dosyalarını kullanır.
+- Kedi: pet-cat.jpg her yerde aynıdır.
+- Köpek: pet-dog.jpg her yerde aynıdır.
+- Ayrı pet-detail-cat.jpg kaldırıldı; böylece detay ekranında farklı fotoğraf kullanılması mümkün değildir.

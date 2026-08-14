@@ -305,7 +305,7 @@ function showPetDetail(id){
   document.body.classList.add('petDetailMode');
 
   const photo=$('#petDetailPhoto');
-  if(photo) photo.src=p.type==='cat'?'pet-detail-cat.jpg':'pet-dog.jpg';
+  if(photo) photo.src=p.type==='cat'?'pet-cat.jpg':'pet-dog.jpg';
 
   $('#petDetailName').innerHTML=`${p.name} <span>🐾</span>`;
   $('#petDetailMeta').textContent=[p.type==='cat'?'Kedi':'Köpek',p.sex,petAgeLabel(p)].filter(Boolean).join(' • ');
