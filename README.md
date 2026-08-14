@@ -225,3 +225,10 @@ Gerçek bildirim testi native/TestFlight sürümünde yapılacaktır.
 - Görseller önce gerçek 1:1 kare dosyalara dönüştürüldü.
 - Aynı pet-cat.jpg / pet-dog.jpg ana ekran, Dost Bilgileri ve Düzenle ekranında kullanılır.
 - Dost Bilgileri ve Düzenle portreleri clip-path ile gerçek daireye zorlandı.
+
+## v2.22 — Sağlık sadeleştirme
+- Sağlık ekranı üç net bölüme ayrıldı: Sağlık Bilgileri, Kayıt Ekle, Sağlık Geçmişi.
+- Üst ve alt başlıklar seçili pet adıyla başlar.
+- Kayıt ekleme sırası: İç Parazit → Dış Parazit → Aşı → İlaç → Kilo.
+- Filtre ve geçmiş listesi daha kompakt hale getirildi.
+- Diğer ekranlara dokunulmadı.

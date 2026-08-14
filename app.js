@@ -428,7 +428,7 @@ function renderHealth(){
     const prevW=sortedWeights[1];
     const meds=state.meds.filter(x=>x.petId===selectedPetId);
     const vet=state.vets.find(v=>v.primary)||state.vets[0];
-    summary.innerHTML=`<h3>${pet?.name||''} Sağlık Özeti</h3>
+    summary.innerHTML=`<h3>${pet?.name||''} Sağlık Bilgileri</h3>
       <div class="summaryLine">💉 <b>Son aşı:</b> ${vax?`${vax.title} • ${fmt(vax.date)}`:'Kayıt yok'}${next('vaccine')?` • Sonraki ${fmt(next('vaccine').next)}`:''}</div>
       <div class="summaryLine">🪱 <b>İç parazit:</b> ${intp?fmt(intp.date):'Kayıt yok'}${next('internal')?` • Sonraki ${fmt(next('internal').next)}`:''}</div>
       <div class="summaryLine">🛡️ <b>Dış parazit:</b> ${extp?fmt(extp.date):'Kayıt yok'}${next('external')?` • Sonraki ${fmt(next('external').next)}`:''}</div>

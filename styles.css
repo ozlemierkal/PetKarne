@@ -813,3 +813,87 @@ body.petDetailMode .bottomnav{
   object-fit:cover!important;
   object-position:50% 50%!important;
 }
+
+/* v2.22 — Sağlık ekranı sadeleştirme */
+.healthSimpleView{
+  padding-top:4px;
+}
+.healthSimpleHeader{
+  display:grid;
+  gap:10px;
+  margin-bottom:12px;
+}
+.healthSimpleHeader h2{
+  margin:0;
+  font-size:21px;
+  letter-spacing:-.4px;
+}
+.healthPetPicker{
+  margin:0;
+  gap:7px;
+}
+.healthSummarySimple{
+  margin-top:0!important;
+  padding:15px 16px!important;
+  border-radius:16px!important;
+  background:#fff!important;
+  border:1px solid #E7EAE5!important;
+  box-shadow:0 4px 14px rgba(35,65,31,.05)!important;
+}
+.healthSummarySimple h3{
+  font-size:15px;
+  margin:0 0 8px;
+}
+.healthSummarySimple .summaryLine{
+  min-height:44px;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  border-bottom:1px solid #EEF0EC;
+}
+.healthSummarySimple .summaryLine:last-child{
+  border-bottom:0;
+}
+.healthActionTitle{
+  margin:18px 0 9px;
+}
+.healthActionTitle h3{
+  margin:0;
+  font-size:16px;
+}
+.healthActionsSimple{
+  gap:9px;
+}
+.healthActionsSimple .actionCard{
+  min-height:88px;
+  padding:13px 12px!important;
+  border-radius:14px!important;
+  border:1px solid #E8EAE5!important;
+  box-shadow:none!important;
+}
+.healthActionsSimple .actionCard b{
+  font-size:13px!important;
+  line-height:1.25;
+}
+.healthHistoryHead{
+  margin:22px 0 9px;
+}
+.healthHistoryHead h3{
+  margin:0;
+  font-size:17px;
+}
+.healthHistoryFilters{
+  margin-bottom:10px;
+  gap:7px;
+}
+.healthHistoryFilters .chip{
+  padding:7px 10px;
+  font-size:10px;
+}
+.healthHistoryList{
+  gap:8px;
+}
+.healthHistoryList .card{
+  border-radius:13px!important;
+  box-shadow:0 3px 10px rgba(35,65,31,.045)!important;
+}
