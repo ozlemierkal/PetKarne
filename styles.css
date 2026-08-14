@@ -1399,3 +1399,48 @@ body.petDetailMode .bottomnav{
   border-radius:0 !important;
   transform:none !important;
 }
+
+/* v2.31 — Veterinerim sade sıcak üst kart */
+#vetView .vetWarmAvatar,
+#vetView .vetHeroArt{
+  display:none !important;
+}
+#vetView .vetWelcomeCard{
+  display:flex;
+  align-items:center;
+  gap:13px;
+  width:100%;
+  box-sizing:border-box;
+  margin:12px 0 18px;
+  padding:16px;
+  border:1px solid #DDEBD8;
+  border-radius:18px;
+  background:linear-gradient(135deg,#F3FAF0 0%,#FBFDF9 100%);
+  box-shadow:0 4px 14px rgba(48,92,40,.05);
+}
+#vetView .vetWelcomeIcon{
+  flex:0 0 48px;
+  width:48px;
+  height:48px;
+  border-radius:15px;
+  display:grid;
+  place-items:center;
+  background:#E5F3DF;
+  font-size:25px;
+}
+#vetView .vetWelcomeText{
+  min-width:0;
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+}
+#vetView .vetWelcomeText strong{
+  color:#244421;
+  font-size:15px;
+  line-height:1.25;
+}
+#vetView .vetWelcomeText span{
+  color:#71806F;
+  font-size:12px;
+  line-height:1.4;
+}

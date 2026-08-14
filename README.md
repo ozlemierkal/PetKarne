@@ -283,3 +283,9 @@ Gerçek bildirim testi native/TestFlight sürümünde yapılacaktır.
 - Kaynak görsel ayrıca 144×144 küçük dosyaya dönüştürüldü.
 - Veterinerim başlığı altına yeni, bağımsız 96×96 yuvarlak avatar bileşeni eklendi.
 - Avatar sabit kutu ve overflow:hidden ile korunur; global img kurallarından etkilenmemesi için ayrı sınıf kullanır.
+
+## v2.31 — Veterinerim sade tasarım
+- Veteriner illüstrasyonu tamamen kaldırıldı.
+- Veterinerim başlığı altına açık yeşil, küçük ve sıcak bir bilgilendirme kartı eklendi.
+- Kartta 🩺 ve 🐾 detayları ile kısa açıklama bulunur.
+- Veteriner/klinik ekleme alanı ve mevcut işlevler değiştirilmedi.
