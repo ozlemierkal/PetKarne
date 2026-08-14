@@ -152,3 +152,9 @@ Gerçek bildirim testi native/TestFlight sürümünde yapılacaktır.
 - Sağlık Geçmişi kategori sekmelerinde yazı kontrastı düzeltildi
 - Seçili kategori koyu yeşil zemin + beyaz yazı
 - Seçili olmayan kategoriler beyaz zemin + koyu yazı
+
+## v2.4.2
+- Geliştirme/test sürecinde service worker cache devre dışı bırakıldı
+- Eski service worker kayıtları otomatik kaldırılır
+- Eski cache kayıtları otomatik temizlenir
+- GitHub Pages güncellemeleri Safari'de daha kolay görünür
