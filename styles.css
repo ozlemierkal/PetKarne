@@ -744,3 +744,35 @@ body.petDetailMode .bottomnav{
   display:block!important;
   transform:none!important;
 }
+
+/* v2.19 — true circular pet detail portraits */
+.petDetailView .detailPhotoWrap{
+  width:154px!important;
+  height:154px!important;
+  min-width:154px!important;
+  min-height:154px!important;
+  max-width:154px!important;
+  max-height:154px!important;
+  aspect-ratio:1 / 1!important;
+  border-radius:999px!important;
+  overflow:hidden!important;
+  padding:0!important;
+  margin-left:auto!important;
+  margin-right:auto!important;
+}
+.petDetailView .detailPhotoWrap img{
+  width:154px!important;
+  height:154px!important;
+  min-width:154px!important;
+  min-height:154px!important;
+  max-width:154px!important;
+  max-height:154px!important;
+  aspect-ratio:1 / 1!important;
+  border-radius:999px!important;
+  object-fit:cover!important;
+  object-position:50% 50%!important;
+  display:block!important;
+  margin:0!important;
+  padding:0!important;
+  transform:none!important;
+}

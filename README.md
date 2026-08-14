@@ -207,3 +207,9 @@ Gerçek bildirim testi native/TestFlight sürümünde yapılacaktır.
 - Ölçümler satırı Dost Bilgileri menüsünden kaldırıldı.
 - Dost Bilgileri kedi/köpek fotoğrafları tam daire ve 1:1 oranında gösterilir.
 - Sağlık ekranındaki Sağlık Geçmişi başlığı artık seçili pet adıyla başlar (örn. Misket Sağlık Geçmişi).
+
+## v2.19
+- Dost Bilgileri kedi/köpek portreleri kaynak dosyada da kare merkez kırpıma dönüştürüldü.
+- Fotoğraf kapsayıcı ve görsel kesin 154x154 daireye sabitlendi; oval/eğri görünüm engellendi.
+- Sağlık ekranının üst başlığı seçili pet adına bağlandı: örn. Misket Sağlık Bilgileri.
+- Sağlık Geçmişi başlığı seçili pet adına bağlandı: örn. Misket Sağlık Geçmişi.

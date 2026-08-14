@@ -108,8 +108,7 @@ $('#resetBtn').onclick=()=>{
 function healthAction(type){
   if(!selectedPetId){ alert('Önce bir pet ekle.'); return; }
   const pet=petById(selectedPetId);
-  const historyTitle=$('#healthHistoryTitle');
-  if(historyTitle) historyTitle.textContent=pet ? `${pet.name} Sağlık Geçmişi` : 'Sağlık Geçmişi';
+
 
   if(['vaccine','internal','external'].includes(type)){
     const labels={vaccine:'Aşı',internal:'İç Parazit',external:'Dış Parazit'};
@@ -397,6 +396,10 @@ function renderHealth(){
   const summary=$('#petHealthSummary');
   if(selectedPetId){
     const pet=petById(selectedPetId);
+  const mainTitle=$('#healthMainTitle');
+  const historyTitle=$('#healthHistoryTitle');
+  if(mainTitle) mainTitle.textContent=pet ? `${pet.name} Sağlık Bilgileri` : 'Sağlık Bilgileri';
+  if(historyTitle) historyTitle.textContent=pet ? `${pet.name} Sağlık Geçmişi` : 'Sağlık Geçmişi';
     const recs=state.records.filter(r=>r.petId===selectedPetId);
     const latest=(type)=>recs.filter(r=>r.type===type && r.date).sort((a,b)=>b.date.localeCompare(a.date))[0];
     const next=(type)=>recs.filter(r=>r.type===type && r.next).sort((a,b)=>a.next.localeCompare(b.next))[0];
