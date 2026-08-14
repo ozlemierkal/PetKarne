@@ -276,28 +276,23 @@ dialog{
   background:#FFFFFF !important;
 }
 
-/* v2.6 Concept — approved screen rebuilt from the stable v2.4.3 base */
-:root{--conceptGreen:#67A926;--conceptDark:#285E2C;--conceptCream:#FFFDF8;--conceptLine:#E8E9E2}
-body{background:#F7F8F3;color:#202720}
-#app{max-width:430px;background:#fff;box-shadow:0 0 40px rgba(45,80,35,.08)}
+/* v2.7 — home screen rebuilt to match approved reference */
+:root{--rgreen:#71AD27;--rdark:#1D5D2A;--rsoft:#F2F8E8;--rline:#E7E9E2}
+body{background:#F7F8F4;color:#1D251E}
+#app{max-width:430px;background:#fff;box-shadow:0 0 38px rgba(40,70,32,.07)}
 main{padding:10px 14px 22px}
-.topbar{padding:8px 14px;background:#fff;border-bottom:1px solid #EEF0E9;box-shadow:none}
-.brand img{width:164px;height:46px;display:block;object-fit:contain;object-position:left center}
-.welcomeHero{min-height:110px;border:0;border-radius:14px;background:linear-gradient(135deg,#64A817,#7FB51B);color:#fff;padding:17px 18px;margin:5px 0 14px;justify-content:space-between;box-shadow:0 7px 18px rgba(87,151,26,.16)}
-.welcomeHero::after{display:none}.welcomeHero h2{font-size:18px;color:#fff;margin:0 0 5px}.heroCopy{font-size:12px;line-height:1.45;max-width:225px;color:#F7FFF1}
-.heroArt{position:relative;font-size:38px;letter-spacing:-12px;padding-right:12px;filter:drop-shadow(0 4px 5px rgba(0,0,0,.08))}.heroArt span{position:absolute;font-size:17px;right:0;bottom:-3px;letter-spacing:0;background:#fff;border-radius:6px;padding:2px}
-.friendsHead{margin:7px 0 7px}.friendsHead h2{font-size:16px;margin:0}.linkBtn{border:0;background:transparent;color:#629F1D;font-weight:800;font-size:11px;padding:7px}
-#petsList.stack{gap:8px}.petHomeGroup{gap:6px;margin-bottom:8px}
-.conceptPetCard{min-height:84px;padding:10px 11px;border-radius:12px;border:1px solid var(--conceptLine);background:#fff!important;box-shadow:0 3px 10px rgba(41,72,34,.055)}
-.conceptAvatar{width:59px;height:61px;border-radius:10px;font-size:38px;background:#F4F0E8;box-shadow:none}.conceptAvatar.dog{background:#F1EEE4}.conceptAvatar.cat{background:#F1F3EF}
-.petname{font-size:15px}.breedLine{font-size:10px;color:#548C1D;font-weight:800;margin:2px 0 3px}.conceptPetCard .muted{font-size:10px}
-.roundPaw{width:27px;height:27px;border-radius:50%;display:grid;place-items:center;background:#6DAA28;font-size:14px}
-.upcomingMini{display:flex;align-items:center;justify-content:space-between;border-radius:10px;padding:8px 10px;margin-left:9px;cursor:pointer}.upcomingMini div{display:grid;gap:2px}.upcomingMini b{font-size:10px}.upcomingMini span{font-size:9px;color:#596459;line-height:1.25}.upcomingMini strong{font-size:18px;color:#619B20}.miniGreen{background:#F0F7E9}.miniBlue{background:#EDF6F6}
-.card{border-radius:13px;border-color:var(--conceptLine);box-shadow:0 3px 11px rgba(41,72,34,.045)}
-.view>h2,.sectionHead h2{font-size:18px}.grid2{gap:9px}.actionCard{border-radius:12px;padding:12px}
-#petHealthSummary{background:#fff;border-color:var(--conceptLine)}
-.petInfoHead{display:flex;align-items:center;gap:11px;padding-bottom:10px;border-bottom:1px solid #EEF0E9}.petInfoHead h3{margin:0 0 2px}
-.infoGrid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin:11px 0}.infoGrid div{background:#F7F8F3;border-radius:9px;padding:8px}.infoGrid span{display:block;font-size:9px;color:#778078;margin-bottom:2px}.infoGrid b{font-size:11px;color:#263128}.healthSummaryTitle{font-size:14px;margin-top:13px!important}
-.calendarCard{border-radius:14px}.calendarTop h3{font-size:15px}.dayCell{border-radius:8px;min-height:39px}.dayCell.selected{background:#69A927;box-shadow:none}.dayCell.today{outline:1.5px solid #69A927}
-.chip{font-size:11px;padding:7px 10px}.chip.active,.historyChips .chip.active{background:#68A927!important;border-color:#68A927!important}
-.bottomnav{max-width:430px;padding:7px 4px calc(7px + env(safe-area-inset-bottom));box-shadow:0 -3px 12px rgba(41,72,34,.05)}.navitem{font-size:16px}.navitem span{font-size:9px}.navitem.active{background:transparent;color:#68A927}
+.topbar{padding:8px 14px;min-height:60px;background:#fff;border-bottom:1px solid #EEF0E9;box-shadow:none}
+.brand img{width:175px;height:48px;object-fit:contain;object-position:left center;display:block}
+.welcomeHero{height:118px;min-height:118px;border:0;border-radius:15px;margin:6px 0 20px;padding:18px 19px;background:linear-gradient(135deg,#67A918,#7DB51D);color:#fff;display:flex;justify-content:space-between;align-items:center;box-shadow:0 7px 17px rgba(95,153,26,.13)}
+.welcomeHero::after{display:none}.welcomeHero h2{color:#fff;font-size:19px;margin:0 0 8px}.heroCopy{font-size:13px;line-height:1.55}.heroPaw{font-size:55px;opacity:.12;filter:grayscale(1) brightness(4)}
+.homeSectionHead{display:flex;justify-content:space-between;align-items:center;margin:0 0 10px}.homeSectionHead h2{font-size:19px;margin:0}.homeSectionHead button{border:0;background:transparent;color:#68A221;font-weight:800;font-size:12px}
+#homePetsGrid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px;margin-bottom:26px}
+.homePetTile,.homeAddTile{min-width:0;height:218px;border:1px solid var(--rline);border-radius:14px;background:#fff;padding:8px;text-align:left;box-shadow:0 4px 13px rgba(40,69,34,.07)}
+.homePetPhoto{height:124px;border-radius:11px;background:#F1EEE6;display:grid;place-items:center;font-size:65px;position:relative;overflow:hidden}.homePetPhoto.dog{background:#F4EFE4}.homePetPhoto span{position:absolute;right:-3px;bottom:-3px;width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:#72AE29;font-size:18px}
+.homePetTile b{display:block;font-size:14px;margin:8px 2px 5px}.homePetTile em{display:inline-block;font-style:normal;background:#EAF5DA;color:#42761C;border-radius:6px;padding:3px 6px;font-size:9px;font-weight:800;margin-left:2px}.homePetTile small{display:block;font-size:9px;color:#555F56;margin:7px 2px 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.homeAddTile{border:1.5px dashed #B9C9A5;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:#66A31F;box-shadow:none}.homeAddTile span{width:48px;height:48px;border:2px solid #69A523;border-radius:50%;display:grid;place-items:center;font-size:34px;line-height:1;margin-bottom:14px}.homeAddTile b{font-size:13px}
+.upcomingHead{margin-bottom:10px}
+#homeUpcoming{display:grid;gap:9px}.homeUpcomingRow{min-height:73px;border:1px solid var(--rline);border-radius:13px;display:flex;align-items:center;gap:10px;padding:9px 10px;box-shadow:0 3px 10px rgba(40,69,34,.055)}.upIcon{width:48px;height:48px;border-radius:50%;display:grid;place-items:center;font-size:22px}.upIcon.green{background:#EAF5DA}.upIcon.blue{background:#E7EEFF}.upText{display:grid;gap:4px;min-width:0;flex:1}.upText b{font-size:12px}.upText span{font-size:10px;color:#657066}.homeUpcomingRow em{font-style:normal;background:#EDF6DC;color:#477B20;border-radius:12px;padding:5px 8px;font-size:9px;font-weight:800;white-space:nowrap}.homeEmptyUpcoming{padding:18px;border:1px solid var(--rline);border-radius:13px;color:#778077;text-align:center;font-size:12px}
+.hiddenHomeAdd,.legacyPetsWrap{display:none!important}
+.bottomnav{max-width:430px;padding:7px 4px calc(7px + env(safe-area-inset-bottom));box-shadow:0 -3px 12px rgba(40,69,34,.05)}.navitem{font-size:17px}.navitem span{font-size:9px}.navitem.active{background:transparent;color:#68A522}
+@media(max-width:370px){#homePetsGrid{gap:6px}.homePetTile,.homeAddTile{height:205px;padding:6px}.homePetPhoto{height:115px}.welcomeHero{padding:15px}}

@@ -164,12 +164,9 @@ Gerçek bildirim testi native/TestFlight sürümünde yapılacaktır.
 - Randevu ilk oluşturulurken klinik boş bırakılmış olsa bile sonradan kayıtlı klinik seçilebilir
 - Seçilen klinik randevu detayında görünür
 
-## v2.6 Concept
-- v2.4.3 sağlam tabanından yeniden kuruldu
-- Onaylanan üç ekranlı PetKarnem görseli yerleşim ve ölçü referansı olarak kullanıldı
-- Temiz SVG PetKarnem marka işareti: altın köpek + gri/beyaz kedi + takvim
-- Ana sayfa dost kartları ve Yaklaşan alanları konseptteki kompakt yapıya dönüştürüldü
-- Sağlık ekranına Dost Bilgileri kartı eklendi: Cinsi, Cinsiyet, Kısırlaştırma, Mikroçip
-- Cinsi serbest yazı; Kısır / Kısır değil / Belirtilmedi seçenekleri eklendi
-- Takvim ve alt navigasyon konsepte yaklaştırıldı
-- v2.4.3'teki sağlık, veteriner, randevu ve düzenleme işlevleri korundu
+## v2.7 Home Reference
+- Ana ekran kullanıcının onayladığı referans görselin yerleşimine göre yeniden kodlandı
+- PetKarnem logo alanı, yeşil karşılama kartı, 3 sütun Dostlarım alanı ve Dost Ekle kartı
+- Ayrı Yaklaşanlar bölümü ve Takvime Git bağlantısı
+- Cinsi ve kısırlaştırma alanları eklendi
+- v2.4.3 işlev tabanı korunur

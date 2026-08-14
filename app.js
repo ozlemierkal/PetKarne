@@ -272,28 +272,55 @@ function renderPets(){
   const el=$('#petsList');
   if(!state.pets.length){el.innerHTML='<div class="card empty">Henüz bir pet eklemedin.</div>';return;}
 
-  el.innerHTML=state.pets.map((p,i)=>{
+  el.innerHTML=state.pets.map(p=>{
     const sum=petTodaySummary(p.id);
-    const species=p.type==='cat'?'Kedi':'Köpek';
-    const neuter=p.neutered==='yes'?'Kısır':p.neutered==='no'?'Kısır değil':'';
     return `
       <div class="petHomeGroup">
-        <div class="card petcard conceptPetCard" data-pet="${p.id}">
-          <div class="avatar conceptAvatar ${p.type}">${p.type==='cat'?'🐱':'🐶'}</div>
-          <div class="petmeta">
-            <div class="petname">${p.name}</div>
-            <div class="breedLine">${species}${p.breed?' • '+p.breed:''}</div>
-            <div class="muted">${[p.sex,neuter,p.weight?p.weight+' kg':''].filter(Boolean).join(' • ')}</div>
-          </div>
-          <div class="roundPaw">🐾</div>
+        <div class="card petcard" data-pet="${p.id}">
+          <div class="avatar">${p.type==='cat'?'🐱':'🐶'}</div>
+          <div class="petmeta"><div class="petname">${p.name}</div><div class="muted">${p.type==='cat'?'Kedi':'Köpek'} • ${p.sex}${p.weight?' • '+p.weight+' kg':''}</div></div>
+          <div>›</div>
         </div>
-        <div class="upcomingMini ${i%2?'miniBlue':'miniGreen'}" onclick="showPetTodaySummary('${p.id}')">
-          <div><b>Yaklaşan</b><span>${sum.text}</span></div><strong>›</strong>
+        <div class="card petSummaryCard">
+          <h3>${p.name} • Bugünkü Özet</h3>
+          <div class="muted">${sum.text}</div>
+          <button class="secondary big" style="margin-top:10px" onclick="showPetTodaySummary('${p.id}')">Detayları Gör</button>
         </div>
       </div>`;
   }).join('');
 
   $$('#petsList [data-pet]').forEach(x=>x.onclick=()=>editPet(x.dataset.pet));
+}
+
+function renderReferenceHome(){
+  const grid=$('#homePetsGrid'), upcoming=$('#homeUpcoming');
+  if(!grid || !upcoming) return;
+
+  const cards=state.pets.slice(0,2).map(p=>`
+    <button class="homePetTile" data-homepet="${p.id}">
+      <div class="homePetPhoto ${p.type}">${p.type==='cat'?'🐱':'🐶'}<span>🐾</span></div>
+      <b>${p.name}</b>
+      <em>${p.type==='cat'?'Kedi':'Köpek'}</em>
+      <small>${[p.breed,p.weight?p.weight+' kg':''].filter(Boolean).join(' • ') || 'Bilgileri görüntüle'}</small>
+    </button>`).join('');
+  grid.innerHTML=cards+`<button class="homeAddTile" id="homeAddPet"><span>＋</span><b>Dost Ekle</b></button>`;
+  $$('[data-homepet]').forEach(x=>x.onclick=()=>editPet(x.dataset.homepet));
+  const add=$('#homeAddPet'); if(add) add.onclick=()=>$('#addPetBtn').click();
+
+  const rows=[];
+  state.pets.forEach(p=>{
+    const future=[...state.events,...state.health.filter(h=>h.nextDate).map(h=>({petId:h.petId,date:h.nextDate,title:h.kind==='vaccine'?'Aşı':h.kind==='internal'?'İç Parazit':h.kind==='external'?'Dış Parazit':'Hatırlatma'}))]
+      .filter(e=>e.petId===p.id && e.date && e.date>=todayISO()).sort((a,b)=>a.date.localeCompare(b.date));
+    future.slice(0,2).forEach(e=>rows.push({p,e}));
+  });
+  rows.sort((a,b)=>a.e.date.localeCompare(b.e.date));
+  upcoming.innerHTML=rows.length?rows.slice(0,3).map(({p,e},i)=>{
+    const d=Math.max(0,Math.ceil((new Date(e.date+'T12:00:00')-new Date(todayISO()+'T12:00:00'))/86400000));
+    return `<div class="homeUpcomingRow"><div class="upIcon ${i%2?'blue':'green'}">${i%2?'💊':'🗓️'}</div><div class="upText"><b>${p.name} – ${e.title||'Hatırlatma'}</b><span>${fmtDate(e.date)}${e.time?' • '+e.time:''}</span></div><em>${d===0?'Bugün':d+' gün kaldı'}</em></div>`;
+  }).join(''):'<div class="homeEmptyUpcoming">Yaklaşan kayıt yok.</div>';
+
+  const gc=$('#goCalendarBtn'); if(gc) gc.onclick=()=>showView('calendar');
+  const all=$('#showAllPetsBtn'); if(all) all.onclick=()=>{ const first=state.pets[0]; if(first) editPet(first.id); };
 }
 window.setHealthHistoryFilter=(key)=>{healthHistoryFilter=key;renderHealth();};
 
@@ -333,14 +360,7 @@ function renderHealth(){
     const prevW=sortedWeights[1];
     const meds=state.meds.filter(x=>x.petId===selectedPetId);
     const vet=state.vets.find(v=>v.primary)||state.vets[0];
-    summary.innerHTML=`<div class="petInfoHead"><div class="avatar conceptAvatar ${pet?.type||''}">${pet?.type==='cat'?'🐱':'🐶'}</div><div><h3>${pet?.name||''}</h3><div class="muted">${pet?.breed|| (pet?.type==='cat'?'Kedi':'Köpek')}</div></div></div>
-      <div class="infoGrid">
-        <div><span>Cinsi</span><b>${pet?.breed||'Belirtilmedi'}</b></div>
-        <div><span>Cinsiyet</span><b>${pet?.sex||'Belirtilmedi'}</b></div>
-        <div><span>Kısırlaştırma</span><b>${pet?.neutered==='yes'?'Kısır':pet?.neutered==='no'?'Kısır değil':'Belirtilmedi'}</b></div>
-        <div><span>Mikroçip</span><b>${pet?.chip||'Belirtilmedi'}</b></div>
-      </div>
-      <h3 class="healthSummaryTitle">Sağlık Özeti</h3>
+    summary.innerHTML=`<h3>${pet?.name||''} Sağlık Özeti</h3>
       <div class="summaryLine">💉 <b>Son aşı:</b> ${vax?`${vax.title} • ${fmt(vax.date)}`:'Kayıt yok'}${next('vaccine')?` • Sonraki ${fmt(next('vaccine').next)}`:''}</div>
       <div class="summaryLine">🪱 <b>İç parazit:</b> ${intp?fmt(intp.date):'Kayıt yok'}${next('internal')?` • Sonraki ${fmt(next('internal').next)}`:''}</div>
       <div class="summaryLine">🛡️ <b>Dış parazit:</b> ${extp?fmt(extp.date):'Kayıt yok'}${next('external')?` • Sonraki ${fmt(next('external').next)}`:''}</div>
@@ -686,7 +706,8 @@ function bindProfileSettings(){
   if(rep&&!rep.dataset.bound){rep.dataset.bound='1';rep.onchange=()=>{state.settings.repeatOverdue=rep.checked;saveState();};}
 }
 
-function renderAll(){ renderPets(); renderHealth(); renderCalendar(); renderVet(); renderProfile(); bindProfileSettings(); }
+function renderAll(){
+  setTimeout(renderReferenceHome,0); renderPets(); renderHealth(); renderCalendar(); renderVet(); renderProfile(); bindProfileSettings(); }
 renderAll();
 
 if('serviceWorker' in navigator){
@@ -699,3 +720,5 @@ if('caches' in window){
     keys.forEach(k=>caches.delete(k));
   }).catch(()=>{});
 }
+
+setTimeout(renderReferenceHome,50);

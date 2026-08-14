@@ -18,11 +18,16 @@
   <main>
     <section id="homeView" class="view active">
       <div class="welcomeHero">
-        <div><h2>Merhaba 👋</h2><div class="heroCopy">Minik dostlarının sağlık yolculuğunu birlikte takip edelim.</div></div>
-        <div class="heroArt">🐶🐱<span>📅</span></div>
+        <div><h2>Merhaba 👋</h2><div class="heroCopy">Minik dostlarının sağlık yolculuğunu<br>birlikte takip edelim.</div></div>
+        <div class="heroPaw">🐾</div>
       </div>
-      <div class="sectionHead friendsHead"><h2>Dostlarım</h2><button class="linkBtn" id="addPetBtn">＋ Dost Ekle</button></div>
-      <div id="petsList" class="stack"></div>
+      <div class="homeSectionHead"><h2>Dostlarım</h2><button id="showAllPetsBtn">Tümünü Gör ›</button></div>
+      <div id="homePetsGrid"></div>
+      <div class="homeSectionHead upcomingHead"><h2>Yaklaşanlar</h2><button id="goCalendarBtn">Takvime Git ›</button></div>
+      <div id="homeUpcoming"></div>
+      <button class="hiddenHomeAdd" id="addPetBtn">＋ Dost Ekle</button>
+      <div class="legacyPetsWrap"><h2>Dostlarım</h2>
+      <div id="petsList" class="stack"></div></div>
     </section>
 
     <section id="calendarView" class="view">
