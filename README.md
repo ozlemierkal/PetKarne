@@ -267,3 +267,8 @@ Gerçek bildirim testi native/TestFlight sürümünde yapılacaktır.
 - Pet profilinde kilo değiştirildiğinde aynı gün için kilo geçmişi kaydı eklenir/güncellenir.
 - Sağlık özetindeki Güncel Kilo da profilin güncel kilosunu esas alır.
 - Ana Sayfa, Dost Bilgileri ve Sağlık ekranlarında farklı kilo görünmesi engellenir.
+
+## v2.28 — Veterinerim görseli
+- Onaylanan veteriner/kedi/köpek illüstrasyonu Veterinerim başlığının altına eklendi.
+- Veteriner/klinik giriş alanları mevcut yerinde bırakıldı.
+- Randevular Veterinerim sayfasına taşınmadı; mevcut randevu yapısına dokunulmadı.

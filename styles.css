@@ -1318,3 +1318,20 @@ body.petDetailMode .bottomnav{
   .healthRefAction b{font-size:8.5px}
   .healthRefMetric{min-height:84px;padding:10px 8px}
 }
+
+/* v2.28 — Veterinerim sayfası görsel kimliği */
+.vetHeroArt{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  margin:8px auto 18px;
+}
+.vetHeroArt img{
+  width:116px;
+  height:116px;
+  display:block;
+  object-fit:cover;
+  border-radius:50%;
+  background:#EFF8EC;
+  box-shadow:0 5px 16px rgba(48,91,40,.09);
+}
