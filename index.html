@@ -11,23 +11,36 @@
 </head>
 <body>
 <div id="app">
-  <header class="topbar">
-    <div class="brand"><img src="petkarnem-logo.svg" alt="PetKarnem"></div>
-</header>
+  <header class="topbar exactTopbar">
+      <img class="exactBrandLogo" src="petkarnem-reference-logo.png" alt="PetKarnem">
+    </header>
 
   <main>
-    <section id="homeView" class="view active">
-      <div class="welcomeHero">
-        <div><h2>Merhaba 👋</h2><div class="heroCopy">Minik dostlarının sağlık yolculuğunu<br>birlikte takip edelim.</div></div>
-        <div class="heroPaw">🐾</div>
+    <section id="homeView" class="view active exactHome">
+      <div class="exactWelcome">
+        <div>
+          <h2 id="welcomeName">Merhaba 👋</h2>
+          <p>Minik dostlarının sağlık yolculuğunu<br>birlikte takip edelim.</p>
+        </div>
+        <div class="welcomePaw">🐾</div>
       </div>
-      <div class="homeSectionHead"><h2>Dostlarım</h2><button id="showAllPetsBtn">Tümünü Gör ›</button></div>
-      <div id="homePetsGrid"></div>
-      <div class="homeSectionHead upcomingHead"><h2>Yaklaşanlar</h2><button id="goCalendarBtn">Takvime Git ›</button></div>
-      <div id="homeUpcoming"></div>
-      <button class="hiddenHomeAdd" id="addPetBtn">＋ Dost Ekle</button>
-      <div class="legacyPetsWrap"><h2>Dostlarım</h2>
-      <div id="petsList" class="stack"></div></div>
+
+      <div class="exactSectionHead">
+        <h2>Dostlarım</h2>
+        <button type="button" id="showAllPetsBtn">Tümünü Gör ›</button>
+      </div>
+
+      <div id="exactPetsGrid" class="exactPetsGrid"></div>
+
+      <div class="exactSectionHead exactUpcomingHead">
+        <h2>Yaklaşanlar</h2>
+        <button type="button" id="goCalendarBtn">Takvime Git ›</button>
+      </div>
+
+      <div id="exactUpcomingList" class="exactUpcomingList"></div>
+
+      <button id="addPetBtn" class="visuallyHidden" type="button">Pet Ekle</button>
+      <div id="petsList" class="visuallyHidden"></div>
     </section>
 
     <section id="calendarView" class="view">

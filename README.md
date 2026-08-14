@@ -164,9 +164,11 @@ Gerçek bildirim testi native/TestFlight sürümünde yapılacaktır.
 - Randevu ilk oluşturulurken klinik boş bırakılmış olsa bile sonradan kayıtlı klinik seçilebilir
 - Seçilen klinik randevu detayında görünür
 
-## v2.7 Home Reference
-- Ana ekran kullanıcının onayladığı referans görselin yerleşimine göre yeniden kodlandı
-- PetKarnem logo alanı, yeşil karşılama kartı, 3 sütun Dostlarım alanı ve Dost Ekle kartı
-- Ayrı Yaklaşanlar bölümü ve Takvime Git bağlantısı
-- Cinsi ve kısırlaştırma alanları eklendi
-- v2.4.3 işlev tabanı korunur
+## v2.8 Exact Home
+- Ana sayfa yalnızca kullanıcının onayladığı referans görsele göre yeniden kuruldu
+- Önceki denemelerdeki çift Dostlarım / gri düğme / legacy blokları kaldırıldı
+- Referans PetKarnem logosu kullanıldı
+- 3 sütun Dostlarım: en fazla 2 pet + Dost Ekle
+- Yaklaşanlar ayrı kart listesi ve Takvime Git bağlantısı
+- Cinsi, doğum tarihi ve kısırlaştırma alanları eklendi
+- Diğer ekranlar v2.4.3 sağlam tabanında bırakıldı
