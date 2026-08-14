@@ -229,7 +229,18 @@ function editPet(id){
     <button type="button" class="danger big" id="deletePetBtn" style="margin-top:18px">Profili Sil</button>
   `,()=>{
     const name=$('#editPetName').value.trim(); if(!name)return false;
-    Object.assign(p,{name,type:$('#editPetType').value,sex:$('#editPetSex').value,breed:$('#editPetBreed').value.trim(),birthDate:$('#editPetBirthDate').value,neutered:$('#editPetNeutered').value,note:$('#editPetNote').value.trim(),weight:$('#editPetWeight').value,chip:$('#editPetChip').value});
+    const newWeight=$('#editPetWeight').value;
+      const oldWeight=p.weight;
+      Object.assign(p,{name,type:$('#editPetType').value,sex:$('#editPetSex').value,breed:$('#editPetBreed').value.trim(),birthDate:$('#editPetBirthDate').value,neutered:$('#editPetNeutered').value,note:$('#editPetNote').value.trim(),weight:newWeight,chip:$('#editPetChip').value});
+      if(newWeight && String(newWeight)!==String(oldWeight||'')){
+        const today=todayISO();
+        const existingToday=state.weights.find(w=>w.petId===p.id && w.date===today);
+        if(existingToday){
+          existingToday.value=newWeight;
+        }else{
+          state.weights.push({id:uid(),petId:p.id,date:today,value:newWeight});
+        }
+      }
     saveState();
   });
   setTimeout(()=>$('#deletePetBtn').onclick=()=>{
@@ -329,7 +340,7 @@ function showPetDetail(id){
   const weights=state.weights
     .filter(w=>w.petId===id&&w.date)
     .sort((a,b)=>b.date.localeCompare(a.date));
-  const currentWeight=weights[0]?.value || p.weight || '';
+  const currentWeight=(p.weight!==undefined && p.weight!==null && p.weight!=='') ? p.weight : (weights[0]?.value || '');
   $('#petDetailWeight').textContent=currentWeight?`${currentWeight} kg`:'—';
   $('#petDetailNeutered').textContent=p.neutered==='yes'?'Evet':p.neutered==='no'?'Hayır':'—';
   $('#petDetailChip').textContent=p.chip||'—';
@@ -470,7 +481,7 @@ function renderHealth(){
       </div>
       <div class="healthRefMetric">
         <span class="metricIcon">⚖️</span>
-        <div><small>Güncel Kilo</small><b>${w?`${w.value} kg`:(pet?.weight?pet.weight+' kg':'Kayıt yok')}</b><em>${w?.date?fmt(w.date):'—'}</em></div>
+        <div><small>Güncel Kilo</small><b>${pet?.weight?pet.weight+' kg':(w?`${w.value} kg`:'Kayıt yok')}</b><em>${w?.date?fmt(w.date):'—'}</em></div>
       </div>
       <div class="healthRefMetric">
         <span class="metricIcon">🩺</span>

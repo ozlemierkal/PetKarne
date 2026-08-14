@@ -261,3 +261,9 @@ Gerçek bildirim testi native/TestFlight sürümünde yapılacaktır.
 - Tüm dialog X butonlarına merkezi close handler eklendi.
 - Kapat / Vazgeç / İptal butonları da en yakın dialogu doğrudan kapatır.
 - iPhone/Safari'de form submit davranışına bağlı kalmadan dialog kapanır.
+
+## v2.27 — Kilo senkronizasyonu
+- Dost Bilgileri Güncel Kilo artık pet profilindeki güncel kilo değerini esas alır.
+- Pet profilinde kilo değiştirildiğinde aynı gün için kilo geçmişi kaydı eklenir/güncellenir.
+- Sağlık özetindeki Güncel Kilo da profilin güncel kilosunu esas alır.
+- Ana Sayfa, Dost Bilgileri ve Sağlık ekranlarında farklı kilo görünmesi engellenir.
