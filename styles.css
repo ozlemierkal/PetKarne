@@ -276,107 +276,28 @@ dialog{
   background:#FFFFFF !important;
 }
 
-/* v2.5 — PetKarnem yeni ana görsel yönü */
-:root{
-  --pk-green:#4F9E20;
-  --pk-green-dark:#185B2A;
-  --pk-lime:#7DBB2B;
-  --pk-cream:#FFFDF8;
-  --pk-soft:#F4F8EE;
-  --pk-line:#E7E9E1;
-}
-body{
-  background:linear-gradient(180deg,#FFFDF9 0%,#FAFCF7 48%,#FFFFFF 100%);
-  color:#1D261F;
-}
-.topbar{
-  background:rgba(255,253,249,.97);
-  border-bottom:1px solid #EEF0E9;
-  box-shadow:0 4px 18px rgba(35,78,35,.045);
-}
-.brand{
-  display:flex;align-items:center;gap:0;
-  font-size:25px;font-weight:900;letter-spacing:-1.1px;
-}
-.brandMark{
-  width:48px;height:38px;position:relative;display:inline-flex;
-  align-items:center;justify-content:center;margin-right:7px;
-  border-radius:16px;background:#F0F7E8;border:1px solid #DDEACF;
-}
-.brandDog,.brandCat{font-size:21px;position:absolute;bottom:5px}
-.brandDog{left:4px}.brandCat{right:4px}
-.brandCal{font-size:12px;position:absolute;right:-4px;bottom:-2px;
-  background:#fff;border-radius:5px;padding:1px;box-shadow:0 2px 5px rgba(0,0,0,.12)}
-.brandPet{color:#15572A}.brandKarnem{color:#6EAE27}
-.subtitle{margin-left:55px;color:#738075;font-size:12px}
-
-.welcomeHero{
-  min-height:124px;
-  background:
-    radial-gradient(circle at 92% 15%,rgba(255,255,255,.18),transparent 24%),
-    linear-gradient(135deg,#5DAA24 0%,#79B927 100%);
-  border:0;color:white;padding:20px;
-  box-shadow:0 10px 24px rgba(79,158,32,.18);
-}
-.welcomeHero h2{color:white;margin-bottom:7px}
-.welcomeHero .heroCopy{color:#F7FFF1;line-height:1.4;font-size:14px;max-width:220px}
-.heroPets{min-width:94px;position:relative;display:flex;align-items:flex-end}
-.heroPet{
-  width:51px;height:51px;font-size:32px;background:#fff;border:3px solid rgba(255,255,255,.82);
-  margin-left:-9px;box-shadow:0 6px 12px rgba(31,84,29,.14)
-}
-.heroPet:first-child{margin-left:0}
-.heroMiniCal{
-  position:absolute;right:-2px;bottom:-5px;font-size:19px;background:#fff;
-  border-radius:9px;padding:3px 4px;box-shadow:0 4px 10px rgba(0,0,0,.13)
-}
-.friendsHead{margin-top:20px}
-.textAdd{
-  border:0;background:transparent;color:var(--pk-green);font-weight:800;font-size:14px;padding:8px
-}
-.petcard,.petSummaryCard,.card{
-  border:1px solid var(--pk-line);
-  border-radius:18px;
-  box-shadow:0 6px 18px rgba(30,68,34,.055);
-}
-.petHomeGroup:nth-child(odd) .petcard,
-.petHomeGroup:nth-child(even) .petcard{
-  background:#FFFFFF;
-}
-.primary{background:linear-gradient(135deg,#4E9B20,#72B62A);border-color:#4E9B20}
-.navitem.active{
-  color:#4F9E20;background:#F1F8E9;border-radius:14px
-}
-#healthActions .actionCard{
-  border:1px solid rgba(30,68,34,.04);
-  border-radius:18px;
-}
-.calendarCard{border-radius:20px}
-.dayCell.today{background:#EFF7E7;color:#3F851D}
-.dayCell.selected{background:linear-gradient(135deg,#4D9C20,#72B62A)}
-.chip.active,.historyChips .chip.active{
-  background:#4F9E20 !important;border-color:#4F9E20 !important;color:#fff !important
-}
-.basicBadge{background:#EDF7E6;color:#397C1B}
-
-/* v3.0 — onaylanan konsept görünümü */
-#app{max-width:430px;background:#fff;box-shadow:0 0 50px rgba(25,65,25,.06)}
-main{padding:12px 14px 18px}
-.topbar{padding:8px 14px;background:#fff;min-height:58px}
-.brand img{display:block;width:155px;height:44px;object-fit:cover;object-position:left center}
-.subtitle,.brandMark,.brandPet,.brandKarnem{display:none!important}
-.welcomeHero{min-height:105px;border-radius:14px;padding:15px 16px;margin:6px 0 14px;background:linear-gradient(135deg,#62A91A,#82B91E);display:flex;flex-direction:row-reverse;justify-content:space-between}
-.welcomeHero h2{font-size:17px;margin:0 0 5px}.welcomeHero .heroCopy{font-size:12px;line-height:1.45;max-width:225px}
-.heroBrandMark{width:100px;height:70px;object-fit:cover;object-position:left center;border-radius:10px;mix-blend-mode:multiply}
-.friendsHead{margin:10px 0 7px}.friendsHead h2{font-size:16px;margin:0}.textAdd{font-size:11px;color:#5E9E16;padding:5px}
-#petsList.stack{gap:9px}.petHomeGroup{margin-bottom:7px;gap:7px}
-.petcard{padding:9px;border-radius:13px;min-height:82px;box-shadow:0 3px 10px rgba(37,77,31,.06)}
-.avatar{width:57px;height:62px;border-radius:10px;background:#F5F0E7;font-size:37px}
-.petname{font-size:14px}.petTypeLine{font-size:10px;color:#3D7E1E;font-weight:700;margin:2px 0}.petmeta .muted{font-size:10px}
-.petPaw{font-size:14px;background:#6BAA23;width:25px;height:25px;border-radius:50%;display:grid;place-items:center}
-.petSummaryCard{margin-left:0;padding:10px 11px;border-radius:12px;background:#FBFCF8}
-.summaryTitle{display:flex;justify-content:space-between;align-items:center;font-size:12px;font-weight:800;margin-bottom:5px}
-.summaryTitle button{border:0;background:transparent;color:#5C961D;font-size:10px;font-weight:700}.summaryText{font-size:11px;color:#667064;line-height:1.4}
-.view>h2,.sectionHead h2{font-size:18px}.card{border-radius:13px;box-shadow:0 3px 12px rgba(32,66,28,.05)}
-.calendarCard{border-radius:14px}.bottomnav{max-width:430px;padding:7px 4px calc(7px + env(safe-area-inset-bottom))}
-.navitem{font-size:16px}.navitem span{font-size:9px}.navitem.active{background:transparent;color:#5E9E16}
+/* v2.6 Concept — approved screen rebuilt from the stable v2.4.3 base */
+:root{--conceptGreen:#67A926;--conceptDark:#285E2C;--conceptCream:#FFFDF8;--conceptLine:#E8E9E2}
+body{background:#F7F8F3;color:#202720}
+#app{max-width:430px;background:#fff;box-shadow:0 0 40px rgba(45,80,35,.08)}
+main{padding:10px 14px 22px}
+.topbar{padding:8px 14px;background:#fff;border-bottom:1px solid #EEF0E9;box-shadow:none}
+.brand img{width:164px;height:46px;display:block;object-fit:contain;object-position:left center}
+.welcomeHero{min-height:110px;border:0;border-radius:14px;background:linear-gradient(135deg,#64A817,#7FB51B);color:#fff;padding:17px 18px;margin:5px 0 14px;justify-content:space-between;box-shadow:0 7px 18px rgba(87,151,26,.16)}
+.welcomeHero::after{display:none}.welcomeHero h2{font-size:18px;color:#fff;margin:0 0 5px}.heroCopy{font-size:12px;line-height:1.45;max-width:225px;color:#F7FFF1}
+.heroArt{position:relative;font-size:38px;letter-spacing:-12px;padding-right:12px;filter:drop-shadow(0 4px 5px rgba(0,0,0,.08))}.heroArt span{position:absolute;font-size:17px;right:0;bottom:-3px;letter-spacing:0;background:#fff;border-radius:6px;padding:2px}
+.friendsHead{margin:7px 0 7px}.friendsHead h2{font-size:16px;margin:0}.linkBtn{border:0;background:transparent;color:#629F1D;font-weight:800;font-size:11px;padding:7px}
+#petsList.stack{gap:8px}.petHomeGroup{gap:6px;margin-bottom:8px}
+.conceptPetCard{min-height:84px;padding:10px 11px;border-radius:12px;border:1px solid var(--conceptLine);background:#fff!important;box-shadow:0 3px 10px rgba(41,72,34,.055)}
+.conceptAvatar{width:59px;height:61px;border-radius:10px;font-size:38px;background:#F4F0E8;box-shadow:none}.conceptAvatar.dog{background:#F1EEE4}.conceptAvatar.cat{background:#F1F3EF}
+.petname{font-size:15px}.breedLine{font-size:10px;color:#548C1D;font-weight:800;margin:2px 0 3px}.conceptPetCard .muted{font-size:10px}
+.roundPaw{width:27px;height:27px;border-radius:50%;display:grid;place-items:center;background:#6DAA28;font-size:14px}
+.upcomingMini{display:flex;align-items:center;justify-content:space-between;border-radius:10px;padding:8px 10px;margin-left:9px;cursor:pointer}.upcomingMini div{display:grid;gap:2px}.upcomingMini b{font-size:10px}.upcomingMini span{font-size:9px;color:#596459;line-height:1.25}.upcomingMini strong{font-size:18px;color:#619B20}.miniGreen{background:#F0F7E9}.miniBlue{background:#EDF6F6}
+.card{border-radius:13px;border-color:var(--conceptLine);box-shadow:0 3px 11px rgba(41,72,34,.045)}
+.view>h2,.sectionHead h2{font-size:18px}.grid2{gap:9px}.actionCard{border-radius:12px;padding:12px}
+#petHealthSummary{background:#fff;border-color:var(--conceptLine)}
+.petInfoHead{display:flex;align-items:center;gap:11px;padding-bottom:10px;border-bottom:1px solid #EEF0E9}.petInfoHead h3{margin:0 0 2px}
+.infoGrid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin:11px 0}.infoGrid div{background:#F7F8F3;border-radius:9px;padding:8px}.infoGrid span{display:block;font-size:9px;color:#778078;margin-bottom:2px}.infoGrid b{font-size:11px;color:#263128}.healthSummaryTitle{font-size:14px;margin-top:13px!important}
+.calendarCard{border-radius:14px}.calendarTop h3{font-size:15px}.dayCell{border-radius:8px;min-height:39px}.dayCell.selected{background:#69A927;box-shadow:none}.dayCell.today{outline:1.5px solid #69A927}
+.chip{font-size:11px;padding:7px 10px}.chip.active,.historyChips .chip.active{background:#68A927!important;border-color:#68A927!important}
+.bottomnav{max-width:430px;padding:7px 4px calc(7px + env(safe-area-inset-bottom));box-shadow:0 -3px 12px rgba(41,72,34,.05)}.navitem{font-size:16px}.navitem span{font-size:9px}.navitem.active{background:transparent;color:#68A927}

@@ -164,24 +164,12 @@ Gerçek bildirim testi native/TestFlight sürümünde yapılacaktır.
 - Randevu ilk oluşturulurken klinik boş bırakılmış olsa bile sonradan kayıtlı klinik seçilebilir
 - Seçilen klinik randevu detayında görünür
 
-## v2.5
-- v2.4.3 çalışan tabanı korunarak yeni PetKarnem görsel yönü uygulandı
-- Daha sıcak yeşil/krem marka dili, kartlar ve ana sayfa karşılama alanı yenilendi
-- Başlığa köpek + kedi + takvim temalı kompakt PetKarnem marka işareti eklendi
-- Logo kullanımında “Minik dostlar, mutlu yarınlar” sloganı kullanılmadı
-- Pet ekleme ve düzenlemeye isteğe bağlı, serbest yazı “Cinsi” alanı eklendi
-- Ana sayfada “Dost Ekle” aksiyonu Dostlarım başlığına taşındı
-- Mevcut sağlık, veteriner, randevu, takvim ve test verisi işlevleri korunur
-
-## v2.5.1
-- Pet ekleme ve profil düzenlemeye Kısırlaştırma bilgisi eklendi
-- Seçenekler: Belirtilmedi, Kısır, Kısır değil
-- Kısırlaştırma bilgisi sonradan profil düzenlemeden değiştirilebilir
-- Pet özet bilgisinde seçim yapıldıysa Kısır / Kısır değil bilgisi gösterilir
-
-## v3.0
-- Onaylanan PetKarnem konsept ekranı ana tasarım referansı yapıldı
-- Emoji marka işareti yerine onaylanan altın köpek + gri-beyaz kedi + takvim markası kullanıldı
-- Ana sayfa ve dost kartları konsepte yaklaştırıldı
-- Cinsi ve kısırlaştırma alanları korunur
-- v2.5.1 işlevleri korunarak arayüz yenilendi
+## v2.6 Concept
+- v2.4.3 sağlam tabanından yeniden kuruldu
+- Onaylanan üç ekranlı PetKarnem görseli yerleşim ve ölçü referansı olarak kullanıldı
+- Temiz SVG PetKarnem marka işareti: altın köpek + gri/beyaz kedi + takvim
+- Ana sayfa dost kartları ve Yaklaşan alanları konseptteki kompakt yapıya dönüştürüldü
+- Sağlık ekranına Dost Bilgileri kartı eklendi: Cinsi, Cinsiyet, Kısırlaştırma, Mikroçip
+- Cinsi serbest yazı; Kısır / Kısır değil / Belirtilmedi seçenekleri eklendi
+- Takvim ve alt navigasyon konsepte yaklaştırıldı
+- v2.4.3'teki sağlık, veteriner, randevu ve düzenleme işlevleri korundu

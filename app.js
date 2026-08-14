@@ -272,22 +272,23 @@ function renderPets(){
   const el=$('#petsList');
   if(!state.pets.length){el.innerHTML='<div class="card empty">Henüz bir pet eklemedin.</div>';return;}
 
-  el.innerHTML=state.pets.map(p=>{
+  el.innerHTML=state.pets.map((p,i)=>{
     const sum=petTodaySummary(p.id);
+    const species=p.type==='cat'?'Kedi':'Köpek';
+    const neuter=p.neutered==='yes'?'Kısır':p.neutered==='no'?'Kısır değil':'';
     return `
       <div class="petHomeGroup">
-        <div class="card petcard" data-pet="${p.id}">
-          <div class="avatar">${p.type==='cat'?'🐱':'🐶'}</div>
+        <div class="card petcard conceptPetCard" data-pet="${p.id}">
+          <div class="avatar conceptAvatar ${p.type}">${p.type==='cat'?'🐱':'🐶'}</div>
           <div class="petmeta">
             <div class="petname">${p.name}</div>
-            <div class="petTypeLine">${p.type==='cat'?'Kedi':'Köpek'}${p.breed?` • ${p.breed}`:''}</div>
-            <div class="muted">${p.sex||''}${p.neutered==='yes'?' • Kısır':p.neutered==='no'?' • Kısır değil':''}${p.weight?' • '+p.weight+' kg':''}</div>
+            <div class="breedLine">${species}${p.breed?' • '+p.breed:''}</div>
+            <div class="muted">${[p.sex,neuter,p.weight?p.weight+' kg':''].filter(Boolean).join(' • ')}</div>
           </div>
-          <div class="petPaw">🐾</div>
+          <div class="roundPaw">🐾</div>
         </div>
-        <div class="card petSummaryCard">
-          <div class="summaryTitle"><span>${p.name} • Yaklaşan</span><button onclick="showPetTodaySummary('${p.id}')">Detay ›</button></div>
-          <div class="summaryText">${sum.text}</div>
+        <div class="upcomingMini ${i%2?'miniBlue':'miniGreen'}" onclick="showPetTodaySummary('${p.id}')">
+          <div><b>Yaklaşan</b><span>${sum.text}</span></div><strong>›</strong>
         </div>
       </div>`;
   }).join('');
@@ -332,7 +333,14 @@ function renderHealth(){
     const prevW=sortedWeights[1];
     const meds=state.meds.filter(x=>x.petId===selectedPetId);
     const vet=state.vets.find(v=>v.primary)||state.vets[0];
-    summary.innerHTML=`<h3>${pet?.name||''} Sağlık Özeti</h3>
+    summary.innerHTML=`<div class="petInfoHead"><div class="avatar conceptAvatar ${pet?.type||''}">${pet?.type==='cat'?'🐱':'🐶'}</div><div><h3>${pet?.name||''}</h3><div class="muted">${pet?.breed|| (pet?.type==='cat'?'Kedi':'Köpek')}</div></div></div>
+      <div class="infoGrid">
+        <div><span>Cinsi</span><b>${pet?.breed||'Belirtilmedi'}</b></div>
+        <div><span>Cinsiyet</span><b>${pet?.sex||'Belirtilmedi'}</b></div>
+        <div><span>Kısırlaştırma</span><b>${pet?.neutered==='yes'?'Kısır':pet?.neutered==='no'?'Kısır değil':'Belirtilmedi'}</b></div>
+        <div><span>Mikroçip</span><b>${pet?.chip||'Belirtilmedi'}</b></div>
+      </div>
+      <h3 class="healthSummaryTitle">Sağlık Özeti</h3>
       <div class="summaryLine">💉 <b>Son aşı:</b> ${vax?`${vax.title} • ${fmt(vax.date)}`:'Kayıt yok'}${next('vaccine')?` • Sonraki ${fmt(next('vaccine').next)}`:''}</div>
       <div class="summaryLine">🪱 <b>İç parazit:</b> ${intp?fmt(intp.date):'Kayıt yok'}${next('internal')?` • Sonraki ${fmt(next('internal').next)}`:''}</div>
       <div class="summaryLine">🛡️ <b>Dış parazit:</b> ${extp?fmt(extp.date):'Kayıt yok'}${next('external')?` • Sonraki ${fmt(next('external').next)}`:''}</div>
