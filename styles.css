@@ -276,283 +276,32 @@ dialog{
   background:#FFFFFF !important;
 }
 
-/* v2.8 — Ana ekran, kullanıcının onayladığı referans görsele göre birebir yerleşim */
-:root{
-  --exact-green:#75AF2B;
-  --exact-green-dark:#4D851D;
-  --exact-pale:#EFF7E1;
-  --exact-line:#E8E9E3;
-}
-
-.exactTopbar{
-  min-height:64px;
-  padding:8px 14px 7px;
-  background:#fff;
-  border-bottom:1px solid #EFF0EB;
-  box-shadow:none;
-}
-.exactBrandLogo{
-  width:188px;
-  height:50px;
-  object-fit:contain;
-  object-position:left center;
-  display:block;
-}
-.exactHome{
-  padding-top:4px;
-}
-.exactWelcome{
-  height:119px;
-  background:linear-gradient(135deg,#66A916,#82B91D);
-  border-radius:14px;
-  color:#fff;
-  padding:17px 19px;
-  margin:4px 0 20px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  box-shadow:0 6px 16px rgba(99,154,25,.14);
-}
-.exactWelcome h2{
-  margin:0 0 8px;
-  font-size:19px;
-  line-height:1.1;
-  color:#fff;
-}
-.exactWelcome p{
-  margin:0;
-  font-size:13px;
-  line-height:1.55;
-  color:#fff;
-}
-.welcomePaw{
-  font-size:59px;
-  opacity:.10;
-  filter:grayscale(1) brightness(4);
-  transform:rotate(-15deg);
-}
-
-.exactSectionHead{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  margin-bottom:10px;
-}
-.exactSectionHead h2{
-  margin:0;
-  font-size:19px;
-  letter-spacing:-.4px;
-}
-.exactSectionHead button{
-  border:0;
-  background:transparent;
-  color:var(--exact-green-dark);
-  font-size:12px;
-  font-weight:800;
-  padding:6px 0;
-}
-
-.exactPetsGrid{
-  display:grid;
-  grid-template-columns:repeat(3,minmax(0,1fr));
-  gap:9px;
-  margin-bottom:27px;
-}
-.exactPetCard,
-.exactAddPetCard{
-  min-width:0;
-  height:221px;
-  border:1px solid var(--exact-line);
-  border-radius:15px;
-  background:#fff;
-  padding:8px;
-  box-shadow:0 4px 13px rgba(42,72,35,.07);
-  text-align:left;
-}
-.exactPetImageWrap{
-  height:126px;
-  border-radius:11px;
-  overflow:hidden;
-  position:relative;
-  background:#F4F1E8;
-}
-.exactPetImageWrap img{
-  width:100%;
-  height:100%;
-  object-fit:cover;
-  display:block;
-}
-.petPawBadge{
-  position:absolute;
-  right:-1px;
-  bottom:-1px;
-  width:38px;
-  height:38px;
-  border-radius:50%;
-  background:var(--exact-green);
-  display:grid;
-  place-items:center;
-  font-size:17px;
-}
-.exactPetName{
-  font-size:14px;
-  font-weight:850;
-  margin:8px 2px 5px;
-}
-.exactSpecies{
-  display:inline-block;
-  margin-left:2px;
-  padding:3px 6px;
-  border-radius:6px;
-  background:#EAF5D8;
-  color:#42751D;
-  font-size:9px;
-  font-weight:800;
-}
-.exactPetMeta{
-  font-size:9px;
-  color:#4F5850;
-  margin:7px 2px 0;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
-}
-.exactAddPetCard{
-  border:1.5px dashed #BAC8A8;
-  box-shadow:none;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  text-align:center;
-  color:#65A020;
-}
-.addCircle{
-  width:48px;
-  height:48px;
-  border:2px solid #67A523;
-  border-radius:50%;
-  display:grid;
-  place-items:center;
-  font-size:34px;
-  line-height:1;
-  margin-bottom:15px;
-}
-.exactAddPetCard b{
-  font-size:13px;
-}
-
-.exactUpcomingHead{
-  margin-bottom:11px;
-}
-.exactUpcomingList{
-  display:grid;
-  gap:9px;
-}
-.exactUpcomingCard{
-  min-height:75px;
-  border:1px solid var(--exact-line);
-  border-radius:13px;
-  background:#fff;
-  box-shadow:0 3px 10px rgba(40,69,34,.055);
-  padding:9px 10px;
-  display:flex;
-  align-items:center;
-  gap:10px;
-}
-.exactUpcomingIcon{
-  width:49px;
-  height:49px;
-  flex:0 0 49px;
-  border-radius:50%;
-  display:grid;
-  place-items:center;
-  font-size:22px;
-}
-.exactUpcomingIcon.green{background:#EAF5D8}
-.exactUpcomingIcon.blue{background:#E7EEFF}
-.exactUpcomingIcon.aqua{background:#E6F5F4}
-.exactUpcomingIcon.purple{background:#F0E9FA}
-.exactUpcomingText{
-  min-width:0;
-  flex:1;
-  display:grid;
-  gap:4px;
-}
-.exactUpcomingText b{
-  font-size:12px;
-  line-height:1.25;
-}
-.exactUpcomingText span{
-  font-size:10px;
-  color:#687169;
-}
-.exactUpcomingCard em{
-  font-style:normal;
-  white-space:nowrap;
-  padding:5px 8px;
-  border-radius:13px;
-  background:#EDF6DC;
-  color:#477B20;
-  font-size:9px;
-  font-weight:800;
-}
-.exactUpcomingEmpty{
-  border:1px solid var(--exact-line);
-  border-radius:13px;
-  color:#788079;
-  padding:18px;
-  text-align:center;
-  font-size:12px;
-}
-.exactAllPetRow{
-  width:100%;
-  display:grid;
-  grid-template-columns:auto 1fr auto;
-  align-items:center;
-  gap:10px;
-  text-align:left;
-}
-.visuallyHidden{
-  position:absolute!important;
-  width:1px!important;
-  height:1px!important;
-  padding:0!important;
-  margin:-1px!important;
-  overflow:hidden!important;
-  clip:rect(0,0,0,0)!important;
-  white-space:nowrap!important;
-  border:0!important;
-}
-
-/* Alt menüyü referanstaki gibi küçük ve sade tut */
-.bottomnav{
-  padding-top:6px;
-  box-shadow:0 -3px 12px rgba(40,69,34,.05);
-}
-.navitem{
-  font-size:17px;
-}
-.navitem span{
-  font-size:9px;
-}
-.navitem.active{
-  color:#66A21F;
-  background:transparent;
-}
-
-@media(max-width:370px){
-  .exactPetsGrid{gap:6px}
-  .exactPetCard,.exactAddPetCard{height:205px;padding:6px}
-  .exactPetImageWrap{height:114px}
-  .exactWelcome{padding:15px;height:112px}
-  .exactWelcome p{font-size:12px}
-}
-
-/* v2.9 approved PetKarnem identity */
-.exactBrandLogo{display:none!important}
-.approvedBrand{height:52px;display:flex;align-items:center;gap:5px;overflow:hidden}
-.approvedBrand>img{width:86px;height:52px;object-fit:cover;object-position:center;border-radius:0;display:block}
-.approvedWordmark{display:flex;align-items:baseline;letter-spacing:-1.8px;font-family:Arial Rounded MT Bold,Arial,sans-serif;font-size:27px;font-weight:900;white-space:nowrap}
-.approvedWordmark span{color:#16572B}.approvedWordmark b{color:#6DAA26}
-#goCalendarBtn{cursor:pointer}
+.refTopbar{min-height:62px;padding:7px 14px;background:#fff;border-bottom:1px solid #EFF0EB;box-shadow:none}
+.refBrand{display:flex;align-items:center;gap:6px}
+.refBrand img{width:66px;height:48px;object-fit:contain;display:block}
+.refWordmark{display:flex;align-items:baseline;white-space:nowrap;font-family:Arial Rounded MT Bold,Arial,sans-serif;font-size:27px;font-weight:900;letter-spacing:-1.6px}
+.refWordmark span{color:#16582B}.refWordmark b{color:#6EAA27}
+.refHome{padding-top:4px}
+.refWelcome{height:119px;background:linear-gradient(135deg,#67A918,#7FB71E);border-radius:14px;color:#fff;padding:17px 19px;margin:4px 0 20px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 6px 16px rgba(98,152,25,.14)}
+.refWelcome h2{margin:0 0 8px;color:#fff;font-size:19px}.refWelcome p{margin:0;color:#fff;font-size:13px;line-height:1.55}
+.refWelcomePaw{font-size:58px;opacity:.10;filter:grayscale(1) brightness(4);transform:rotate(-15deg)}
+.refSectionHead{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}.refSectionHead h2{margin:0;font-size:19px;letter-spacing:-.3px}
+.refSectionHead button{border:0;background:transparent;color:#5F981D;font-size:12px;font-weight:800;padding:5px 0}
+.refPetsGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin-bottom:27px}
+.refPetCard,.refAddCard{min-width:0;height:220px;border:1px solid #E7E9E2;border-radius:15px;background:#fff;padding:8px;box-shadow:0 4px 13px rgba(41,72,34,.07);text-align:left}
+.refPetVisual{height:126px;border-radius:11px;position:relative;display:grid;place-items:center;background:#F3EFE6;overflow:hidden}.refPetVisual.cat{background:#F0F2ED}.refPetVisual.dog{background:#F4EFE5}
+.refPetEmoji{font-size:72px}.refPawBadge{position:absolute;right:-1px;bottom:-1px;width:38px;height:38px;border-radius:50%;background:#72AE29;display:grid;place-items:center;font-size:17px}
+.refPetName{margin:8px 2px 5px;font-size:14px;font-weight:850}.refSpecies{display:inline-block;margin-left:2px;padding:3px 6px;border-radius:6px;background:#EAF5D8;color:#42751D;font-size:9px;font-weight:800}
+.refPetMeta{margin:7px 2px 0;color:#4F5850;font-size:9px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.refAddCard{border:1.5px dashed #B9C8A7;box-shadow:none;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;color:#65A020}
+.refAddCircle{width:48px;height:48px;border:2px solid #67A523;border-radius:50%;display:grid;place-items:center;font-size:34px;line-height:1;margin-bottom:15px}.refAddCard b{font-size:13px}
+.refUpcomingHead{margin-bottom:11px}.refUpcomingList{display:grid;gap:9px}
+.refUpcomingCard{min-height:75px;border:1px solid #E7E9E2;border-radius:13px;background:#fff;box-shadow:0 3px 10px rgba(40,69,34,.055);padding:9px 10px;display:flex;align-items:center;gap:10px}
+.refUpcomingIcon{width:49px;height:49px;flex:0 0 49px;border-radius:50%;display:grid;place-items:center;font-size:22px}.refUpcomingIcon.green{background:#EAF5D8}.refUpcomingIcon.blue{background:#E7EEFF}.refUpcomingIcon.aqua{background:#E6F5F4}.refUpcomingIcon.purple{background:#F0E9FA}
+.refUpcomingText{min-width:0;flex:1;display:grid;gap:4px}.refUpcomingText b{font-size:12px;line-height:1.25}.refUpcomingText span{font-size:10px;color:#687169}
+.refUpcomingCard em{font-style:normal;white-space:nowrap;padding:5px 8px;border-radius:13px;background:#EDF6DC;color:#477B20;font-size:9px;font-weight:800}
+.refUpcomingEmpty{border:1px solid #E7E9E2;border-radius:13px;padding:18px;color:#788079;text-align:center;font-size:12px}
+.refAllPetRow{width:100%;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;text-align:left}
+.srOnly{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
+.bottomnav{box-shadow:0 -3px 12px rgba(40,69,34,.05);padding-top:6px}.navitem{font-size:17px}.navitem span{font-size:9px}.navitem.active{color:#66A21F;background:transparent}
+@media(max-width:370px){.refPetsGrid{gap:6px}.refPetCard,.refAddCard{height:204px;padding:6px}.refPetVisual{height:113px}.refPetEmoji{font-size:64px}.refWelcome{height:112px;padding:15px}.refWelcome p{font-size:12px}}

@@ -164,16 +164,11 @@ Gerçek bildirim testi native/TestFlight sürümünde yapılacaktır.
 - Randevu ilk oluşturulurken klinik boş bırakılmış olsa bile sonradan kayıtlı klinik seçilebilir
 - Seçilen klinik randevu detayında görünür
 
-## v2.8 Exact Home
-- Ana sayfa yalnızca kullanıcının onayladığı referans görsele göre yeniden kuruldu
-- Önceki denemelerdeki çift Dostlarım / gri düğme / legacy blokları kaldırıldı
-- Referans PetKarnem logosu kullanıldı
-- 3 sütun Dostlarım: en fazla 2 pet + Dost Ekle
-- Yaklaşanlar ayrı kart listesi ve Takvime Git bağlantısı
-- Cinsi, doğum tarihi ve kısırlaştırma alanları eklendi
-- Diğer ekranlar v2.4.3 sağlam tabanında bırakıldı
-
-## v2.9
-- Kullanıcının onayladığı Golden + kedi + takvim çizimi üst marka alanında kullanıldı.
-- Aynı çizim PWA uygulama ikonu olarak 192x192 ve 512x512 eklendi.
-- Ana sayfadaki Takvime Git bağlantısı alt menüdeki Takvim ekranını doğrudan açacak şekilde sağlamlaştırıldı.
+## v2.10 Reference Home
+- Sağlam v2.4.3 tabanından yalnız ana sayfa yeniden kuruldu.
+- Küçük onaylı köpek+kedi+takvim ikonu + PetKarnem yazısı.
+- Yeşil Merhaba kartı.
+- Dostlarım: en fazla 2 pet kartı + Dost Ekle.
+- Yaklaşanlar kart listesi.
+- Takvime Git doğrudan Takvim sekmesini açar.
+- Cinsi, doğum tarihi, kısırlaştırma eklendi.

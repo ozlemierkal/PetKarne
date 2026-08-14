@@ -6,44 +6,39 @@
   <meta name="theme-color" content="#237A57">
   <title>PetKarnem</title>
   <link rel="manifest" href="manifest.webmanifest">
-  <link rel="apple-touch-icon" href="icon.svg">
+  <link rel="apple-touch-icon" href="icon-192.png">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 <div id="app">
-  <header class="topbar exactTopbar">
-      <div class="approvedBrand">
-  <img src="petkarnem-approved-art.jpg" alt="">
-  <div class="approvedWordmark"><span>Pet</span><b>Karnem</b></div>
-</div>
+  <header class="topbar refTopbar">
+      <div class="refBrand">
+        <img src="petkarnem-icon-art.jpg" alt="">
+        <div class="refWordmark"><span>Pet</span><b>Karnem</b></div>
+      </div>
     </header>
 
   <main>
-    <section id="homeView" class="view active exactHome">
-      <div class="exactWelcome">
-        <div>
-          <h2 id="welcomeName">Merhaba 👋</h2>
-          <p>Minik dostlarının sağlık yolculuğunu<br>birlikte takip edelim.</p>
-        </div>
-        <div class="welcomePaw">🐾</div>
+    <section id="homeView" class="view active refHome">
+      <div class="refWelcome">
+        <div><h2 id="welcomeName">Merhaba 👋</h2><p>Minik dostlarının sağlık yolculuğunu<br>birlikte takip edelim.</p></div>
+        <div class="refWelcomePaw">🐾</div>
       </div>
 
-      <div class="exactSectionHead">
+      <div class="refSectionHead">
         <h2>Dostlarım</h2>
         <button type="button" id="showAllPetsBtn">Tümünü Gör ›</button>
       </div>
+      <div id="refPetsGrid" class="refPetsGrid"></div>
 
-      <div id="exactPetsGrid" class="exactPetsGrid"></div>
-
-      <div class="exactSectionHead exactUpcomingHead">
+      <div class="refSectionHead refUpcomingHead">
         <h2>Yaklaşanlar</h2>
         <button type="button" id="goCalendarBtn">Takvime Git ›</button>
       </div>
+      <div id="refUpcomingList" class="refUpcomingList"></div>
 
-      <div id="exactUpcomingList" class="exactUpcomingList"></div>
-
-      <button id="addPetBtn" class="visuallyHidden" type="button">Pet Ekle</button>
-      <div id="petsList" class="visuallyHidden"></div>
+      <button id="addPetBtn" class="srOnly" type="button">Pet Ekle</button>
+      <div id="petsList" class="srOnly"></div>
     </section>
 
     <section id="calendarView" class="view">
