@@ -275,3 +275,86 @@ dialog{
   color:#33463B !important;
   background:#FFFFFF !important;
 }
+
+/* v2.5 — PetKarnem yeni ana görsel yönü */
+:root{
+  --pk-green:#4F9E20;
+  --pk-green-dark:#185B2A;
+  --pk-lime:#7DBB2B;
+  --pk-cream:#FFFDF8;
+  --pk-soft:#F4F8EE;
+  --pk-line:#E7E9E1;
+}
+body{
+  background:linear-gradient(180deg,#FFFDF9 0%,#FAFCF7 48%,#FFFFFF 100%);
+  color:#1D261F;
+}
+.topbar{
+  background:rgba(255,253,249,.97);
+  border-bottom:1px solid #EEF0E9;
+  box-shadow:0 4px 18px rgba(35,78,35,.045);
+}
+.brand{
+  display:flex;align-items:center;gap:0;
+  font-size:25px;font-weight:900;letter-spacing:-1.1px;
+}
+.brandMark{
+  width:48px;height:38px;position:relative;display:inline-flex;
+  align-items:center;justify-content:center;margin-right:7px;
+  border-radius:16px;background:#F0F7E8;border:1px solid #DDEACF;
+}
+.brandDog,.brandCat{font-size:21px;position:absolute;bottom:5px}
+.brandDog{left:4px}.brandCat{right:4px}
+.brandCal{font-size:12px;position:absolute;right:-4px;bottom:-2px;
+  background:#fff;border-radius:5px;padding:1px;box-shadow:0 2px 5px rgba(0,0,0,.12)}
+.brandPet{color:#15572A}.brandKarnem{color:#6EAE27}
+.subtitle{margin-left:55px;color:#738075;font-size:12px}
+
+.welcomeHero{
+  min-height:124px;
+  background:
+    radial-gradient(circle at 92% 15%,rgba(255,255,255,.18),transparent 24%),
+    linear-gradient(135deg,#5DAA24 0%,#79B927 100%);
+  border:0;color:white;padding:20px;
+  box-shadow:0 10px 24px rgba(79,158,32,.18);
+}
+.welcomeHero h2{color:white;margin-bottom:7px}
+.welcomeHero .heroCopy{color:#F7FFF1;line-height:1.4;font-size:14px;max-width:220px}
+.heroPets{min-width:94px;position:relative;display:flex;align-items:flex-end}
+.heroPet{
+  width:51px;height:51px;font-size:32px;background:#fff;border:3px solid rgba(255,255,255,.82);
+  margin-left:-9px;box-shadow:0 6px 12px rgba(31,84,29,.14)
+}
+.heroPet:first-child{margin-left:0}
+.heroMiniCal{
+  position:absolute;right:-2px;bottom:-5px;font-size:19px;background:#fff;
+  border-radius:9px;padding:3px 4px;box-shadow:0 4px 10px rgba(0,0,0,.13)
+}
+.friendsHead{margin-top:20px}
+.textAdd{
+  border:0;background:transparent;color:var(--pk-green);font-weight:800;font-size:14px;padding:8px
+}
+.petcard,.petSummaryCard,.card{
+  border:1px solid var(--pk-line);
+  border-radius:18px;
+  box-shadow:0 6px 18px rgba(30,68,34,.055);
+}
+.petHomeGroup:nth-child(odd) .petcard,
+.petHomeGroup:nth-child(even) .petcard{
+  background:#FFFFFF;
+}
+.primary{background:linear-gradient(135deg,#4E9B20,#72B62A);border-color:#4E9B20}
+.navitem.active{
+  color:#4F9E20;background:#F1F8E9;border-radius:14px
+}
+#healthActions .actionCard{
+  border:1px solid rgba(30,68,34,.04);
+  border-radius:18px;
+}
+.calendarCard{border-radius:20px}
+.dayCell.today{background:#EFF7E7;color:#3F851D}
+.dayCell.selected{background:linear-gradient(135deg,#4D9C20,#72B62A)}
+.chip.active,.historyChips .chip.active{
+  background:#4F9E20 !important;border-color:#4F9E20 !important;color:#fff !important
+}
+.basicBadge{background:#EDF7E6;color:#397C1B}

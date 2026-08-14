@@ -72,11 +72,13 @@ $('#addPetBtn').onclick = ()=>openModal('Pet Ekle',`
   <label>Adı *</label><input id="petName" placeholder="Örn. Misket">
   <label>Türü *</label><select id="petType"><option value="cat">Kedi</option><option value="dog">Köpek</option></select>
   <label>Cinsiyet</label><select id="petSex"><option>Dişi</option><option>Erkek</option></select>
+  <label>Cinsi</label><input id="petBreed" placeholder="Örn. Tekir, Golden Retriever, Melez">
+  <label>Kısırlaştırma</label><select id="petNeutered"><option value="">Belirtilmedi</option><option value="yes">Kısır</option><option value="no">Kısır değil</option></select>
   <label>Kilo (kg)</label><input id="petWeight" inputmode="decimal" placeholder="4,8">
   <label>Mikroçip no (isteğe bağlı)</label><input id="petChip">
 `,()=>{
   const name=$('#petName').value.trim(); if(!name) return false;
-  const p={id:uid(),name,type:$('#petType').value,sex:$('#petSex').value,weight:$('#petWeight').value,chip:$('#petChip').value};
+  const p={id:uid(),name,type:$('#petType').value,sex:$('#petSex').value,breed:$('#petBreed').value.trim(),neutered:$('#petNeutered').value,weight:$('#petWeight').value,chip:$('#petChip').value};
   state.pets.push(p); if(p.weight){state.weights.push({id:uid(),petId:p.id,value:p.weight,date:todayISO(),createdAt:new Date().toISOString(),initial:true});} selectedPetId=p.id; saveState();
 });
 
@@ -197,12 +199,14 @@ function editPet(id){
     <label>Adı *</label><input id="editPetName" value="${p.name}">
     <label>Türü</label><select id="editPetType"><option value="cat" ${p.type==='cat'?'selected':''}>Kedi</option><option value="dog" ${p.type==='dog'?'selected':''}>Köpek</option></select>
     <label>Cinsiyet</label><select id="editPetSex"><option ${p.sex==='Dişi'?'selected':''}>Dişi</option><option ${p.sex==='Erkek'?'selected':''}>Erkek</option></select>
+    <label>Cinsi</label><input id="editPetBreed" value="${p.breed||''}" placeholder="Örn. Tekir, Golden Retriever, Melez">
+    <label>Kısırlaştırma</label><select id="editPetNeutered"><option value="" ${!p.neutered?'selected':''}>Belirtilmedi</option><option value="yes" ${p.neutered==='yes'?'selected':''}>Kısır</option><option value="no" ${p.neutered==='no'?'selected':''}>Kısır değil</option></select>
     <label>Kilo (kg)</label><input id="editPetWeight" value="${p.weight||''}">
     <label>Mikroçip no</label><input id="editPetChip" value="${p.chip||''}">
     <button type="button" class="danger big" id="deletePetBtn" style="margin-top:18px">Profili Sil</button>
   `,()=>{
     const name=$('#editPetName').value.trim(); if(!name)return false;
-    Object.assign(p,{name,type:$('#editPetType').value,sex:$('#editPetSex').value,weight:$('#editPetWeight').value,chip:$('#editPetChip').value});
+    Object.assign(p,{name,type:$('#editPetType').value,sex:$('#editPetSex').value,breed:$('#editPetBreed').value.trim(),neutered:$('#editPetNeutered').value,weight:$('#editPetWeight').value,chip:$('#editPetChip').value});
     saveState();
   });
   setTimeout(()=>$('#deletePetBtn').onclick=()=>{

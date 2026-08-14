@@ -13,7 +13,7 @@
 <div id="app">
   <header class="topbar">
     <div>
-      <div class="brand"><span class="brandPets">🐱🐶</span> PetKarnem</div>
+      <div class="brand"><span class="brandMark"><span class="brandDog">🐶</span><span class="brandCat">🐱</span><span class="brandCal">📅</span></span><span class="brandPet">Pet</span><span class="brandKarnem">Karnem</span></div>
       <div class="subtitle">Dostlarının Sağlık Karnesi</div>
     </div>
 </header>
@@ -21,12 +21,10 @@
   <main>
     <section id="homeView" class="view active">
       <div class="welcomeHero">
-        <div class="heroPets"><div class="heroPet">🐱</div><div class="heroPet dog">🐶</div></div>
-        <div><h2>PetKarnem’e Hoş Geldin</h2><div class="muted">Patili dostunun sağlık takibi tek yerde.</div></div>
+        <div class="heroPets"><div class="heroPet dog">🐶</div><div class="heroPet">🐱</div><div class="heroMiniCal">📅</div></div>
+        <div><h2>PetKarnem’e Hoş Geldin</h2><div class="heroCopy">Patili dostunun sağlık yolculuğu hep yanında. 💚</div></div>
       </div>
-      <button class="primary big" id="addPetBtn">＋ Pet Ekle</button>
-
-      <h2>Dostlarım</h2>
+      <div class="sectionHead friendsHead"><h2>Dostlarım</h2><button class="textAdd" id="addPetBtn">＋ Dost Ekle</button></div>
       <div id="petsList" class="stack"></div>
     </section>
 
