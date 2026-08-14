@@ -219,3 +219,9 @@ Gerçek bildirim testi native/TestFlight sürümünde yapılacaktır.
 - Kedi: pet-cat.jpg her yerde aynıdır.
 - Köpek: pet-dog.jpg her yerde aynıdır.
 - Ayrı pet-detail-cat.jpg kaldırıldı; böylece detay ekranında farklı fotoğraf kullanılması mümkün değildir.
+
+## v2.21
+- Kullanıcının gönderdiği yeni Golden Retriever ve gri kedi fotoğrafları kullanıldı.
+- Görseller önce gerçek 1:1 kare dosyalara dönüştürüldü.
+- Aynı pet-cat.jpg / pet-dog.jpg ana ekran, Dost Bilgileri ve Düzenle ekranında kullanılır.
+- Dost Bilgileri ve Düzenle portreleri clip-path ile gerçek daireye zorlandı.

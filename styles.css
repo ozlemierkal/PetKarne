@@ -783,3 +783,33 @@ body.petDetailMode .bottomnav{
   object-fit:cover!important;
   object-position:center!important;
 }
+
+/* v2.21 — uploaded pet photos, one source everywhere */
+.petDetailView .detailPhotoWrap,
+.editPetPortrait img{
+  aspect-ratio:1 / 1!important;
+}
+.petDetailView .detailPhotoWrap{
+  width:154px!important;
+  height:154px!important;
+  border-radius:50%!important;
+  clip-path:circle(50% at 50% 50%)!important;
+  overflow:hidden!important;
+}
+.petDetailView .detailPhotoWrap img{
+  width:100%!important;
+  height:100%!important;
+  border-radius:0!important;
+  clip-path:none!important;
+  object-fit:cover!important;
+  object-position:50% 50%!important;
+  display:block!important;
+}
+.editPetPortrait img{
+  width:126px!important;
+  height:126px!important;
+  border-radius:50%!important;
+  clip-path:circle(50% at 50% 50%)!important;
+  object-fit:cover!important;
+  object-position:50% 50%!important;
+}
