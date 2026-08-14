@@ -158,3 +158,8 @@ Gerçek bildirim testi native/TestFlight sürümünde yapılacaktır.
 - Eski service worker kayıtları otomatik kaldırılır
 - Eski cache kayıtları otomatik temizlenir
 - GitHub Pages güncellemeleri Safari'de daha kolay görünür
+
+## v2.4.3
+- Veteriner randevusu düzenleme ekranına Klinik seçimi eklendi
+- Randevu ilk oluşturulurken klinik boş bırakılmış olsa bile sonradan kayıtlı klinik seçilebilir
+- Seçilen klinik randevu detayında görünür

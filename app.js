@@ -476,6 +476,11 @@ window.changeRecordDate=(id)=>{
     <label>Tarih *</label><input id="editCalDate" type="date" value="${r.next||''}">
     ${r.type==='appointment'?`
       <label>Saat</label><input id="editCalTime" type="time" value="${r.time||''}">
+      <label>Klinik</label>
+      <select id="editCalVet">
+        <option value="">Seçilmedi</option>
+        ${state.vets.map(v=>`<option value="${v.id}" ${r.vetId===v.id?'selected':''}>${v.primary?'⭐ ':''}${v.name}</option>`).join('')}
+      </select>
       <label>Hatırlatma</label>
       <select id="editCalReminder">
         <option value="1440" ${(r.reminder??1440)===1440?'selected':''}>1 gün önce</option>
@@ -502,6 +507,7 @@ window.changeRecordDate=(id)=>{
     if(r.type==='appointment'){
       r.title=$('#editCalTitle').value.trim()||'Veteriner Randevusu';
       r.time=$('#editCalTime').value;
+      r.vetId=$('#editCalVet').value;
       r.reminder=+$('#editCalReminder').value;
       r.note=$('#editCalNote').value;
     } else {
