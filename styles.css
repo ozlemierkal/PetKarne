@@ -724,3 +724,23 @@ body.petDetailMode .bottomnav{
     padding-right:17px!important;
   }
 }
+
+/* v2.18 — Dost Bilgileri fotoğraf ve sağlık başlığı düzeltmeleri */
+.petDetailView .detailPhotoWrap{
+  width:154px!important;
+  height:154px!important;
+  aspect-ratio:1/1!important;
+  border-radius:50%!important;
+  overflow:hidden!important;
+  display:block!important;
+}
+.petDetailView .detailPhotoWrap img{
+  width:100%!important;
+  height:100%!important;
+  aspect-ratio:1/1!important;
+  border-radius:50%!important;
+  object-fit:cover!important;
+  object-position:center!important;
+  display:block!important;
+  transform:none!important;
+}

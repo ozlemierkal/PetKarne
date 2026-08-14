@@ -108,6 +108,8 @@ $('#resetBtn').onclick=()=>{
 function healthAction(type){
   if(!selectedPetId){ alert('Önce bir pet ekle.'); return; }
   const pet=petById(selectedPetId);
+  const historyTitle=$('#healthHistoryTitle');
+  if(historyTitle) historyTitle.textContent=pet ? `${pet.name} Sağlık Geçmişi` : 'Sağlık Geçmişi';
 
   if(['vaccine','internal','external'].includes(type)){
     const labels={vaccine:'Aşı',internal:'İç Parazit',external:'Dış Parazit'};
@@ -804,13 +806,5 @@ setTimeout(()=>{
     selectedPetId=detailPetId;
     const nav=$('.navitem[data-view="healthView"]'); if(nav) nav.click();
     setTimeout(()=>setHealthHistoryFilter('all'),0);
-  };
-
-  const measures=$('#detailMeasures');
-  if(measures) measures.onclick=()=>{
-    if(!detailPetId) return;
-    selectedPetId=detailPetId;
-    const nav=$('.navitem[data-view="healthView"]'); if(nav) nav.click();
-    setTimeout(()=>setHealthHistoryFilter('weight'),0);
   };
 },0);

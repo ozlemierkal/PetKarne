@@ -201,3 +201,9 @@ Gerçek bildirim testi native/TestFlight sürümünde yapılacaktır.
 - Tüm sayfa yerine yalnızca Dost Bilgileri içeriği kendi içinde scroll olur.
 - Detail ekranına geçerken üst alanın display değişiminden kaynaklanan yükseklik sıçraması engellendi.
 - Alt menü ve safe-area yüksekliği sabitlendi.
+
+## v2.18
+- Dost Bilgileri menüsünde Sağlık Geçmişi adı Sağlık Bilgileri olarak değiştirildi.
+- Ölçümler satırı Dost Bilgileri menüsünden kaldırıldı.
+- Dost Bilgileri kedi/köpek fotoğrafları tam daire ve 1:1 oranında gösterilir.
+- Sağlık ekranındaki Sağlık Geçmişi başlığı artık seçili pet adıyla başlar (örn. Misket Sağlık Geçmişi).
