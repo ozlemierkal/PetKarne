@@ -897,3 +897,183 @@ body.petDetailMode .bottomnav{
   border-radius:13px!important;
   box-shadow:0 3px 10px rgba(35,65,31,.045)!important;
 }
+
+/* v2.23 — Sağlık ekranı gerçek yeniden tasarım */
+.healthRebuildView{
+  padding-top:4px;
+}
+.healthTopRow{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:12px;
+  margin-bottom:12px;
+}
+.healthTopRow h2{
+  margin:0;
+  font-size:21px;
+  letter-spacing:-.4px;
+}
+.healthTopHint{
+  margin-top:3px;
+  color:#7A827B;
+  font-size:11px;
+}
+.healthPetPickerCompact{
+  justify-content:flex-end;
+  max-width:52%;
+  gap:6px;
+  overflow-x:auto;
+  padding-bottom:2px;
+}
+.healthPetPickerCompact .chip{
+  padding:6px 9px;
+  font-size:10px;
+  white-space:nowrap;
+}
+
+.healthOverviewCard{
+  border:1px solid #E7EAE4;
+  border-radius:18px;
+  background:linear-gradient(180deg,#FFFFFF,#FBFCF9);
+  padding:14px;
+  box-shadow:0 5px 15px rgba(42,72,34,.05);
+}
+.healthOverviewHeader{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding-bottom:11px;
+  border-bottom:1px solid #EDF0EA;
+  margin-bottom:11px;
+}
+.healthOverviewHeader>div:first-child{
+  display:grid;
+  gap:2px;
+}
+.healthOverviewHeader b{
+  font-size:16px;
+}
+.healthOverviewHeader span{
+  color:#7A827B;
+  font-size:10px;
+}
+.healthPetMini{
+  width:36px;
+  height:36px;
+  border-radius:50%;
+  background:#F1F6E9;
+  display:grid;
+  place-items:center;
+  font-size:21px;
+}
+.healthOverviewGrid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+}
+.healthStat{
+  min-height:70px;
+  border-radius:12px;
+  padding:9px 10px;
+  background:#F7F9F4;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  gap:5px;
+}
+.healthStat span{
+  color:#6E766F;
+  font-size:10px;
+  font-weight:700;
+}
+.healthStat b{
+  font-size:11px;
+  line-height:1.3;
+}
+
+.healthAddSection{
+  margin-top:19px;
+}
+.healthSectionTitle{
+  display:flex;
+  align-items:end;
+  justify-content:space-between;
+  margin-bottom:9px;
+}
+.healthSectionTitle h3{
+  margin:0;
+  font-size:17px;
+}
+.healthSectionTitle span{
+  color:#8A918B;
+  font-size:10px;
+}
+.healthQuickActions{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+}
+.healthQuickBtn{
+  min-height:58px;
+  border:1px solid #E6E9E3;
+  border-radius:13px;
+  background:#fff;
+  padding:9px 10px;
+  display:grid;
+  grid-template-columns:30px 1fr 20px;
+  align-items:center;
+  gap:7px;
+  text-align:left;
+  box-shadow:none;
+}
+.healthQuickBtn span{
+  font-size:20px;
+}
+.healthQuickBtn b{
+  font-size:12px;
+}
+.healthQuickBtn em{
+  font-style:normal;
+  color:#6B9E2E;
+  font-size:18px;
+  text-align:right;
+}
+.healthQuickBtn.internal{background:#F7F3FF}
+.healthQuickBtn.external{background:#F1F7FF}
+.healthQuickBtn.vaccine{background:#FFF3F8}
+.healthQuickBtn.med{background:#FFF9E8}
+.healthQuickBtn.weight{
+  grid-column:1 / -1;
+  background:#EFF8F1;
+}
+
+.healthHistorySection{
+  margin-top:22px;
+}
+.healthHistoryTop{
+  margin-bottom:9px;
+}
+.healthHistoryTop h3{
+  margin:0;
+  font-size:17px;
+}
+.healthHistoryFiltersCompact{
+  display:flex;
+  flex-wrap:wrap;
+  gap:6px;
+  margin-bottom:10px;
+}
+.healthHistoryFiltersCompact .chip{
+  padding:6px 9px;
+  font-size:9px;
+}
+.healthHistoryListCompact{
+  gap:7px;
+}
+.healthHistoryListCompact .card{
+  border-radius:12px!important;
+  padding:11px 12px!important;
+  box-shadow:none!important;
+  border:1px solid #E8EAE5!important;
+}

@@ -232,3 +232,10 @@ Gerçek bildirim testi native/TestFlight sürümünde yapılacaktır.
 - Kayıt ekleme sırası: İç Parazit → Dış Parazit → Aşı → İlaç → Kilo.
 - Filtre ve geçmiş listesi daha kompakt hale getirildi.
 - Diğer ekranlara dokunulmadı.
+
+## v2.23 — Sağlık ekranı gerçek yeniden tasarım
+- Sağlık ekranı artık görsel olarak tamamen farklı ve sade.
+- Üstte tek kompakt Sağlık Bilgileri kartı: son aşı, iç/dış parazit, aktif ilaç, güncel kilo, ana veteriner.
+- Kayıt Ekle alanı 5 büyük kart yerine kompakt hızlı aksiyonlar olarak yeniden kuruldu.
+- Sağlık Geçmişi filtreleri ve liste daha sade hale getirildi.
+- Fotoğraflara ve diğer ekranlara dokunulmadı.
