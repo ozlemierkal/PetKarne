@@ -250,3 +250,28 @@ dialog{
 #modalForm{
   background:linear-gradient(180deg,#FFFFFF,#FCFEFC);
 }
+
+/* v2.4.1 — Sağlık Geçmişi kategori sekmelerinde kontrast düzeltmesi */
+.historyChips .chip{
+  color:#2F3D35;
+  border:1px solid #D9E5DD;
+  background:#FFFFFF;
+  font-weight:700;
+}
+
+.historyChips .chip.active{
+  color:#FFFFFF !important;
+  background:#237A57 !important;
+  border-color:#237A57 !important;
+  box-shadow:0 5px 14px rgba(35,122,87,.20);
+}
+
+.historyChips .chip:focus,
+.historyChips .chip:active{
+  color:#FFFFFF;
+}
+
+#healthHistoryFilters .chip:not(.active){
+  color:#33463B !important;
+  background:#FFFFFF !important;
+}

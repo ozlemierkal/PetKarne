@@ -147,3 +147,8 @@ Gerçek bildirim testi native/TestFlight sürümünde yapılacaktır.
 - Pet kartları ve karşılama alanı daha sıcak hale getirildi
 - Takvim, Veterinerim ve Profil kartlarına daha yumuşak renk/geçişler eklendi
 - Gölge ve boşluklar modernleştirildi
+
+## v2.4.1
+- Sağlık Geçmişi kategori sekmelerinde yazı kontrastı düzeltildi
+- Seçili kategori koyu yeşil zemin + beyaz yazı
+- Seçili olmayan kategoriler beyaz zemin + koyu yazı
