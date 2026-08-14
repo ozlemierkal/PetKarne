@@ -1363,3 +1363,39 @@ body.petDetailMode .bottomnav{
   margin:0 auto !important;
   padding:0 !important;
 }
+
+/* v2.30 — Veterinerim küçük sıcak avatar; eski hero'dan bağımsız */
+#vetView .vetWarmAvatar{
+  box-sizing:border-box !important;
+  width:96px !important;
+  height:96px !important;
+  max-width:96px !important;
+  max-height:96px !important;
+  margin:10px auto 14px !important;
+  padding:0 !important;
+  border:3px solid #fff !important;
+  border-radius:999px !important;
+  overflow:hidden !important;
+  background:#eef7ea !important;
+  box-shadow:0 4px 14px rgba(43,92,35,.12) !important;
+  display:block !important;
+  position:relative !important;
+}
+#vetView .vetWarmAvatar > img{
+  box-sizing:border-box !important;
+  position:absolute !important;
+  inset:0 !important;
+  width:96px !important;
+  height:96px !important;
+  min-width:0 !important;
+  min-height:0 !important;
+  max-width:96px !important;
+  max-height:96px !important;
+  margin:0 !important;
+  padding:0 !important;
+  object-fit:cover !important;
+  object-position:center !important;
+  border:0 !important;
+  border-radius:0 !important;
+  transform:none !important;
+}

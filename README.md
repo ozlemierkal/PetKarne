@@ -277,3 +277,9 @@ Gerçek bildirim testi native/TestFlight sürümünde yapılacaktır.
 - Veterinerim görseli mobilde 108 × 108 px olarak kesin biçimde sabitlendi.
 - Global img kurallarının görseli tam genişliğe büyütmesi engellendi.
 - Görsel başlığın altında ortalanmış küçük yuvarlak rozet olarak kalır.
+
+## v2.30 — Veterinerim avatar düzeltmesi
+- Eski büyük veteriner hero bileşeni tamamen kaldırıldı.
+- Kaynak görsel ayrıca 144×144 küçük dosyaya dönüştürüldü.
+- Veterinerim başlığı altına yeni, bağımsız 96×96 yuvarlak avatar bileşeni eklendi.
+- Avatar sabit kutu ve overflow:hidden ile korunur; global img kurallarından etkilenmemesi için ayrı sınıf kullanır.
