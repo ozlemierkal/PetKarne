@@ -272,3 +272,8 @@ Gerçek bildirim testi native/TestFlight sürümünde yapılacaktır.
 - Onaylanan veteriner/kedi/köpek illüstrasyonu Veterinerim başlığının altına eklendi.
 - Veteriner/klinik giriş alanları mevcut yerinde bırakıldı.
 - Randevular Veterinerim sayfasına taşınmadı; mevcut randevu yapısına dokunulmadı.
+
+## v2.29 — Veteriner görseli boyut düzeltmesi
+- Veterinerim görseli mobilde 108 × 108 px olarak kesin biçimde sabitlendi.
+- Global img kurallarının görseli tam genişliğe büyütmesi engellendi.
+- Görsel başlığın altında ortalanmış küçük yuvarlak rozet olarak kalır.

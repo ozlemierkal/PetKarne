@@ -1335,3 +1335,31 @@ body.petDetailMode .bottomnav{
   background:#EFF8EC;
   box-shadow:0 5px 16px rgba(48,91,40,.09);
 }
+
+/* v2.29 — Veteriner görselini mobilde kesin olarak küçük tut */
+#vetView .vetHeroArt{
+  width:100% !important;
+  height:auto !important;
+  min-height:0 !important;
+  display:flex !important;
+  justify-content:center !important;
+  align-items:center !important;
+  margin:10px auto 16px !important;
+  padding:0 !important;
+  overflow:visible !important;
+}
+#vetView .vetHeroArt img{
+  width:108px !important;
+  height:108px !important;
+  min-width:108px !important;
+  max-width:108px !important;
+  min-height:108px !important;
+  max-height:108px !important;
+  aspect-ratio:1 / 1 !important;
+  object-fit:cover !important;
+  object-position:center !important;
+  border-radius:50% !important;
+  display:block !important;
+  margin:0 auto !important;
+  padding:0 !important;
+}
