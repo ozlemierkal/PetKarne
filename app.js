@@ -372,7 +372,7 @@ function renderPets(){
   if(calBtn){
     calBtn.onclick=()=>{
       const btn=$('.navitem[data-view="calendarView"]');
-      window.switchView('calendarView',btn);
+      if(btn) btn.click();
     };
   }
 

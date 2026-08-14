@@ -172,3 +172,8 @@ Gerçek bildirim testi native/TestFlight sürümünde yapılacaktır.
 - Yaklaşanlar ayrı kart listesi ve Takvime Git bağlantısı
 - Cinsi, doğum tarihi ve kısırlaştırma alanları eklendi
 - Diğer ekranlar v2.4.3 sağlam tabanında bırakıldı
+
+## v2.9
+- Kullanıcının onayladığı Golden + kedi + takvim çizimi üst marka alanında kullanıldı.
+- Aynı çizim PWA uygulama ikonu olarak 192x192 ve 512x512 eklendi.
+- Ana sayfadaki Takvime Git bağlantısı alt menüdeki Takvim ekranını doğrudan açacak şekilde sağlamlaştırıldı.
