@@ -13,7 +13,7 @@
 <div id="app">
   <header class="topbar refTopbar">
       <div class="refBrand">
-        <img src="petkarnem-icon-art.jpg" alt="">
+        <img src="petkarnem-approved-art.jpg" alt="">
         <div class="refWordmark"><span>Pet</span><b>Karnem</b></div>
       </div>
     </header>
@@ -21,7 +21,10 @@
   <main>
     <section id="homeView" class="view active refHome">
       <div class="refWelcome">
-        <div><h2 id="welcomeName">Merhaba 👋</h2><p>Minik dostlarının sağlık yolculuğunu<br>birlikte takip edelim.</p></div>
+        <div>
+          <h2 id="welcomeName">Merhaba 👋</h2>
+          <p>Minik dostlarının sağlık yolculuğunu<br>birlikte takip edelim.</p>
+        </div>
         <div class="refWelcomePaw">🐾</div>
       </div>
 
@@ -29,16 +32,50 @@
         <h2>Dostlarım</h2>
         <button type="button" id="showAllPetsBtn">Tümünü Gör ›</button>
       </div>
+
       <div id="refPetsGrid" class="refPetsGrid"></div>
 
       <div class="refSectionHead refUpcomingHead">
         <h2>Yaklaşanlar</h2>
         <button type="button" id="goCalendarBtn">Takvime Git ›</button>
       </div>
+
       <div id="refUpcomingList" class="refUpcomingList"></div>
 
       <button id="addPetBtn" class="srOnly" type="button">Pet Ekle</button>
       <div id="petsList" class="srOnly"></div>
+    </section>
+
+    <section id="petDetailView" class="view petDetailView">
+      <div class="detailTop">
+        <button type="button" id="petDetailBack" class="detailBack">←</button>
+        <h2>Dost Bilgileri</h2>
+        <button type="button" id="petDetailEdit" class="detailEdit">Düzenle</button>
+      </div>
+
+      <div class="detailIdentity">
+        <div class="detailPhotoWrap">
+          <img id="petDetailPhoto" src="pet-cat.jpg" alt="">
+          <button type="button" class="cameraBadge" aria-label="Fotoğraf">📷</button>
+        </div>
+        <h1 id="petDetailName">Dostum <span>🐾</span></h1>
+        <div id="petDetailMeta" class="detailMeta"></div>
+      </div>
+
+      <div class="detailInfoCard">
+        <div class="detailInfoRow"><span>Cinsi</span><b id="petDetailBreed">—</b></div>
+        <div class="detailInfoRow"><span>Doğum Tarihi</span><b id="petDetailBirth">—</b></div>
+        <div class="detailInfoRow"><span>Güncel Kilo</span><b id="petDetailWeight">—</b></div>
+        <div class="detailInfoRow"><span>Kısırlaştırma</span><b id="petDetailNeutered">—</b></div>
+        <div class="detailInfoRow"><span>Mikroçip No</span><b id="petDetailChip">—</b></div>
+        <div class="detailInfoRow"><span>Notlar</span><b id="petDetailNote">—</b></div>
+      </div>
+
+      <div class="detailMenuCard">
+        <button type="button" id="detailVaccines"><span>💉</span><b>Aşı Takvimi</b><strong>›</strong></button>
+        <button type="button" id="detailHistory"><span>📋</span><b>Geçmiş Kayıtlar</b><strong>›</strong></button>
+        <button type="button" id="detailMeasures"><span>📈</span><b>Ölçümler</b><strong>›</strong></button>
+      </div>
     </section>
 
     <section id="calendarView" class="view">

@@ -78,11 +78,12 @@ $('#addPetBtn').onclick = ()=>openModal('Pet Ekle',`
   <label>Cinsi</label><input id="petBreed" placeholder="Örn. Tekir, Golden Retriever, Melez">
   <label>Doğum tarihi</label><input id="petBirthDate" type="date">
   <label>Kısırlaştırma</label><select id="petNeutered"><option value="">Belirtilmedi</option><option value="yes">Kısır</option><option value="no">Kısır değil</option></select>
+  <label>Notlar</label><textarea id="petNote" placeholder="İsteğe bağlı"></textarea>
   <label>Kilo (kg)</label><input id="petWeight" inputmode="decimal" placeholder="4,8">
   <label>Mikroçip no (isteğe bağlı)</label><input id="petChip">
 `,()=>{
   const name=$('#petName').value.trim(); if(!name) return false;
-  const p={id:uid(),name,type:$('#petType').value,sex:$('#petSex').value,breed:$('#petBreed').value.trim(),birthDate:$('#petBirthDate').value,neutered:$('#petNeutered').value,weight:$('#petWeight').value,chip:$('#petChip').value};
+  const p={id:uid(),name,type:$('#petType').value,sex:$('#petSex').value,breed:$('#petBreed').value.trim(),birthDate:$('#petBirthDate').value,neutered:$('#petNeutered').value,note:$('#petNote').value.trim(),weight:$('#petWeight').value,chip:$('#petChip').value};
   state.pets.push(p); if(p.weight){state.weights.push({id:uid(),petId:p.id,value:p.weight,date:todayISO(),createdAt:new Date().toISOString(),initial:true});} selectedPetId=p.id; saveState();
 });
 
@@ -203,15 +204,16 @@ function editPet(id){
     <label>Adı *</label><input id="editPetName" value="${p.name}">
     <label>Türü</label><select id="editPetType"><option value="cat" ${p.type==='cat'?'selected':''}>Kedi</option><option value="dog" ${p.type==='dog'?'selected':''}>Köpek</option></select>
     <label>Cinsiyet</label><select id="editPetSex"><option ${p.sex==='Dişi'?'selected':''}>Dişi</option><option ${p.sex==='Erkek'?'selected':''}>Erkek</option></select>
-    <label>Cinsi</label><input id="editPetBreed" value="${p.breed||''}" placeholder="Örn. Tekir, Golden Retriever, Melez">
+    <label>Cinsi</label><input id="editPetBreed" value="${p.breed||''}">
     <label>Doğum tarihi</label><input id="editPetBirthDate" type="date" value="${p.birthDate||''}">
     <label>Kısırlaştırma</label><select id="editPetNeutered"><option value="" ${!p.neutered?'selected':''}>Belirtilmedi</option><option value="yes" ${p.neutered==='yes'?'selected':''}>Kısır</option><option value="no" ${p.neutered==='no'?'selected':''}>Kısır değil</option></select>
+    <label>Notlar</label><textarea id="editPetNote">${p.note||''}</textarea>
     <label>Kilo (kg)</label><input id="editPetWeight" value="${p.weight||''}">
     <label>Mikroçip no</label><input id="editPetChip" value="${p.chip||''}">
     <button type="button" class="danger big" id="deletePetBtn" style="margin-top:18px">Profili Sil</button>
   `,()=>{
     const name=$('#editPetName').value.trim(); if(!name)return false;
-    Object.assign(p,{name,type:$('#editPetType').value,sex:$('#editPetSex').value,breed:$('#editPetBreed').value.trim(),birthDate:$('#editPetBirthDate').value,neutered:$('#editPetNeutered').value,weight:$('#editPetWeight').value,chip:$('#editPetChip').value});
+    Object.assign(p,{name,type:$('#editPetType').value,sex:$('#editPetSex').value,breed:$('#editPetBreed').value.trim(),birthDate:$('#editPetBirthDate').value,neutered:$('#editPetNeutered').value,note:$('#editPetNote').value.trim(),weight:$('#editPetWeight').value,chip:$('#editPetChip').value});
     saveState();
   });
   setTimeout(()=>$('#deletePetBtn').onclick=()=>{
@@ -274,7 +276,9 @@ window.showPetTodaySummary=(petId)=>{
 };
 
 
-function refPetAge(p){
+let detailPetId=null;
+
+function petAgeLabel(p){
   if(!p?.birthDate) return '';
   const b=new Date(p.birthDate+'T12:00:00'), n=new Date();
   let y=n.getFullYear()-b.getFullYear();
@@ -283,12 +287,43 @@ function refPetAge(p){
   const m=Math.max(0,(n.getFullYear()-b.getFullYear())*12+n.getMonth()-b.getMonth());
   return m>0?`${m} aylık`:'1 yaş altı';
 }
-function refRecordIcon(type){
+
+function recordIcon(type){
   if(type==='appointment') return ['🩺','purple'];
   if(type==='vaccine') return ['🗓️','green'];
   if(type==='internal') return ['💊','blue'];
   if(type==='external') return ['🛡️','aqua'];
   return ['🔔','green'];
+}
+
+function showPetDetail(id){
+  const p=petById(id); if(!p) return;
+  detailPetId=id;
+  selectedPetId=id;
+
+  const photo=$('#petDetailPhoto');
+  if(photo) photo.src=p.type==='cat'?'pet-cat.jpg':'pet-dog.jpg';
+
+  $('#petDetailName').innerHTML=`${p.name} <span>🐾</span>`;
+  $('#petDetailMeta').textContent=[p.type==='cat'?'Kedi':'Köpek',p.sex,petAgeLabel(p)].filter(Boolean).join(' • ');
+  $('#petDetailBreed').textContent=p.breed||'—';
+  $('#petDetailBirth').textContent=p.birthDate?fmt(p.birthDate):'—';
+
+  const weights=state.weights
+    .filter(w=>w.petId===id&&w.date)
+    .sort((a,b)=>b.date.localeCompare(a.date));
+  const currentWeight=weights[0]?.value || p.weight || '';
+  $('#petDetailWeight').textContent=currentWeight?`${currentWeight} kg`:'—';
+  $('#petDetailNeutered').textContent=p.neutered==='yes'?'Evet':p.neutered==='no'?'Hayır':'—';
+  $('#petDetailChip').textContent=p.chip||'—';
+  $('#petDetailNote').textContent=p.note||'—';
+
+  $$('.navitem').forEach(b=>b.classList.remove('active'));
+  $$('.view').forEach(v=>v.classList.toggle('active',v.id==='petDetailView'));
+}
+
+function renderPetDetailIfOpen(){
+  if($('#petDetailView')?.classList.contains('active') && detailPetId) showPetDetail(detailPetId);
 }
 
 function renderPets(){
@@ -297,28 +332,31 @@ function renderPets(){
   if(!grid || !upcoming) return;
 
   const cards=state.pets.slice(0,2).map(p=>{
-    const age=refPetAge(p);
-    const meta=[age,p.weight?`${p.weight} kg`:null].filter(Boolean).join(' • ');
-    return `<button type="button" class="refPetCard" data-ref-pet="${p.id}">
-      <div class="refPetVisual ${p.type}"><img class="refPetPhoto" src="${p.type==='cat'?'pet-cat.jpg':'pet-dog.jpg'}" alt=""><span class="refPawBadge">🐾</span></div>
+    const meta=[petAgeLabel(p),p.weight?`${p.weight} kg`:null].filter(Boolean).join(' • ');
+    return `<button type="button" class="refPetCard" data-pet-detail="${p.id}">
+      <div class="refPetVisual"><img src="${p.type==='cat'?'pet-cat.jpg':'pet-dog.jpg'}" alt=""><span class="refPawBadge">🐾</span></div>
       <div class="refPetName">${p.name}</div>
       <span class="refSpecies">${p.type==='cat'?'Kedi':'Köpek'}</span>
-      <div class="refPetMeta">${meta || (p.breed || 'Bilgileri görüntüle')}</div>
+      <div class="refPetMeta">${meta || p.breed || 'Bilgileri görüntüle'}</div>
     </button>`;
   }).join('');
 
   grid.innerHTML=cards+`<button type="button" class="refAddCard" id="refAddPet"><span class="refAddCircle">＋</span><b>Dost Ekle</b></button>`;
-  $$('[data-ref-pet]').forEach(x=>x.onclick=()=>editPet(x.dataset.refPet));
+
+  $$('[data-pet-detail]').forEach(x=>x.onclick=()=>showPetDetail(x.dataset.petDetail));
   const add=$('#refAddPet'); if(add) add.onclick=()=>$('#addPetBtn').click();
 
   const now=todayISO();
-  const future=state.records.filter(r=>r.petId&&r.next&&r.next>=now&&['appointment','vaccine','internal','external'].includes(r.type))
+  const future=state.records
+    .filter(r=>r.petId&&r.next&&r.next>=now&&['appointment','vaccine','internal','external'].includes(r.type))
     .sort((a,b)=>(a.next+(a.time||'')).localeCompare(b.next+(b.time||'')));
 
   upcoming.innerHTML=future.length?future.slice(0,3).map(r=>{
-    const p=petById(r.petId), [emoji,cls]=refRecordIcon(r.type);
+    const p=petById(r.petId), [emoji,cls]=recordIcon(r.type);
     const days=Math.max(0,Math.ceil((new Date(r.next+'T12:00:00')-new Date(now+'T12:00:00'))/86400000));
-    const title=r.type==='appointment'?'Veteriner Randevusu':r.type==='vaccine'?(r.title||'Aşı'):r.type==='internal'?'İç Parazit':'Dış Parazit';
+    const title=r.type==='appointment'?'Veteriner Randevusu':
+                r.type==='vaccine'?(r.title||'Aşı'):
+                r.type==='internal'?'İç Parazit':'Dış Parazit';
     return `<div class="refUpcomingCard">
       <div class="refUpcomingIcon ${cls}">${emoji}</div>
       <div class="refUpcomingText"><b>${p?.name||''} – ${title}</b><span>${fmt(r.next)}${r.time?' • '+r.time:''}</span></div>
@@ -329,7 +367,10 @@ function renderPets(){
   const showAll=$('#showAllPetsBtn');
   if(showAll) showAll.onclick=()=>{
     if(!state.pets.length){ $('#addPetBtn').click(); return; }
-    openInfoModal('Dostlarım',`<div class="stack">${state.pets.map(p=>`<button type="button" class="card refAllPetRow" onclick="editPet('${p.id}')"><span>${p.type==='cat'?'🐱':'🐶'}</span><div><b>${p.name}</b><div class="muted">${p.breed||(p.type==='cat'?'Kedi':'Köpek')}</div></div><strong>›</strong></button>`).join('')}</div>`);
+    openInfoModal('Dostlarım',`<div class="stack">${state.pets.map(p=>`
+      <button type="button" class="card refAllPetRow" onclick="$('#modal').close();showPetDetail('${p.id}')">
+        <span>${p.type==='cat'?'🐱':'🐶'}</span><div><b>${p.name}</b><div class="muted">${p.breed||(p.type==='cat'?'Kedi':'Köpek')}</div></div><strong>›</strong>
+      </button>`).join('')}</div>`);
   };
 
   const cal=$('#goCalendarBtn');
@@ -338,8 +379,8 @@ function renderPets(){
     if(nav) nav.click();
   };
 
-  const welcome=$('#welcomeName'), name=state.profile?.name?.trim();
-  if(welcome) welcome.textContent=name?`Merhaba, ${name} 👋`:'Merhaba 👋';
+  const welcome=$('#welcomeName'), profileName=state.profile?.name?.trim();
+  if(welcome) welcome.textContent=profileName?`Merhaba, ${profileName} 👋`:'Merhaba 👋';
 }
 
 window.setHealthHistoryFilter=(key)=>{healthHistoryFilter=key;renderHealth();};
@@ -726,7 +767,7 @@ function bindProfileSettings(){
   if(rep&&!rep.dataset.bound){rep.dataset.bound='1';rep.onchange=()=>{state.settings.repeatOverdue=rep.checked;saveState();};}
 }
 
-function renderAll(){ renderPets(); renderHealth(); renderCalendar(); renderVet(); renderProfile(); bindProfileSettings(); }
+function renderAll(){ renderPets(); renderHealth(); renderCalendar(); renderVet(); renderProfile(); bindProfileSettings(); renderPetDetailIfOpen(); }
 renderAll();
 
 if('serviceWorker' in navigator){
@@ -739,3 +780,35 @@ if('caches' in window){
     keys.forEach(k=>caches.delete(k));
   }).catch(()=>{});
 }
+
+setTimeout(()=>{
+  const back=$('#petDetailBack');
+  if(back) back.onclick=()=>{ const nav=$('.navitem[data-view="homeView"]'); if(nav) nav.click(); };
+
+  const edit=$('#petDetailEdit');
+  if(edit) edit.onclick=()=>{ if(detailPetId) editPet(detailPetId); };
+
+  const vaccines=$('#detailVaccines');
+  if(vaccines) vaccines.onclick=()=>{
+    if(!detailPetId) return;
+    selectedPetId=detailPetId;
+    const nav=$('.navitem[data-view="healthView"]'); if(nav) nav.click();
+    setTimeout(()=>setHealthHistoryFilter('vaccine'),0);
+  };
+
+  const history=$('#detailHistory');
+  if(history) history.onclick=()=>{
+    if(!detailPetId) return;
+    selectedPetId=detailPetId;
+    const nav=$('.navitem[data-view="healthView"]'); if(nav) nav.click();
+    setTimeout(()=>setHealthHistoryFilter('all'),0);
+  };
+
+  const measures=$('#detailMeasures');
+  if(measures) measures.onclick=()=>{
+    if(!detailPetId) return;
+    selectedPetId=detailPetId;
+    const nav=$('.navitem[data-view="healthView"]'); if(nav) nav.click();
+    setTimeout(()=>setHealthHistoryFilter('weight'),0);
+  };
+},0);

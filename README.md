@@ -164,11 +164,11 @@ Gerçek bildirim testi native/TestFlight sürümünde yapılacaktır.
 - Randevu ilk oluşturulurken klinik boş bırakılmış olsa bile sonradan kayıtlı klinik seçilebilir
 - Seçilen klinik randevu detayında görünür
 
-## v2.10 Reference Home
-- Sağlam v2.4.3 tabanından yalnız ana sayfa yeniden kuruldu.
-- Küçük onaylı köpek+kedi+takvim ikonu + PetKarnem yazısı.
-- Yeşil Merhaba kartı.
-- Dostlarım: en fazla 2 pet kartı + Dost Ekle.
-- Yaklaşanlar kart listesi.
-- Takvime Git doğrudan Takvim sekmesini açar.
-- Cinsi, doğum tarihi, kısırlaştırma eklendi.
+## v2.12 Home + Dost Bilgileri
+- Ana sayfa onaylanan referans yerleşimine göre tek parça ve temiz şekilde kuruldu.
+- Pet kartına dokununca ayrı Dost Bilgileri ekranı açılır.
+- Dost Bilgileri: fotoğraf, ad, tür/cinsiyet/yaş, cinsi, doğum tarihi, güncel kilo, kısırlaştırma, mikroçip, notlar.
+- Aşı Takvimi / Geçmiş Kayıtlar / Ölçümler bağlantıları Sağlık ekranındaki ilgili filtreleri açar.
+- Üst Düzenle pet düzenleme formunu açar; geri oku ana sayfaya döner.
+- Modal X kapatma butonu düzeltildi.
+- Ana sayfadaki Takvime Git doğrudan Takvim sekmesini açar.
