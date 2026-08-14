@@ -172,3 +172,10 @@ Gerçek bildirim testi native/TestFlight sürümünde yapılacaktır.
 - Üst Düzenle pet düzenleme formunu açar; geri oku ana sayfaya döner.
 - Modal X kapatma butonu düzeltildi.
 - Ana sayfadaki Takvime Git doğrudan Takvim sekmesini açar.
+
+## v2.13 — Dost Bilgileri referans düzeni
+- Ana ekran v2.12 olduğu gibi bırakıldı.
+- Yalnızca Dost Bilgileri ekranı kullanıcının gönderdiği referans görsele yaklaştırıldı.
+- Dost Bilgileri açıldığında üst marka başlığı gizlenir; ekran doğrudan geri oku / Dost Bilgileri / Düzenle ile başlar.
+- Fotoğraf, ad, meta bilgi, bilgi kartı ve üç bağlantı kartının ölçü/boşlukları referansa göre düzenlendi.
+- Sağlık sekmesi Dost Bilgileri ekranında yeşil aktif görünür.
