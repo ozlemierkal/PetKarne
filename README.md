@@ -248,3 +248,10 @@ Gerçek bildirim testi native/TestFlight sürümünde yapılacaktır.
 - Kayıt Ekle bölümü 5 kompakt ikon butonundan oluşur.
 - Sağlık Geçmişi kartı filtreler ve satır liste düzenine yaklaştırıldı.
 - Diğer ekranlara dokunulmadı.
+
+## v2.25 — Sağlık kayıt butonları düzeltmesi
+- İç Parazit, Dış Parazit, Aşı, İlaç ve Kilo butonları inline onclick yerine doğrudan JavaScript event handler ile bağlandı.
+- healthAction global ve pet seçimi açısından daha sağlam hale getirildi.
+- Modal Kaydet düğmesi iPhone/Safari için explicit click handler kullanır.
+- Sağlık geçmişi filtreleri de aynı şekilde event handler ile bağlandı.
+- Beş kayıt akışının ilgili kod dalları yapısal olarak doğrulandı.

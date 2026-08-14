@@ -64,11 +64,23 @@ function resetModalActions(){
 const modalCloseX=$('#modalCloseX');
 if(modalCloseX) modalCloseX.onclick=(e)=>{ e.preventDefault(); $('#modal').close(); };
 
-$('#modalForm').addEventListener('submit',(e)=>{
-  const submitter=e.submitter;
-  if(submitter?.id==='saveModalBtn'){
+const saveModalBtn=$('#saveModalBtn');
+if(saveModalBtn){
+  saveModalBtn.onclick=(e)=>{
     e.preventDefault();
-    if(modalSave && modalSave()!==false) $('#modal').close();
+    if(modalSave){
+      const ok=modalSave();
+      if(ok!==false) $('#modal').close();
+    }
+  };
+}
+
+$('#modalForm').addEventListener('submit',(e)=>{
+  e.preventDefault();
+  const submitter=e.submitter;
+  if(submitter?.id==='saveModalBtn' && modalSave){
+    const ok=modalSave();
+    if(ok!==false) $('#modal').close();
   }
 });
 
@@ -105,9 +117,11 @@ $('#resetBtn').onclick=()=>{
   }
 };
 
-function healthAction(type){
+window.healthAction=function healthAction(type){
+  if(!selectedPetId && state.pets.length) selectedPetId=state.pets[0].id;
   if(!selectedPetId){ alert('Önce bir pet ekle.'); return; }
   const pet=petById(selectedPetId);
+  if(!pet){ alert('Pet seçimi bulunamadı. Lütfen peti yeniden seç.'); return; }
 
 
   if(['vaccine','internal','external'].includes(type)){
@@ -198,7 +212,7 @@ function healthAction(type){
       state.meds.push({id:uid(),petId:pet.id,name,dose:$('#mDose').value,times:$('#mTimes').value,days:+$('#mDays').value||7,start:todayISO(),reminder:$('#mReminder').value==='on'}); saveState();
     });
   }
-}
+};
 
 function editPet(id){
   const p=petById(id); if(!p)return;
@@ -470,15 +484,24 @@ function renderHealth(){
   }
 
   $('#healthActions').innerHTML=`
-    <button class="healthRefAction" onclick="healthAction('internal')"><span>🪱</span><b>İç Parazit</b></button>
-    <button class="healthRefAction" onclick="healthAction('external')"><span>🐞</span><b>Dış Parazit</b></button>
-    <button class="healthRefAction" onclick="healthAction('vaccine')"><span>🛡️</span><b>Aşı</b></button>
-    <button class="healthRefAction" onclick="healthAction('med')"><span>💊</span><b>İlaç</b></button>
-    <button class="healthRefAction" onclick="healthAction('weight')"><span>⚖️</span><b>Kilo</b></button>
+    <button type="button" class="healthRefAction" data-health-action="internal"><span>🪱</span><b>İç Parazit</b></button>
+    <button type="button" class="healthRefAction" data-health-action="external"><span>🐞</span><b>Dış Parazit</b></button>
+    <button type="button" class="healthRefAction" data-health-action="vaccine"><span>🛡️</span><b>Aşı</b></button>
+    <button type="button" class="healthRefAction" data-health-action="med"><span>💊</span><b>İlaç</b></button>
+    <button type="button" class="healthRefAction" data-health-action="weight"><span>⚖️</span><b>Kilo</b></button>
   `;
+  $$('#healthActions [data-health-action]').forEach(btn=>{
+    btn.onclick=(e)=>{
+      e.preventDefault();
+      window.healthAction(btn.dataset.healthAction);
+    };
+  });
   const filters=$('#healthHistoryFilters');
   const defs=[['all','Tümü'],['internal','İç Parazit'],['external','Dış Parazit'],['vaccine','Aşılar'],['med','İlaçlar'],['weight','Kilo'],['vet','Veteriner/Muayene']];
-  filters.innerHTML=defs.map(([k,l])=>`<button class="chip ${healthHistoryFilter===k?'active':''}" onclick="setHealthHistoryFilter('${k}')">${l}</button>`).join('');
+  filters.innerHTML=defs.map(([k,l])=>`<button type="button" class="chip ${healthHistoryFilter===k?'active':''}" data-history-filter="${k}">${l}</button>`).join('');
+  $$('#healthHistoryFilters [data-history-filter]').forEach(btn=>{
+    btn.onclick=(e)=>{ e.preventDefault(); setHealthHistoryFilter(btn.dataset.historyFilter); };
+  });
 
   const hist=$('#healthHistory');
   if(!selectedPetId){hist.innerHTML='<div class="card empty">Önce bir pet ekle.</div>';return;}
