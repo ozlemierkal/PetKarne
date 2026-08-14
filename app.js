@@ -864,3 +864,18 @@ setTimeout(()=>{
     setTimeout(()=>setHealthHistoryFilter('all'),0);
   };
 },0);
+
+
+document.addEventListener('click',(e)=>{
+  const btn=e.target.closest('button');
+  if(!btn) return;
+  const txt=(btn.textContent||'').trim().toLowerCase();
+  if(txt==='kapat' || txt==='vazgeç' || txt==='iptal'){
+    const dlg=btn.closest('dialog');
+    if(dlg){
+      e.preventDefault();
+      try{ dlg.close(); }catch(err){ dlg.removeAttribute('open'); }
+    }
+  }
+},true);
+

@@ -255,3 +255,9 @@ Gerçek bildirim testi native/TestFlight sürümünde yapılacaktır.
 - Modal Kaydet düğmesi iPhone/Safari için explicit click handler kullanır.
 - Sağlık geçmişi filtreleri de aynı şekilde event handler ile bağlandı.
 - Beş kayıt akışının ilgili kod dalları yapısal olarak doğrulandı.
+
+## v2.26 — Takvim kapatma butonları
+- Takvim Detay ve Düzenle/Değiştir pencerelerindeki X kapatma butonları explicit type=button yapıldı.
+- Tüm dialog X butonlarına merkezi close handler eklendi.
+- Kapat / Vazgeç / İptal butonları da en yakın dialogu doğrudan kapatır.
+- iPhone/Safari'de form submit davranışına bağlı kalmadan dialog kapanır.
