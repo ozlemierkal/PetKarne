@@ -473,3 +473,9 @@ Gerçek bildirim testi native/TestFlight sürümünde yapılacaktır.
 - Dost fotoğrafı 180x210, hafif yuvarlatılmış dikdörtgen ve `object-fit:contain`.
 - v2.70 kamera kodu korunarak kamera fotoğraf alanının sağ alt içine alındı.
 - Onboarding değiştirilmedi.
+
+## v2.73 — Fotoğraf anında güncelleme
+- v2.72 baz alındı.
+- Kamera, dikdörtgen fotoğraf alanı ve fotoğraf seçme davranışı değiştirilmedi.
+- Fotoğraf seçilip kaydedildiği anda pet detay ekranı yeniden render edilir.
+- Geri çıkıp tekrar girmeden yeni fotoğraf detayda görünür.

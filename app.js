@@ -1117,8 +1117,13 @@ function pkDueStatus(dateStr){
           if(!p) return;
           p.photo=canvas.toDataURL('image/jpeg',0.82);
           save();
-          document.getElementById('petDetailPhoto').src=p.photo;
+          const detailPhoto=document.getElementById('petDetailPhoto');
+          if(detailPhoto){
+            detailPhoto.src=p.photo;
+            detailPhoto.removeAttribute('srcset');
+          }
           renderHome();
+          showPetDetail(detailPetId);
         };
         image.src=reader.result;
       };
