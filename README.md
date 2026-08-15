@@ -459,9 +459,8 @@ Gerçek bildirim testi native/TestFlight sürümünde yapılacaktır.
 - styles.css SHA256: fdbd632e83fdb98264dfd731ee93ce6cd9d726ea9371cdf0ab1eecc52a09c0dc
 - app.js SHA256: 19defaf62e8e3cd943a0468107a4cfc67453fd40375ecbd8074dab695781d3a6
 
-## v2.64 — Pet fotoğraf kadrajı
+## v2.65 — Pet fotoğrafları gerçek kadraj düzeltmesi
 - v2.63 baz alındı.
-- Onboarding dosyalarına dokunulmadı.
-- Ana uygulamadaki kedi fotoğrafı yukarıdan daha fazla alan gösterecek şekilde ayarlandı; kulak kesilmesi azaltıldı.
-- Köpek fotoğrafı kediyle daha dengeli görünecek şekilde yeniden hizalandı.
-- Yalnız CSS object-position/object-fit ayarları değiştirildi.
+- pet-cat.jpg dosyası küçültülüp beyaz canvas içine yeniden yerleştirildi; kulakların tamamen görünmesi için üstte ve yanlarda daha fazla boşluk bırakıldı.
+- pet-dog.jpg de benzer görsel ağırlık için yeniden ölçeklendirildi.
+- Onboarding dosyalarına ve onboarding tasarımına dokunulmadı.

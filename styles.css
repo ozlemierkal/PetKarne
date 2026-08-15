@@ -1857,39 +1857,3 @@ body.petDetailMode #petDetailView{
   z-index:100 !important;
   background:#fff !important;
 }
-
-/* v2.64 — Ana uygulama pet fotoğraf kadrajı */
-.petPhoto,
-.petCard img,
-.petAvatar img,
-.petDetailPhoto img,
-.petDetailView img.petImage,
-.refPetVisual img,
-.editPetPortrait img,
-[data-pet-photo] img{
-  object-fit:cover !important;
-}
-
-/* Kedi: başı biraz aşağı al, kulaklar tamamen görünsün */
-img[src*="pet-cat.jpg"],
-.petCard.cat img,
-.petAvatar.cat img,
-.refPetVisual.cat img{
-  object-position:center 24% !important;
-}
-
-/* Köpek: kediyle aynı görsel ağırlıkta, hafif üstten ortalı */
-img[src*="pet-dog.jpg"],
-.petCard.dog img,
-.petAvatar.dog img,
-.refPetVisual.dog img{
-  object-position:center 31% !important;
-}
-
-/* Yuvarlak/kare profil alanlarında kafa kesilmesini azalt */
-.petPhoto,
-.petAvatar,
-.refPetVisual,
-.editPetPortrait{
-  overflow:hidden !important;
-}
