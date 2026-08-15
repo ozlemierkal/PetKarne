@@ -1,40 +1,10 @@
 <!doctype html><html lang="tr"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>PetKarnem Onboarding Test</title><link rel="stylesheet" href="styles.css"></head>
-<body>
-<div class="onboard" id="onboard">
- <section class="page active">
-  <button class="skip">Atla</button>
-  <div class="logo"><span>♡</span><b>🐾</b></div>
-  <div class="brand">Pet<span>Karnem</span></div>
-  <div class="tag">Sevginin karnesi, sağlığın güvencesi 💚</div>
-  <div class="pets"><div class="mint"></div><img class="cat" src="cat.jpg"><img class="dog" src="dog.jpg"></div>
-  <div class="copy"><h1>Hoş Geldin! 👋</h1><p>Dostunun sağlık yolculuğunu<br>kolayca takip et.</p></div>
-  <div class="dots"><i class="on"></i><i></i><i></i></div>
- </section>
-
- <section class="page">
-  <button class="skip">Atla</button>
-  <div class="featureArt">
-   <div class="calendar"><strong>Takvim</strong><b>Ağustos 2026</b>
-    <div class="week">Pzt Sal Çar Per Cum Cmt Paz</div>
-    <div class="days">10 11 12 13 14 <em>15</em> 16<br>17 18 19 20 21 22 23</div>
-   </div>
-   <div class="bell">🔔<span>1</span></div>
-   <div class="notice"><b>Yaklaşan</b><strong>Karma Aşı</strong><small>18 Ağustos • 3 gün kaldı</small></div>
-  </div>
-  <div class="copy second"><h1>PetKarnem hatırlasın 🔔</h1><p>Aşı, parazit, ilaç ve kontrolleri kaydet.<br>Yaklaşan işlemleri zamanında gör.</p></div>
-  <div class="dots"><i></i><i class="on"></i><i></i></div>
- </section>
-
- <section class="page">
-  <button class="skip">Atla</button>
-  <div class="copy top"><h1>Dostunu ekle,<br>takibe başla! 💚</h1><p>Kedini veya köpeğini ekle,<br>sağlık karnesini oluşturalım.</p></div>
-  <div class="petCard green"><div><span>🐱</span><b>Kedi</b><i>›</i></div><img src="cat.jpg"></div>
-  <div class="petCard cream"><div><span>🐶</span><b>Köpek</b><i>›</i></div><img src="dog.jpg"></div>
-  <button class="add">＋ Dostunu Ekle</button>
-  <div class="dots"><i></i><i></i><i class="on"></i></div>
- </section>
+<title>PetKarnem Onboarding</title><link rel="stylesheet" href="styles.css"></head><body>
+<div id="app">
+ <section class="slide active" data-i="0"><div class="crop c1"></div><button class="skip">Atla</button><button class="next">›</button><div class="dots"><i class="on"></i><i></i><i></i></div></section>
+ <section class="slide" data-i="1"><div class="crop c2"></div><button class="skip">Atla</button><button class="next">›</button><div class="dots"><i></i><i class="on"></i><i></i></div></section>
+ <section class="slide" data-i="2"><div class="crop c3"></div><button class="skip">Atla</button><button class="add">＋ Dostunu Ekle</button><div class="dots"><i></i><i></i><i class="on"></i></div></section>
 </div>
-<div class="done" id="done"><div><h2>Hazır 💚</h2><p>Bu yalnız onboarding testidir.</p><button onclick="location.reload()">Tekrar göster</button></div></div>
+<div id="done"><div><h2>Onboarding tamamlandı 💚</h2><p>Bu yalnızca bağımsız test.</p><button onclick="location.reload()">Tekrar göster</button></div></div>
 <script src="app.js"></script></body></html>
