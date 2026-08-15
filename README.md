@@ -430,3 +430,9 @@ Gerçek bildirim testi native/TestFlight sürümünde yapılacaktır.
 - Bugün için kayıt varsa diff=0 olarak Yaklaşanlar listesine dahildir ve BUGÜN etiketi alır.
 - Gelecek 7 gün içindeki kayıtlar aynı listede görünür.
 - Başka bir gün seçilirse yalnız o günün kayıtları gösterilir.
+
+## v2.58 CLEAN — onboarding kaldırıldı
+- v2.58 FINAL uygulama mantığı korunmuştur.
+- Eski/deneysel onboarding HTML, CSS ve JS kodları tamamen kaldırılmıştır.
+- Uygulama artık doğrudan Ana Sayfa ile açılır.
+- Takvimde bugün = Yaklaşanlar mantığı ve diğer v2.58 özellikleri aynen korunur.
