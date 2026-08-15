@@ -318,3 +318,10 @@ Gerçek bildirim testi native/TestFlight sürümünde yapılacaktır.
 - Takvim düzenleme formunda tarih alanının minimumu bugündür.
 - Geçmiş tarih seçilirse kayıt engellenir ve “Tarih bugünden eski olamaz.” uyarısı gösterilir.
 - Güncellenen tarih hem date hem next alanlarında senkron tutulur.
+
+## v2.37 — Takvim tek render mantığı
+- Takvimde iki ayrı Yaklaşan render sistemi kaldırıldı.
+- renderCalendar artık tek kaynak: gecikenler + bugün + önümüzdeki 7 gün.
+- Takvimde bir güne dokunmak yalnız o günü işaretler; Yaklaşan listesini filtrelemez veya silmez.
+- Tarih güncellendiğinde saveState -> renderAll -> renderCalendar zinciriyle liste anında yeniden hesaplanır.
+- Tarihi Değiştir/Düzenle ekranında geçmiş tarih hem min alanıyla hem kayıt sırasında doğrulamayla engellenir.

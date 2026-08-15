@@ -689,7 +689,11 @@ window.changeRecordDate=(id)=>{
     `}
   `,()=>{
     const d=$('#editCalDate').value;
-    if(!d)return false;
+    if(!d) return false;
+    if(d<todayISO()){
+      alert('Tarih bugünden eski olamaz.');
+      return false;
+    }
     r.next=d;
 
     if(r.type==='appointment'){
@@ -725,7 +729,7 @@ window.showCalendarDetail=(id)=>{
 };
 
 window.changeCalendarMonth=(delta)=>{calendarCursor=new Date(calendarCursor.getFullYear(),calendarCursor.getMonth()+delta,1);selectedCalendarDate=null;renderCalendar();};
-window.setCalendarTab=(tab,btn)=>{calendarTab=tab;$$('.calendarTabs .chip').forEach(x=>x.classList.remove('active'));if(btn)btn.classList.add('active');selectedCalendarDate=null;renderCalendar();};
+window.setCalendarTab=(tab,btn)=>{calendarTab='upcoming';selectedCalendarDate=null;renderCalendar();};
 window.selectCalendarDay=(dateStr)=>{selectedCalendarDate=dateStr;renderCalendar();};
 
 function calendarItems(){
@@ -734,39 +738,97 @@ function calendarItems(){
 }
 
 function renderCalendar(){
-  const label=$('#calendarMonthLabel'),grid=$('#monthGrid'); if(!label||!grid)return;
-  const y=calendarCursor.getFullYear(),m=calendarCursor.getMonth();
-  label.textContent=new Intl.DateTimeFormat('tr-TR',{month:'long',year:'numeric'}).format(new Date(y,m,1));
-  const first=new Date(y,m,1), days=new Date(y,m+1,0).getDate(), offset=(first.getDay()+6)%7;
+  const label=$('#calendarMonthLabel'), grid=$('#monthGrid');
+  if(!label || !grid) return;
+
+  const y=calendarCursor.getFullYear(), m=calendarCursor.getMonth();
+  label.textContent=new Intl.DateTimeFormat('tr-TR',{month:'long',year:'numeric'})
+    .format(new Date(y,m,1));
+
+  const first=new Date(y,m,1);
+  const days=new Date(y,m+1,0).getDate();
+  const offset=(first.getDay()+6)%7;
   const items=calendarItems();
+
   let cells='';
-  for(let i=0;i<offset;i++)cells+='<div class="dayCell blank"></div>';
+  for(let i=0;i<offset;i++) cells+='<div class="dayCell blank"></div>';
+
   for(let d=1;d<=days;d++){
     const ds=`${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
     const di=items.filter(x=>x.calendarDate===ds);
-    cells+=`<button class="dayCell${selectedCalendarDate===ds?' selected':''}${ds===todayISO()?' today':''}" onclick="selectCalendarDay('${ds}')"><span>${d}</span>${di.length?`<span class="dayDots">${di.slice(0,3).map(x=>`<i class="${x.type}"></i>`).join('')}</span>`:''}</button>`;
+
+    cells+=`<button class="dayCell${selectedCalendarDate===ds?' selected':''}${ds===todayISO()?' today':''}"
+      onclick="selectCalendarDay('${ds}')">
+      <span>${d}</span>
+      ${di.length?`<span class="dayDots">${di.slice(0,3).map(x=>`<i class="${x.type}"></i>`).join('')}</span>`:''}
+    </button>`;
   }
   grid.innerHTML=cells;
 
-  const now=new Date();now.setHours(0,0,0,0);
-  let list=items.map(r=>{const d=new Date(r.calendarDate+'T00:00:00');return {...r,diff:Math.round((d-now)/86400000)};});
-  if(selectedCalendarDate){list=list.filter(r=>r.calendarDate===selectedCalendarDate);$('#selectedDayTitle').textContent=`${fmt(selectedCalendarDate)} kayıtları`;}
-  else{list=calendarTab==='past'?list.filter(r=>r.diff<0):list.filter(r=>r.diff>=0);$('#selectedDayTitle').textContent=calendarTab==='past'?'Geçmiş kayıtlar':'Yaklaşan kayıtlar';}
+  // Tek ve sabit "Yaklaşan" mantığı:
+  // gecikenler + bugün + önümüzdeki 7 gün.
+  const now=new Date();
+  now.setHours(0,0,0,0);
+
+  let list=items.map(r=>{
+    const d=new Date(r.calendarDate+'T00:00:00');
+    return {...r,diff:Math.round((d-now)/86400000)};
+  });
+
+  list=list.filter(r=>r.diff<=7);
   list.sort((a,b)=>a.calendarDate.localeCompare(b.calendarDate));
 
-  $('#calendarList').innerHTML=list.length?list.map(r=>{
-    const p=petById(r.petId), petIcon=p?.type==='dog'?'🐶':'🐱';
-    const typeLabel=r.type==='appointment'?'🩺 Randevu':r.type==='vaccine'?'💉 Aşı':r.type==='internal'?'🪱 İç Parazit':'🛡️ Dış Parazit';
-    const when=r.diff<0?`${Math.abs(r.diff)} gün önce`:r.diff===0?'Bugün':`${r.diff} gün sonra`;
-    const bell=(r.type==='appointment'&&r.reminder!==0)||(['vaccine','internal','external'].includes(r.type)&&r.reminderDays>0)?' 🔔':'';
-    return `<div class="card"><div class="calendarPetTitle">${petIcon} <b>${p?.name||''}</b></div><div><b>${typeLabel} • ${r.title}${bell}</b></div><div class="muted">${fmt(r.calendarDate)}${r.time?' • '+r.time:''} • ${when}</div><div class="calendarActions" style="margin-top:10px">${r.type==='appointment'
-  ? `<button class="secondary smallbtn" onclick="showCalendarDetail('${r.id}')">Detay</button>
-     <button class="secondary smallbtn" onclick="changeRecordDate('${r.id}')">Düzenle</button>
-     <button class="primary smallbtn" onclick="completeRecord('${r.id}')">Tamamlandı</button>`
-  : `<button class="secondary smallbtn" onclick="showHealthCalendarDetail('${r.id}')">Detay</button>
-     <button class="primary smallbtn" onclick="completeRecord('${r.id}')">Yapıldı</button>
-     <button class="secondary smallbtn" onclick="changeRecordDate('${r.id}')">Tarihi Değiştir</button>`}</div></div>`;
-  }).join(''):'<div class="card empty">Bu görünümde kayıt yok.</div>';
+  const title=$('#selectedDayTitle');
+  if(title) title.textContent='Yaklaşan kayıtlar';
+
+  const listEl=$('#calendarList');
+  if(!listEl) return;
+
+  listEl.innerHTML=list.length?list.map(r=>{
+    const p=petById(r.petId);
+    const petIcon=p?.type==='dog'?'🐶':'🐱';
+    const typeLabel=
+      r.type==='appointment'?'🩺 Randevu':
+      r.type==='vaccine'?'💉 Aşı':
+      r.type==='internal'?'🪱 İç Parazit':
+      '🛡️ Dış Parazit';
+
+    const when=r.diff<0
+      ? `${Math.abs(r.diff)} gün gecikti`
+      : r.diff===0
+      ? 'Bugün'
+      : `${r.diff} gün kaldı`;
+
+    const status=r.diff<0
+      ? {key:'overdue',label:`${Math.abs(r.diff)} GÜN GECİKTİ`}
+      : r.diff===0
+      ? {key:'today',label:'BUGÜN'}
+      : {key:'soon',label:`${r.diff} GÜN KALDI`};
+
+    const bell=
+      (r.type==='appointment'&&r.reminder!==0) ||
+      (['vaccine','internal','external'].includes(r.type)&&r.reminderDays>0)
+      ? ' 🔔':'';
+
+    return `<div class="card">
+      <div class="calendarPetTitle">${petIcon} <b>${p?.name||''}</b></div>
+      <div>
+        <b>${typeLabel} • ${r.title}${bell}</b>
+        <span class="pkDueBadge ${status.key}">${status.label}</span>
+      </div>
+      <div class="muted">${fmt(r.calendarDate)}${r.time?' • '+r.time:''} • ${when}</div>
+      <div class="calendarActions" style="margin-top:10px">
+        ${r.type==='appointment'
+          ? `<button class="secondary smallbtn" onclick="showCalendarDetail('${r.id}')">Detay</button>
+             <button class="secondary smallbtn" onclick="changeRecordDate('${r.id}')">Düzenle</button>
+             <button class="primary smallbtn" onclick="completeRecord('${r.id}')">Tamamlandı</button>`
+          : `<button class="secondary smallbtn" onclick="showHealthCalendarDetail('${r.id}')">Detay</button>
+             <button class="primary smallbtn" onclick="completeRecord('${r.id}')">Yapıldı</button>
+             <button class="secondary smallbtn" onclick="changeRecordDate('${r.id}')">Tarihi Değiştir</button>`
+        }
+      </div>
+    </div>`;
+  }).join(''):'<div class="card empty">Yaklaşan veya geciken kayıt yok.</div>';
 }
 
 window.completeRecord=(id)=>{
@@ -796,7 +858,6 @@ window.editVet=(id)=>{
     const mp=$('#makePrimary'); if(mp) mp.onclick=()=>{state.vets.forEach(x=>x.primary=x.id===id);saveState();$('#modal').close();};
     $('#deleteVet').onclick=()=>{if(confirm('Bu klinik silinsin mi?')){state.vets=state.vets.filter(x=>x.id!==id);if(state.vets.length&&!state.vets.some(x=>x.primary))state.vets[0].primary=true;saveState();$('#modal').close();}};
   },0);
-  pkRenderUpcomingCalendarList();
 };
 
 function renderVet(){
@@ -926,95 +987,3 @@ function pkDueStatus(dateStr){
 }
 
 
-function pkRefreshCalendarAfterChange(){
-  try{
-    renderCalendar();
-    if(typeof pkRenderUpcomingCalendarList==='function') pkRenderUpcomingCalendarList();
-  }catch(e){}
-}
-
-function pkUpcomingWindowRecords(){
-  const today=new Date();
-  today.setHours(0,0,0,0);
-  const end=new Date(today);
-  end.setDate(end.getDate()+7);
-
-  const all=[];
-
-  // Takvim kayıtları
-  (state.records||[]).forEach(r=>{
-    const ds=r.date||r.next;
-    if(!ds) return;
-    const d=new Date(String(ds).slice(0,10)+'T00:00:00');
-    if(Number.isNaN(d.getTime())) return;
-    if(d>=today && d<=end){
-      all.push({...r,_date:ds,_kind:r.type||'record'});
-    }
-  });
-
-  // İlaç kayıtları için başlangıç tarihi varsa
-  (state.meds||[]).forEach(m=>{
-    if(!m.start) return;
-    const d=new Date(String(m.start).slice(0,10)+'T00:00:00');
-    if(Number.isNaN(d.getTime())) return;
-    if(d>=today && d<=end){
-      all.push({
-        id:m.id, petId:m.petId, type:'med',
-        title:m.name||'İlaç',
-        date:m.start, _date:m.start, _kind:'med'
-      });
-    }
-  });
-
-  return all.sort((a,b)=>{
-    const ad=String(a._date||'')+(a.time||'');
-    const bd=String(b._date||'')+(b.time||'');
-    return ad.localeCompare(bd);
-  });
-}
-
-function pkRenderUpcomingCalendarList(){
-  const list=document.querySelector('#calendarList');
-  if(!list) return;
-
-  const items=pkUpcomingWindowRecords();
-  if(!items.length){
-    list.innerHTML='<div class="card empty">Önümüzdeki 7 gün için yaklaşan kayıt yok.</div>';
-    return;
-  }
-
-  list.innerHTML=items.map(r=>{
-    const pet=(state.pets||[]).find(p=>p.id===r.petId);
-    const st=pkDueStatus(r._date||r.date||r.next);
-    const title=r.title || (
-      r.type==='appointment' ? 'Veteriner Randevusu' :
-      r.type==='internal' ? 'İç Parazit' :
-      r.type==='external' ? 'Dış Parazit' :
-      r.type==='vaccine' ? 'Aşı' :
-      r.type==='med' ? 'İlaç' : 'Kayıt'
-    );
-    return `<div class="card pkUpcomingRow" data-calendar-record="${r.id||''}">
-      <div class="pkUpcomingMain">
-        <b>${pet?pet.name+' • ':''}${title}</b>
-        <span>${fmt(r._date||r.date||r.next)}${r.time?' • '+r.time:''}</span>
-      </div>
-      ${st.label?`<span class="pkDueBadge ${st.key}">${st.label}</span>`:''}
-    </div>`;
-  }).join('');
-}
-
-
-document.addEventListener('click',(e)=>{
-  if(e.target.closest('#calendarView')){
-    setTimeout(pkRenderUpcomingCalendarList,0);
-  }
-});
-
-const pkModalDialog=document.querySelector('#modal');
-if(pkModalDialog){
-  pkModalDialog.addEventListener('close',()=>{
-    if(document.querySelector('#calendarView')?.classList.contains('active')){
-      setTimeout(pkRefreshCalendarAfterChange,0);
-    }
-  });
-}
