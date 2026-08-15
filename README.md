@@ -351,3 +351,9 @@ Gerçek bildirim testi native/TestFlight sürümünde yapılacaktır.
 - Takvim gün noktaları işlem türüne göre değil zamana göre renklendirilir:
   Bugün yeşil, 1–7 gün turuncu, gecikmiş kırmızı, uzak tarihler nötr gri.
 - Yeni kedi ve köpek görselleri pet-cat.jpg / pet-dog.jpg olarak uygulamanın tüm ilgili ekranlarında aynı kaynakla kullanılır.
+
+## v2.42
+- Köpek varsayılan görseli kullanıcının son gönderdiği Golden yavru fotoğrafı ile değiştirildi.
+- Aynı pet-dog.jpg ana ekran, Dost Bilgileri ve Düzenle ekranında kullanılır.
+- Takvim sağlık detayında sıra Uygulama → Uygulayan → Sonraki tarih olarak düzenlendi.
+- Sağlık kayıt formunda Uygulayan alanı yoksa eklendi; varsa kayıt nesnesine appliedBy olarak kaydedilir.

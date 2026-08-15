@@ -1620,3 +1620,10 @@ button:disabled.disabledAction{
 .dayDots .pkDot.soon{background:#E8A13B!important}
 .dayDots .pkDot.overdue{background:#D85B52!important}
 .dayDots .pkDot.normal{background:#BFC6BF!important}
+
+/* v2.42 — köpek görseli güncellemesi */
+.refPetVisual img,
+.petDetailView .detailPhotoWrap img,
+.editPetPortrait img{
+  object-position:center!important;
+}
