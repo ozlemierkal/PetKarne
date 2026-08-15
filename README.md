@@ -408,3 +408,10 @@ Gerçek bildirim testi native/TestFlight sürümünde yapılacaktır.
 - Sağlık Geçmişi yalnız Aşı, İç Parazit, Dış Parazit, İlaç ve Kilo kayıtlarını gösterir.
 - “Veteriner/Muayene” filtresi kaldırıldı; randevular yalnız Takvim'de kalır.
 - v2.51 onboarding ve takvim görünümü korunmuştur.
+
+## v2.54 — Scroll düzeltmesi
+- Uygulama ekranlarında normal dikey scroll geri getirildi.
+- html/body/#app/main/.view üzerindeki sabit height ve overflow kilitleri etkisizleştirildi.
+- v2.49'dan kalan çok aşamalı scroll reset mantığı sadeleştirildi; kullanıcı scroll'u ile kavga etmesi engellendi.
+- Alt menü sabit kalır, içerik altında kaybolmasın diye alt padding korunur.
+- Onboarding açıkken scroll kilidi korunur; onboarding kapalıyken uygulama normal kayar.
