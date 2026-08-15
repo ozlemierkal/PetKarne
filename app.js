@@ -661,7 +661,7 @@ window.changeRecordDate=(id)=>{
 
   openModal(r.type==='appointment'?'Randevuyu Düzenle':'Tarihi Değiştir',`
     ${r.type==='appointment'?`<label>Başlık</label><input id="editCalTitle" value="${r.title||''}">`:''}
-    <label>Tarih *</label><input id="editCalDate" type="date" value="${r.next||''}">
+    <label>Tarih *</label><input id="editCalDate" type="date" min="${todayISO()}" value="${r.next||''}">
     ${r.type==='appointment'?`
       <label>Saat</label><input id="editCalTime" type="time" value="${r.time||''}">
       <label>Klinik</label>
@@ -925,6 +925,14 @@ function pkDueStatus(dateStr){
   return {key:'normal',label:'',diff};
 }
 
+
+function pkRefreshCalendarAfterChange(){
+  try{
+    renderCalendar();
+    if(typeof pkRenderUpcomingCalendarList==='function') pkRenderUpcomingCalendarList();
+  }catch(e){}
+}
+
 function pkUpcomingWindowRecords(){
   const today=new Date();
   today.setHours(0,0,0,0);
@@ -1001,3 +1009,12 @@ document.addEventListener('click',(e)=>{
     setTimeout(pkRenderUpcomingCalendarList,0);
   }
 });
+
+const pkModalDialog=document.querySelector('#modal');
+if(pkModalDialog){
+  pkModalDialog.addEventListener('close',()=>{
+    if(document.querySelector('#calendarView')?.classList.contains('active')){
+      setTimeout(pkRefreshCalendarAfterChange,0);
+    }
+  });
+}

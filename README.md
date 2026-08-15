@@ -311,3 +311,10 @@ Gerçek bildirim testi native/TestFlight sürümünde yapılacaktır.
 - Alt menü sabit kalır, içerik menünün altında kalmaz.
 - Başlık satırı sticky tutulur.
 - Küçük iPhone ekranlarında yatay taşma ve sıkışma azaltıldı.
+
+## v2.36 — Takvim tarih güncelleme düzeltmesi
+- Takvim kaydının tarihi değiştirildiğinde Yaklaşan listesi anında yeniden hesaplanır.
+- 17 Ağustos kaydı 18 Ağustos'a taşınırsa 18'i seçmeye gerek kalmadan Yaklaşan listesinde görünür.
+- Takvim düzenleme formunda tarih alanının minimumu bugündür.
+- Geçmiş tarih seçilirse kayıt engellenir ve “Tarih bugünden eski olamaz.” uyarısı gösterilir.
+- Güncellenen tarih hem date hem next alanlarında senkron tutulur.
