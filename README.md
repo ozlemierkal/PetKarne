@@ -339,3 +339,8 @@ Gerçek bildirim testi native/TestFlight sürümünde yapılacaktır.
 - Yapıldı denince sağlık işlemi Takvim'den kalkar ve Sağlık Geçmişi'ne planlanan uygulama tarihiyle taşınır.
 - Sonraki tarih varsa tamamlanan kayıttan ayrı yeni bir gelecek takvim kaydı oluşturulur.
 - Böylece tamamlanan işlem kaybolmaz ve bugünün tarihiyle yanlış geçmiş kaydı oluşmaz.
+
+## v2.40 — Takvim başlık düzeltmesi
+- Takvimde kalan eski “Yaklaşan” ve “Yaklaşan Kayıtlar” başlıkları kaldırıldı.
+- Tek dinamik başlık bırakıldı: Yaklaşanlar.
+- Bir gün seçildiğinde aynı başlık örn. “18 Eylül Kayıtları” olarak değişmeye devam eder.

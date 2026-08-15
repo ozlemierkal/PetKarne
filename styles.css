@@ -1583,3 +1583,17 @@ button:disabled.disabledAction{
   filter:grayscale(.35);
   box-shadow:none!important;
 }
+
+/* v2.40 — Takvim başlık temizliği */
+#calendarView .upcomingTitle,
+#calendarView .calendarListTitle,
+#calendarView .calendarUpcomingTitle,
+#calendarView [data-role="upcoming-title"]{
+  display:none!important;
+}
+#calendarView #selectedDayTitle{
+  display:block!important;
+  margin:16px 0 10px!important;
+  font-size:17px!important;
+  font-weight:850!important;
+}
