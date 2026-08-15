@@ -415,3 +415,10 @@ Gerçek bildirim testi native/TestFlight sürümünde yapılacaktır.
 - v2.49'dan kalan çok aşamalı scroll reset mantığı sadeleştirildi; kullanıcı scroll'u ile kavga etmesi engellendi.
 - Alt menü sabit kalır, içerik altında kaybolmasın diye alt padding korunur.
 - Onboarding açıkken scroll kilidi korunur; onboarding kapalıyken uygulama normal kayar.
+
+## v2.57 — Takvim açılış / Yaklaşanlar düzeltmesi
+- Bugünün tarihi görsel olarak seçili olabilir ama liste Yaklaşanlar olarak kalır.
+- Takvim sekmesi açıldığında bugün seçili + Yaklaşanlar görünür.
+- Bugünün tarihine dokunmak yine Yaklaşanlar görünümünü korur.
+- Başka bir güne dokununca yalnız o günün kayıtları gösterilir.
+- Alt menü ve scroll davranışına dokunulmadı; v2.54 tabanı korunmuştur.
