@@ -297,3 +297,17 @@ Gerçek bildirim testi native/TestFlight sürümünde yapılacaktır.
 - Takvim içindeki Geçmiş seçeneği kaldırıldı/gizlendi.
 - Sağlık Geçmişi aynen korunur ve yapılmış sağlık kayıtlarının arşivi olmaya devam eder.
 - Kilo gibi son tarih gerektirmeyen kayıtların amacı Sağlık Geçmişi olarak kalır.
+
+## v2.34 — Takvim yaklaşan + kilo doğrulama
+- Takvim Yaklaşan listesi seçili güne bağlı değildir; bugünden itibaren önümüzdeki 7 günü otomatik gösterir.
+- 15 Ağustos'ta 17 Ağustos kaydı, 17'sine dokunmadan Yaklaşan listesinde görünür.
+- Kilo kaydı 0 veya negatif olamaz.
+- Pet ekleme/düzenleme kilo alanında da 0 ve negatif değer engellenir.
+- Kullanılmayan veteriner-avatar.png ve veterinerim-hero.png dosyaları paketten çıkarıldı.
+
+## v2.35 — Dost Bilgileri ekran oturma düzeltmesi
+- Dost Bilgileri sabit viewport yüksekliğinden çıkarıldı.
+- Sayfa normal mobil akışta kayar; tüm ekranın zıplaması azaltıldı.
+- Alt menü sabit kalır, içerik menünün altında kalmaz.
+- Başlık satırı sticky tutulur.
+- Küçük iPhone ekranlarında yatay taşma ve sıkışma azaltıldı.

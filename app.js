@@ -96,6 +96,14 @@ $('#addPetBtn').onclick = ()=>openModal('Pet Ekle',`
   <label>Mikroçip no (isteğe bağlı)</label><input id="petChip">
 `,()=>{
   const name=$('#petName').value.trim(); if(!name) return false;
+  const petWeightRaw=$('#petWeight').value.trim();
+  if(petWeightRaw){
+    const petWeightNum=Number(petWeightRaw.replace(',','.'));
+    if(!Number.isFinite(petWeightNum) || petWeightNum<=0){
+      alert('Kilo 0’dan büyük olmalı.');
+      return false;
+    }
+  }
   const p={id:uid(),name,type:$('#petType').value,sex:$('#petSex').value,breed:$('#petBreed').value.trim(),birthDate:$('#petBirthDate').value,neutered:$('#petNeutered').value,note:$('#petNote').value.trim(),weight:$('#petWeight').value,chip:$('#petChip').value};
   state.pets.push(p); if(p.weight){state.weights.push({id:uid(),petId:p.id,value:p.weight,date:todayISO(),createdAt:new Date().toISOString(),initial:true});} selectedPetId=p.id; saveState();
 });
@@ -178,7 +186,12 @@ window.healthAction=function healthAction(type){
       <label>Kilo (kg) *</label><input id="wValue" inputmode="decimal">
       <label>Tarih</label><input id="wDate" type="date" value="${todayISO()}">
     `,()=>{
-      const val=$('#wValue').value.trim(); if(!val) return false;
+      const val=$('#wValue').value.trim();
+      const num=Number(String(val).replace(',','.'));
+      if(!val || !Number.isFinite(num) || num<=0){
+        alert('Kilo 0’dan büyük olmalı.');
+        return false;
+      }
       const weightDate=$('#wDate').value;
       state.weights.push({id:uid(),petId:pet.id,value:val,date:weightDate,createdAt:new Date().toISOString()});
       const latestWeight=state.weights
@@ -229,6 +242,14 @@ function editPet(id){
     <button type="button" class="danger big" id="deletePetBtn" style="margin-top:18px">Profili Sil</button>
   `,()=>{
     const name=$('#editPetName').value.trim(); if(!name)return false;
+    const editWeightRaw=$('#editPetWeight').value.trim();
+    if(editWeightRaw){
+      const editWeightNum=Number(editWeightRaw.replace(',','.'));
+      if(!Number.isFinite(editWeightNum) || editWeightNum<=0){
+        alert('Kilo 0’dan büyük olmalı.');
+        return false;
+      }
+    }
     const newWeight=$('#editPetWeight').value;
       const oldWeight=p.weight;
       Object.assign(p,{name,type:$('#editPetType').value,sex:$('#editPetSex').value,breed:$('#editPetBreed').value.trim(),birthDate:$('#editPetBirthDate').value,neutered:$('#editPetNeutered').value,note:$('#editPetNote').value.trim(),weight:newWeight,chip:$('#editPetChip').value});
@@ -775,6 +796,7 @@ window.editVet=(id)=>{
     const mp=$('#makePrimary'); if(mp) mp.onclick=()=>{state.vets.forEach(x=>x.primary=x.id===id);saveState();$('#modal').close();};
     $('#deleteVet').onclick=()=>{if(confirm('Bu klinik silinsin mi?')){state.vets=state.vets.filter(x=>x.id!==id);if(state.vets.length&&!state.vets.some(x=>x.primary))state.vets[0].primary=true;saveState();$('#modal').close();}};
   },0);
+  pkRenderUpcomingCalendarList();
 };
 
 function renderVet(){
@@ -902,3 +924,80 @@ function pkDueStatus(dateStr){
   if(diff<=7) return {key:'soon',label:`${diff} GÜN KALDI`,diff};
   return {key:'normal',label:'',diff};
 }
+
+function pkUpcomingWindowRecords(){
+  const today=new Date();
+  today.setHours(0,0,0,0);
+  const end=new Date(today);
+  end.setDate(end.getDate()+7);
+
+  const all=[];
+
+  // Takvim kayıtları
+  (state.records||[]).forEach(r=>{
+    const ds=r.date||r.next;
+    if(!ds) return;
+    const d=new Date(String(ds).slice(0,10)+'T00:00:00');
+    if(Number.isNaN(d.getTime())) return;
+    if(d>=today && d<=end){
+      all.push({...r,_date:ds,_kind:r.type||'record'});
+    }
+  });
+
+  // İlaç kayıtları için başlangıç tarihi varsa
+  (state.meds||[]).forEach(m=>{
+    if(!m.start) return;
+    const d=new Date(String(m.start).slice(0,10)+'T00:00:00');
+    if(Number.isNaN(d.getTime())) return;
+    if(d>=today && d<=end){
+      all.push({
+        id:m.id, petId:m.petId, type:'med',
+        title:m.name||'İlaç',
+        date:m.start, _date:m.start, _kind:'med'
+      });
+    }
+  });
+
+  return all.sort((a,b)=>{
+    const ad=String(a._date||'')+(a.time||'');
+    const bd=String(b._date||'')+(b.time||'');
+    return ad.localeCompare(bd);
+  });
+}
+
+function pkRenderUpcomingCalendarList(){
+  const list=document.querySelector('#calendarList');
+  if(!list) return;
+
+  const items=pkUpcomingWindowRecords();
+  if(!items.length){
+    list.innerHTML='<div class="card empty">Önümüzdeki 7 gün için yaklaşan kayıt yok.</div>';
+    return;
+  }
+
+  list.innerHTML=items.map(r=>{
+    const pet=(state.pets||[]).find(p=>p.id===r.petId);
+    const st=pkDueStatus(r._date||r.date||r.next);
+    const title=r.title || (
+      r.type==='appointment' ? 'Veteriner Randevusu' :
+      r.type==='internal' ? 'İç Parazit' :
+      r.type==='external' ? 'Dış Parazit' :
+      r.type==='vaccine' ? 'Aşı' :
+      r.type==='med' ? 'İlaç' : 'Kayıt'
+    );
+    return `<div class="card pkUpcomingRow" data-calendar-record="${r.id||''}">
+      <div class="pkUpcomingMain">
+        <b>${pet?pet.name+' • ':''}${title}</b>
+        <span>${fmt(r._date||r.date||r.next)}${r.time?' • '+r.time:''}</span>
+      </div>
+      ${st.label?`<span class="pkDueBadge ${st.key}">${st.label}</span>`:''}
+    </div>`;
+  }).join('');
+}
+
+
+document.addEventListener('click',(e)=>{
+  if(e.target.closest('#calendarView')){
+    setTimeout(pkRenderUpcomingCalendarList,0);
+  }
+});
