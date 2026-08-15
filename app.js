@@ -1,3 +1,4 @@
+try{ if('scrollRestoration' in history) history.scrollRestoration='manual'; }catch(e){}
 
 const $ = (s) => document.querySelector(s);
 const $$ = (s) => [...document.querySelectorAll(s)];
@@ -29,17 +30,32 @@ function petById(id){ return state.pets.find(p=>p.id===id); }
 
 
 function pkResetPageScroll(activeViewId){
-  requestAnimationFrame(()=>{
-    try{ window.scrollTo(0,0); }catch(e){}
+  const reset=()=>{
+    const active=document.getElementById(activeViewId);
+    const main=document.querySelector('main');
+    const app=document.getElementById('app');
+
+    try{ window.scrollTo({top:0,left:0,behavior:'auto'}); }
+    catch(e){ try{ window.scrollTo(0,0); }catch(_){} }
+
     document.documentElement.scrollTop=0;
     document.body.scrollTop=0;
 
-    const main=document.querySelector('main');
+    if(app) app.scrollTop=0;
     if(main) main.scrollTop=0;
-
-    const active=document.getElementById(activeViewId);
     if(active) active.scrollTop=0;
+  };
+
+  // iPhone Safari sometimes restores the old page offset after the new
+  // view is painted, so reset it more than once across layout frames.
+  reset();
+  requestAnimationFrame(()=>{
+    reset();
+    requestAnimationFrame(reset);
   });
+  setTimeout(reset,0);
+  setTimeout(reset,80);
+  setTimeout(reset,180);
 }
 
 window.switchView=(viewId,btn)=>{

@@ -379,3 +379,9 @@ Gerçek bildirim testi native/TestFlight sürümünde yapılacaktır.
 - Sekmeler arasında geçişte önceki sayfanın scroll konumu artık yeni sayfaya taşınmaz.
 - Sağlık sayfasında aşağı kayıp Veterinerim'e geçildiğinde Veterinerim en üstten açılır.
 - Aynı davranış Ana Sayfa, Sağlık, Takvim, Veterinerim ve Profil geçişlerinde uygulanır.
+
+## v2.49 — iPhone Safari scroll düzeltmesi
+- Sekme değişiminde scroll yalnız bir kez değil birkaç layout turunda sıfırlanır.
+- Safari'nin yeni görünüm açıldıktan sonra eski scroll konumunu geri yüklemesi engellenir.
+- window, html, body, #app, main ve aktif görünümün scroll konumları birlikte sıfırlanır.
+- Browser scroll restoration destekleniyorsa manual moda alınır.
