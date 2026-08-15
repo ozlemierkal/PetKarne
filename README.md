@@ -289,3 +289,10 @@ Gerçek bildirim testi native/TestFlight sürümünde yapılacaktır.
 - Veterinerim başlığı altına açık yeşil, küçük ve sıcak bir bilgilendirme kartı eklendi.
 - Kartta 🩺 ve 🐾 detayları ile kısa açıklama bulunur.
 - Veteriner/klinik ekleme alanı ve mevcut işlevler değiştirilmedi.
+
+## v2.32 — Takvim renkli durum etiketi testi
+- BUGÜN: yeşil.
+- Önümüzdeki 1–7 gün: turuncu, X GÜN KALDI.
+- Geçmiş tarih: kırmızı, X GÜN GECİKTİ.
+- 7 günden ilerideki tarihler normal kalır.
+- v2.31 ana sürüm korunmuştur; bu ayrı test sürümüdür.

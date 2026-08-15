@@ -76,7 +76,11 @@
     </section>
 
     <section id="calendarView" class="view">
-      <div class="sectionHead"><h2>Takvim</h2><button class="secondary compactBtn" onclick="window.addAppointment()">＋ Randevu</button></div>
+      <div class="sectionHead"><h2>Takvim</h2><div class="pkCalendarLegend">
+          <span><i class="pkLegendDot today"></i>Bugün</span>
+          <span><i class="pkLegendDot soon"></i>Yaklaşıyor</span>
+          <span><i class="pkLegendDot overdue"></i>Gecikti</span>
+        </div><button class="secondary compactBtn" onclick="window.addAppointment()">＋ Randevu</button></div>
       <div class="card calendarCard">
         <div class="calendarTop"><button class="iconbtn" onclick="changeCalendarMonth(-1)">‹</button><h3 id="calendarMonthLabel"></h3><button class="iconbtn" onclick="changeCalendarMonth(1)">›</button></div>
         <div class="weekHead"><span>Pzt</span><span>Sal</span><span>Çar</span><span>Per</span><span>Cum</span><span>Cmt</span><span>Paz</span></div>
