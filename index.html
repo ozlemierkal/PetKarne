@@ -1,132 +1,304 @@
 <!doctype html>
 <html lang="tr">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>PetKarnem Onboarding</title>
-<link rel="stylesheet" href="styles.css">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#237A57">
+  <title>PetKarnem</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" href="icon-192.png">
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-<div id="onboarding">
 
-  <section class="screen active" data-index="0">
-    <button class="skip">Atla</button>
-
-    <div class="brandIcon">
-      <div class="heartArc"></div>
-      <div class="paw">🐾</div>
-    </div>
-
-    <div class="brand">Pet<span>Karnem</span></div>
-    <div class="tagline">Sevginin karnesi, sağlığın güvencesi 💚</div>
-
-    <div class="heroPets">
-      <div class="blob"></div>
-      <img class="heroCat" src="cat.jpg" alt="">
-      <img class="heroDog" src="dog.jpg" alt="">
-      <span class="heartDoodle">♡</span>
-      <span class="pawDoodle">🐾</span>
-    </div>
-
-    <div class="copy">
-      <h1>Hoş Geldin! 👋</h1>
-      <p>Dostunun sağlık takibini kolaylaştır.<br>
-      Aşıları, parazit uygulamalarını<br>
-      ve ilaçları unutma.</p>
-    </div>
-
-    <div class="pager">
-      <button class="dot active" data-go="0"></button>
-      <button class="dot" data-go="1"></button>
-      <button class="dot" data-go="2"></button>
-    </div>
-  </section>
-
-  <section class="screen" data-index="1">
-    <button class="skip">Atla</button>
-
-    <div class="reminderArt">
-      <div class="phoneMock">
-        <div class="mockTop">Takvim</div>
-        <div class="mockMonth">Mayıs 2026</div>
-        <div class="mockWeek">
-          <span>Pzt</span><span>Sal</span><span>Çar</span><span>Per</span><span>Cum</span><span>Cmt</span><span>Paz</span>
-        </div>
-        <div class="mockGrid">
-          <span></span><span></span><span></span><span>1</span><span>2</span><span>3</span><span>4</span>
-          <span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>10</span><span>11</span>
-          <span>12</span><span>13</span><span>14</span><span>15</span><span>16</span><span>17</span><span>18</span>
-          <span>19</span><span class="today">20</span><span>21</span><span>22</span><span>23</span><span>24</span><span>25</span>
-        </div>
-      </div>
-
-      <div class="bellBubble">🔔<b>1</b></div>
-
-      <div class="reminderCard">
-        <strong>🔔 Yaklaşan Hatırlatma</strong>
-        <span>Karma Aşı (DHPPiL)</span>
-        <div><small>20 Mayıs 2026</small><em>5 gün kaldı</em></div>
-      </div>
-    </div>
-
-    <div class="copy reminderCopy">
-      <h1>PetKarnem takip etsin 🔔</h1>
-      <p>Yaklaşan işlemleri önceden haber versin,<br>
-      zamanı geçenleri sana göstersin.<br>
-      Böylece hiçbir şeyi unutmayasın.</p>
-    </div>
-
-    <div class="pager">
-      <button class="dot" data-go="0"></button>
-      <button class="dot active" data-go="1"></button>
-      <button class="dot" data-go="2"></button>
-    </div>
-  </section>
-
-  <section class="screen" data-index="2">
-    <button class="skip">Atla</button>
-
-    <div class="copy topCopy">
-      <h1>Dostunu ekle,<br>takibe başla! 💚</h1>
-      <p>Kedini veya köpeğini ekle<br>sağlık takvimini oluştur.</p>
-    </div>
-
-    <button class="petCard catCard" data-pet="cat">
-      <div class="petCardText">
-        <div class="roundIcon">🐱</div>
-        <div class="petName">Kedi</div>
-        <div class="chev">›</div>
-      </div>
-      <img src="cat.jpg" alt="">
+<div id="approvedOnboarding" class="approvedOnboarding">
+  <div class="approvedSlide active" data-i="0">
+    <img src="onboarding-1.jpg" alt="">
+    <button class="approvedSkip" aria-label="Atla"></button>
+  </div>
+  <div class="approvedSlide" data-i="1">
+    <img src="onboarding-2.jpg" alt="">
+    <button class="approvedSkip" aria-label="Atla"></button>
+  </div>
+  <div class="approvedSlide" data-i="2">
+    <img src="onboarding-3.jpg" alt="">
+    <button class="approvedSkip" aria-label="Atla"></button>
+    <button id="approvedAddFriend" class="approvedAddFriend" aria-label="Dostunu Ekle">
+      ＋ Dostunu Ekle
     </button>
+  </div>
+</div>
 
-    <button class="petCard dogCard" data-pet="dog">
-      <div class="petCardText">
-        <div class="roundIcon">🐶</div>
-        <div class="petName">Köpek</div>
-        <div class="chev">›</div>
+
+<div id="onboarding" class="onboarding onboardingVisible" aria-label="PetKarnem tanıtım ekranları">
+  <div class="onboardingSlides">
+
+    <section class="onboardingSlide active" data-onboard-index="0">
+      <button type="button" class="onboardSkip">Atla</button>
+
+      <div class="onboardBrandMark">
+        <img src="icon-192.png" alt="">
       </div>
-      <img src="dog.jpg" alt="">
-    </button>
+      <div class="onboardWordmark">Pet<span>Karnem</span></div>
+      <div class="onboardTagline">Sevginin karnesi, sağlığın güvencesi 💚</div>
 
-    <button id="addFriend" class="addFriend">＋ Dostunu Ekle</button>
+      <div class="onboardPetsHero">
+        <img class="onboardCat" src="pet-cat.jpg" alt="Kedi">
+        <img class="onboardDog" src="pet-dog.jpg" alt="Köpek">
+      </div>
 
-    <div class="pager">
-      <button class="dot" data-go="0"></button>
-      <button class="dot" data-go="1"></button>
-      <button class="dot active" data-go="2"></button>
-    </div>
-  </section>
+      <div class="onboardCopy">
+        <h2>Hoş Geldin! 👋</h2>
+        <p>Dostunun sağlık takibini kolaylaştır.<br>Aşıları, parazit uygulamalarını<br>ve ilaçları unutma.</p>
+      </div>
 
-  <div id="done" class="done">
-    <div>
-      <h2>Onboarding tamamlandı 💚</h2>
-      <p>Bu yalnızca test sürümü. Onaylarsan v2.58 FINAL’e bağlayacağız.</p>
-      <button id="restart">Tekrar Göster</button>
-    </div>
+      <div class="onboardDots" aria-hidden="true">
+        <i class="active"></i><i></i><i></i>
+      </div>
+    </section>
+
+    <section class="onboardingSlide" data-onboard-index="1">
+      <button type="button" class="onboardSkip">Atla</button>
+
+      <div class="onboardReminderVisual">
+        <div class="onboardPhoneMock">
+          <div class="mockTitle">Takvim</div>
+          <div class="mockMonth">Mayıs 2026</div>
+          <div class="mockWeek"><span>Pzt</span><span>Sal</span><span>Çar</span><span>Per</span><span>Cum</span><span>Cmt</span><span>Paz</span></div>
+          <div class="mockDays">
+            <span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>10</span><span>11</span>
+            <span>12</span><span>13</span><span>14</span><span>15</span><span>16</span><span>17</span><span>18</span>
+            <span>19</span><span class="today">20</span><span>21</span><span>22</span><span>23</span><span>24</span><span>25</span>
+          </div>
+        </div>
+        <div class="onboardBell">🔔<b>1</b></div>
+        <div class="onboardReminderCard">
+          <strong>🔔 Yaklaşan Hatırlatma</strong>
+          <span>Karma Aşı (DHPPiL)</span>
+          <small>20 Mayıs 2026 <em>5 gün kaldı</em></small>
+        </div>
+      </div>
+
+      <div class="onboardCopy reminderCopy">
+        <h2>PetKarnem takip etsin 🔔</h2>
+        <p>Yaklaşan işlemleri önceden haber versin,<br>zamanı geçenleri sana göstersin.<br>Böylece hiçbir şeyi unutmayasın.</p>
+      </div>
+
+      <div class="onboardDots">
+        <i></i><i class="active"></i><i></i>
+      </div>
+    </section>
+
+    <section class="onboardingSlide" data-onboard-index="2">
+      <button type="button" class="onboardSkip">Atla</button>
+
+      <div class="onboardCopy petAddCopy">
+        <h2>Dostunu ekle,<br>takibe başla! 💚</h2>
+        <p>Kedini veya köpeğini ekle<br>sağlık takvimini oluştur.</p>
+      </div>
+
+      <button type="button" class="onboardPetChoice" data-pet-type="cat">
+        <div class="choiceText"><span>🐱</span><b>Kedi</b><em>›</em></div>
+        <img src="pet-cat.jpg" alt="Kedi">
+      </button>
+
+      <button type="button" class="onboardPetChoice dogChoice" data-pet-type="dog">
+        <div class="choiceText"><span>🐶</span><b>Köpek</b><em>›</em></div>
+        <img src="pet-dog.jpg" alt="Köpek">
+      </button>
+
+      <button type="button" id="onboardAddPet" class="onboardAddPet">＋ Petimi Ekle</button>
+
+      <div class="onboardDots">
+        <i></i><i></i><i class="active"></i>
+      </div>
+    </section>
+
+  </div>
+</div>
+
+<div id="app">
+  <header class="topbar refTopbar">
+      <div class="refBrand">
+        <img src="petkarnem-approved-art.jpg" alt="">
+        <div class="refWordmark"><span>Pet</span><b>Karnem</b></div>
+      </div>
+    </header>
+
+  <main>
+    <section id="homeView" class="view active refHome">
+      <div class="refWelcome">
+        <div>
+          <h2 id="welcomeName">Merhaba 👋</h2>
+          <p>Minik dostlarının sağlık yolculuğunu<br>birlikte takip edelim.</p>
+        </div>
+        <div class="refWelcomePaw">🐾</div>
+      </div>
+
+      <div class="refSectionHead">
+        <h2>Dostlarım</h2>
+        <button type="button" id="showAllPetsBtn">Tümünü Gör ›</button>
+      </div>
+
+      <div id="refPetsGrid" class="refPetsGrid"></div>
+
+      <div class="refSectionHead refUpcomingHead">
+        <h2>Yaklaşanlar</h2>
+        <button type="button" id="goCalendarBtn">Takvime Git ›</button>
+      </div>
+
+      <div id="refUpcomingList" class="refUpcomingList"></div>
+
+      <button id="addPetBtn" class="srOnly" type="button">Pet Ekle</button>
+      <div id="petsList" class="srOnly"></div>
+    </section>
+
+    <section id="petDetailView" class="view petDetailView">
+      <div class="detailTop">
+        <button type="button" id="petDetailBack" class="detailBack">←</button>
+        <h2>Dost Bilgileri</h2>
+        <button type="button" id="petDetailEdit" class="detailEdit">Düzenle</button>
+      </div>
+
+      <div class="detailIdentity">
+        <div class="detailPhotoWrap">
+          <img id="petDetailPhoto" src="pet-cat.jpg" alt="">
+        </div>
+        <h1 id="petDetailName">Dostum <span>🐾</span></h1>
+        <div id="petDetailMeta" class="detailMeta"></div>
+      </div>
+
+      <div class="detailInfoCard">
+        <div class="detailInfoRow"><span>Cinsi</span><b id="petDetailBreed">—</b></div>
+        <div class="detailInfoRow"><span>Doğum Tarihi</span><b id="petDetailBirth">—</b></div>
+        <div class="detailInfoRow"><span>Güncel Kilo</span><b id="petDetailWeight">—</b></div>
+        <div class="detailInfoRow"><span>Kısırlaştırma</span><b id="petDetailNeutered">—</b></div>
+        <div class="detailInfoRow"><span>Mikroçip No</span><b id="petDetailChip">—</b></div>
+        <div class="detailInfoRow"><span>Notlar</span><b id="petDetailNote">—</b></div>
+      </div>
+
+      <div class="detailMenuCard">
+        <button type="button" id="detailHistory"><span>📋</span><b>Sağlık Bilgileri</b><strong>›</strong></button>
+      </div>
+    </section>
+
+    <section id="calendarView" class="view">
+      <div class="sectionHead"><h2>Takvim</h2><div class="pkCalendarLegend">
+          <span><i class="pkLegendDot today"></i>Bugün</span>
+          <span><i class="pkLegendDot soon"></i>Yaklaşıyor</span>
+          <span><i class="pkLegendDot overdue"></i>Gecikti</span>
+        </div><button class="secondary compactBtn" onclick="window.addAppointment()">＋ Randevu</button></div>
+      <div class="card calendarCard">
+        <div class="calendarTop"><button class="iconbtn" onclick="changeCalendarMonth(-1)">‹</button><h3 id="calendarMonthLabel"></h3><button class="iconbtn" onclick="changeCalendarMonth(1)">›</button></div>
+        <div class="weekHead"><span>Pzt</span><span>Sal</span><span>Çar</span><span>Per</span><span>Cum</span><span>Cmt</span><span>Paz</span></div>
+        <div id="monthGrid" class="monthGrid"></div>
+      </div>
+      <div class="calendarTabs"></div>
+      <div id="selectedDayTitle" class="muted selectedDayTitle"></div>
+      <div id="calendarList" class="stack"></div>
+    </section>
+
+    <section id="healthView" class="view healthReferenceView">
+  <div class="healthRefPageTitle">Sağlık</div>
+
+  <div class="healthRefPetStrip">
+    <div id="healthPetPicker" class="healthRefPetPicker"></div>
   </div>
 
+  <div class="healthRefCard">
+    <div class="healthRefCardTitle">
+      <span class="healthRefTitleIcon">🩺</span>
+      <h2 id="healthMainTitle">Sağlık Bilgileri</h2>
+    </div>
+    <div id="petHealthSummary" class="healthRefSummary"></div>
+  </div>
+
+  <div class="healthRefCard healthRefAddCard">
+    <div class="healthRefSectionTitle">Kayıt Ekle</div>
+    <div id="healthActions" class="healthRefActions"></div>
+  </div>
+
+  <div class="healthRefCard healthRefHistoryCard">
+    <div class="healthRefHistoryHeader">
+      <h3 id="healthHistoryTitle">Sağlık Geçmişi</h3>
+    </div>
+    <div id="healthHistoryFilters" class="healthRefFilters"></div>
+    <div id="healthHistory" class="healthRefHistoryList"></div>
+  </div>
+</section>
+
+    <section id="vetView" class="view">
+      <h2>Veterinerim</h2>
+      <div class="vetWelcomeCard">
+        <div class="vetWelcomeIcon">🩺</div>
+        <div class="vetWelcomeText">
+          <strong>Veterinerin hep yanında 🐾</strong>
+          <span>Klinik ve iletişim bilgilerini tek yerde sakla.</span>
+        </div>
+      </div>
+
+<div id="vetCard"></div>
+      <button class="primary big" id="addVetBtn">＋ Veteriner / Klinik Ekle</button>
+    </section>
+
+    <section id="profileView" class="view">
+      <h2>Profil & Ayarlar</h2>
+      <div class="card basicCard"><div class="basicBadge">PetKarnem Basic</div><h3>Ücretsiz</h3><div class="muted">Temel sağlık takibi, takvim ve veteriner kayıtları ücretsiz.</div></div>
+
+      <div class="settingsGroup"><h3>Hesabım</h3><div class="card settingsCard">
+        <label>Ad</label><input id="profileName" placeholder="Adınız">
+        <label>E-posta</label><input id="profileEmail" type="email" placeholder="ornek@email.com">
+        <label>Telefon</label><input id="profilePhone" inputmode="tel" placeholder="05xx xxx xx xx">
+        <button class="primary big" id="saveProfileBtn">Profili Kaydet</button>
+      </div></div>
+
+      <div class="settingsGroup"><h3>Petlerim</h3><div id="profilePetsList" class="stack"></div></div>
+
+      <div class="settingsGroup"><h3>Bildirim Ayarları</h3><div class="card settingsCard">
+        <label>Varsayılan hatırlatma</label>
+        <select id="defaultReminder"><option value="1">1 gün önce</option><option value="3">3 gün önce</option><option value="7">7 gün önce</option><option value="14">14 gün önce</option></select>
+        <label class="toggleRow"><span>Gecikenleri tekrar göster</span><input id="repeatOverdue" type="checkbox"></label>
+        <div class="muted settingsNote">Web testinde ayarlar kaydedilir; gerçek iPhone bildirimi native/TestFlight sürümünde test edilir.</div>
+      </div></div>
+
+      <div class="settingsGroup"><h3>Veriler & Gizlilik</h3><div class="card">
+        <b>Veriler bu cihazda saklanır</b><div class="muted">Bu web testinde bilgiler yalnızca tarayıcı belleğinde tutulur.</div>
+        <button class="danger big" id="resetBtn" style="margin-top:14px">Tüm Test Verilerini Sil</button>
+      </div></div>
+
+      <div class="settingsGroup"><h3>Hakkında</h3><div class="card">
+        <div class="settingsRow"><span>Uygulama</span><b>PetKarnem</b></div>
+        <div class="settingsRow"><span>Sürüm</span><b>Web Test v2.2.4</b></div>
+        <div class="settingsRow"><span>Plan</span><b>Basic • Ücretsiz</b></div>
+        <div class="settingsLink">Gizlilik Politikası <span>›</span></div>
+        <div class="settingsLink">Kullanım Koşulları <span>›</span></div>
+      </div></div>
+    </section>
+  </main>
+
+  <nav class="bottomnav">
+    <button data-view="homeView" class="navitem active" onclick="switchView('homeView',this)">🏠<span>Ana Sayfa</span></button>
+    <button data-view="vetView" class="navitem" onclick="switchView('vetView',this)">🩺<span>Veterinerim</span></button>
+    <button data-view="healthView" class="navitem" onclick="switchView('healthView',this)">❤️<span>Sağlık</span></button>
+    <button data-view="calendarView" class="navitem" onclick="switchView('calendarView',this)">📅<span>Takvim</span></button>
+    <button data-view="profileView" class="navitem" onclick="switchView('profileView',this)">👤<span>Profil</span></button>
+  </nav>
 </div>
+
+<dialog id="modal">
+  <form method="dialog" id="modalForm">
+    <div class="modalHead">
+      <h3 id="modalTitle">Yeni Kayıt</h3>
+      <button type="button" type="button" id="modalCloseX" class="iconbtn modalCloseBtn" aria-label="Kapat">✕</button>
+    </div>
+    <div id="modalBody"></div>
+    <div class="modalActions">
+      <button value="cancel" class="secondary">Vazgeç</button>
+      <button value="default" class="primary" id="saveModalBtn">Kaydet</button>
+    </div>
+  </form>
+</dialog>
+
 <script src="app.js"></script>
 </body>
 </html>

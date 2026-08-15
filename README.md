@@ -430,3 +430,11 @@ Gerçek bildirim testi native/TestFlight sürümünde yapılacaktır.
 - Bugün için kayıt varsa diff=0 olarak Yaklaşanlar listesine dahildir ve BUGÜN etiketi alır.
 - Gelecek 7 gün içindeki kayıtlar aynı listede görünür.
 - Başka bir gün seçilirse yalnız o günün kayıtları gösterilir.
+
+## v2.59 Onboarding Approved
+- v2.58 FINAL baz alındı.
+- Kullanıcının ayrı ayrı onayladığı 3 onboarding ekranı kullanıldı.
+- Sağa/sola kaydırma aktiftir.
+- Atla gerçek dokunma alanıdır.
+- Son ekranda + Dostunu Ekle gerçek butondur ve mevcut Dost Ekle akışını açar.
+- Bir kez tamamlandıktan/atlandıktan sonra tekrar gösterilmez.
