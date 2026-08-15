@@ -373,3 +373,10 @@ Gerçek bildirim testi native/TestFlight sürümünde yapılacaktır.
 - Kullanıcının bugünün tarihine tıklaması gerekmez.
 - Başka bir güne dokununca yalnızca o günün kayıtları gösterilir.
 - Takvim sekmesine her dönüşte görünüm yeniden Bugün + Yaklaşanlar olarak açılır.
+
+## v2.46 — Kod çalışmama düzeltmesi
+- v2.45'te takvim açılış durumunun top-level'da todayISO() ile başlatılması kaldırıldı.
+- Takvim başlangıç durumu artık uygulama yüklendikten sonra pkResetCalendarOpeningState() ile kuruluyor.
+- Takvim sekmesine girildiğinde bugün seçili + Yaklaşanlar görünümü güvenli biçimde sıfırlanıyor.
+- selectedCalendarDate ve calendarListMode tekrar tanımları kontrol edildi.
+- JavaScript sözdizimi kontrolü: True

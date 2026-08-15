@@ -9,7 +9,7 @@ normalizeState();
 let selectedPetId = state.pets[0]?.id || null;
 let healthHistoryFilter='all';
 let calendarCursor=new Date();
-let selectedCalendarDate=todayISO();
+let selectedCalendarDate=null;
     calendarListMode='upcoming';
 let calendarListMode='upcoming';
 let calendarTab='upcoming';
@@ -30,6 +30,7 @@ function petById(id){ return state.pets.find(p=>p.id===id); }
 
 
 window.switchView=(viewId,btn)=>{
+  if(viewId==='calendarView') pkResetCalendarOpeningState();
   if(viewId==='calendarView'){
     selectedCalendarDate=todayISO();
     calendarListMode='upcoming';
@@ -753,6 +754,12 @@ function calendarItems(){
   return state.records.filter(r=>r.next&&allowed.has(r.type)).map(r=>({...r,calendarDate:r.next}));
 }
 
+
+function pkResetCalendarOpeningState(){
+  selectedCalendarDate=todayISO();
+  calendarListMode='upcoming';
+}
+
 function renderCalendar(){
   const label=$('#calendarMonthLabel'), grid=$('#monthGrid');
   if(!label || !grid) return;
@@ -997,6 +1004,7 @@ function bindProfileSettings(){
 }
 
 function renderAll(){ renderPets(); renderHealth(); renderCalendar(); renderVet(); renderProfile(); bindProfileSettings(); renderPetDetailIfOpen(); }
+pkResetCalendarOpeningState();
 renderAll();
 
 if('serviceWorker' in navigator){
