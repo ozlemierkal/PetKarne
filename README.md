@@ -402,3 +402,17 @@ Gerçek bildirim testi native/TestFlight sürümünde yapılacaktır.
 - 1–7 gün içindeki kayıtlar turuncu, gecikmiş kayıtlar kırmızı, uzak tarihler nötr nokta kullanır.
 - Veteriner randevuları Sağlık Geçmişi'nden çıkarıldı; randevular yalnız Takvim tarafında gösterilir.
 - v2.50 onboarding ekranları ve diğer özellikler korunmuştur.
+
+## v2.52 — Veteriner randevusu / Sağlık Geçmişi düzeltmesi
+- Veteriner randevularını Sağlık Geçmişi'ne ikinci kez ekleyen `vets` kaynağı kaldırıldı.
+- Sağlık Geçmişi yalnız Aşı, İç Parazit, Dış Parazit, İlaç ve Kilo kayıtlarını gösterir.
+- “Veteriner/Muayene” filtresi kaldırıldı; randevular yalnız Takvim'de kalır.
+- v2.51 onboarding ve takvim görünümü korunmuştur.
+
+## v2.53 — Birebir onboarding
+- v2.52 baz alındı; veteriner randevuları Sağlık Geçmişi'nde gösterilmez.
+- Kullanıcının gönderdiği üç ekranlı onboarding referansı yeniden çizilmedi.
+- Referans görsel 3 ayrı ekrana kırpıldı ve doğrudan onboarding ekranı olarak kullanıldı.
+- Ekranlar dokunma veya yatay kaydırmayla ilerler.
+- 3. ekrandaki “Petimi Ekle” alanı mevcut Pet Ekle akışını açar.
+- Onboarding bir kez görüldükten sonra aynı Safari oturumunda tekrar gösterilmez.

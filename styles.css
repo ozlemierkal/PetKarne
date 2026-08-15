@@ -1902,3 +1902,61 @@ body.onboardingOpen{overflow:hidden!important}
 .dayDots .pkDot.soon{background:#E8A13B!important}
 .dayDots .pkDot.overdue{background:#D85B52!important}
 .dayDots .pkDot.normal{background:#BFC6BF!important}
+
+/* v2.53 — Gönderilen onboarding görselini birebir kullan */
+.onboarding,
+.onboardingSlides,
+.onboardingSlide{
+  display:none !important;
+}
+body.onboardingExactOpen{
+  overflow:hidden !important;
+}
+#onboarding.onboardingExact{
+  position:fixed;
+  inset:0;
+  z-index:10000;
+  background:#fff;
+}
+#onboarding:not(.onboardingVisible){
+  display:none !important;
+}
+.onboardingExactTrack{
+  width:100%;
+  height:100%;
+  position:relative;
+  overflow:hidden;
+  background:#fff;
+}
+.onboardingExactSlide{
+  display:none;
+  position:absolute;
+  inset:0;
+  align-items:center;
+  justify-content:center;
+  background:#fff;
+  overflow:hidden;
+}
+.onboardingExactSlide.active{
+  display:flex;
+}
+.onboardingExactSlide > img{
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  object-position:center;
+  display:block;
+  user-select:none;
+  -webkit-user-drag:none;
+}
+.onboardExactHotspot{
+  position:absolute;
+  left:23%;
+  right:9%;
+  bottom:12%;
+  height:9%;
+  border:0;
+  padding:0;
+  background:transparent;
+  z-index:3;
+}

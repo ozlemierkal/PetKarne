@@ -562,7 +562,7 @@ function renderHealth(){
     };
   });
   const filters=$('#healthHistoryFilters');
-  const defs=[['all','Tümü'],['internal','İç Parazit'],['external','Dış Parazit'],['vaccine','Aşılar'],['med','İlaçlar'],['weight','Kilo'],['vet','Veteriner/Muayene']];
+  const defs=[['all','Tümü'],['internal','İç Parazit'],['external','Dış Parazit'],['vaccine','Aşılar'],['med','İlaçlar'],['weight','Kilo']];
   filters.innerHTML=defs.map(([k,l])=>`<button type="button" class="chip ${healthHistoryFilter===k?'active':''}" data-history-filter="${k}">${l}</button>`).join('');
   $$('#healthHistoryFilters [data-history-filter]').forEach(btn=>{
     btn.onclick=(e)=>{ e.preventDefault(); setHealthHistoryFilter(btn.dataset.historyFilter); };
@@ -571,12 +571,11 @@ function renderHealth(){
   const hist=$('#healthHistory');
   if(!selectedPetId){hist.innerHTML='<div class="card empty">Önce bir pet ekle.</div>';return;}
 
-  const recs=state.records.filter(r=>r.petId===selectedPetId && r.type!=='appointment').map(r=>({...r,category:r.type}));
+  const recs=state.records.filter(r=>r.petId===selectedPetId && ['vaccine','internal','external'].includes(r.type)).map(r=>({...r,category:r.type}));
   const weights=state.weights.filter(r=>r.petId===selectedPetId).map(w=>({title:`Kilo • ${w.value} kg`,date:w.date,type:'weight',category:'weight'}));
   const meds=state.meds.filter(r=>r.petId===selectedPetId).map(m=>({title:`İlaç • ${m.name}`,date:m.start,type:'med',category:'med'}));
-  const vets=state.records.filter(r=>r.petId===selectedPetId && r.type==='appointment').map(r=>({...r,category:'vet'}));
 
-  let all=[...recs,...weights,...meds,...vets].sort((a,b)=>(b.date||b.next||'').localeCompare(a.date||a.next||''));
+  let all=[...recs,...weights,...meds].sort((a,b)=>(b.date||b.next||'').localeCompare(a.date||a.next||''));
   if(healthHistoryFilter!=='all') all=all.filter(r=>r.category===healthHistoryFilter);
 
   hist.innerHTML=all.length?all.map(r=>{
@@ -1091,14 +1090,15 @@ function pkDueStatus(dateStr){
 
 
 
-/* v2.50 — Onboarding */
+
+
+/* v2.53 — Birebir onboarding görselleri */
 (function(){
   const root=document.getElementById('onboarding');
   if(!root) return;
 
+  const slides=[...root.querySelectorAll('.onboardingExactSlide')];
   let index=0;
-  let selectedType='cat';
-  const slides=[...root.querySelectorAll('.onboardingSlide')];
 
   function show(i){
     index=Math.max(0,Math.min(slides.length-1,i));
@@ -1107,58 +1107,48 @@ function pkDueStatus(dateStr){
 
   function closeOnboarding(){
     root.classList.remove('onboardingVisible');
-    document.body.classList.remove('onboardingOpen');
+    document.body.classList.remove('onboardingExactOpen');
     try{ sessionStorage.setItem('petkarnemOnboardingSeen','1'); }catch(e){}
   }
 
-  document.body.classList.add('onboardingOpen');
+  document.body.classList.add('onboardingExactOpen');
+
   try{
     if(sessionStorage.getItem('petkarnemOnboardingSeen')==='1'){
       closeOnboarding();
     }
   }catch(e){}
 
-  root.querySelectorAll('.onboardSkip').forEach(btn=>btn.onclick=closeOnboarding);
-
-  // Tap empty area to advance, excluding interactive controls.
   slides.forEach((slide,n)=>{
     slide.addEventListener('click',(e)=>{
-      if(e.target.closest('button')) return;
+      if(e.target.closest('#onboardExactAddPet')) return;
       if(n<slides.length-1) show(n+1);
+      else closeOnboarding();
     });
   });
 
-  // Simple horizontal swipe.
-  let sx=0, sy=0;
+  let sx=0,sy=0;
   root.addEventListener('touchstart',e=>{
-    const t=e.touches[0]; sx=t.clientX; sy=t.clientY;
+    const t=e.touches[0];
+    sx=t.clientX; sy=t.clientY;
   },{passive:true});
   root.addEventListener('touchend',e=>{
     const t=e.changedTouches[0];
-    const dx=t.clientX-sx, dy=t.clientY-sy;
+    const dx=t.clientX-sx,dy=t.clientY-sy;
     if(Math.abs(dx)>55 && Math.abs(dx)>Math.abs(dy)){
       if(dx<0 && index<slides.length-1) show(index+1);
       if(dx>0 && index>0) show(index-1);
     }
   },{passive:true});
 
-  root.querySelectorAll('.onboardPetChoice').forEach(btn=>{
-    btn.onclick=()=>{
-      selectedType=btn.dataset.petType||'cat';
-      root.querySelectorAll('.onboardPetChoice').forEach(x=>x.classList.toggle('selected',x===btn));
+  const add=document.getElementById('onboardExactAddPet');
+  if(add){
+    add.onclick=(e)=>{
+      e.stopPropagation();
+      closeOnboarding();
+      const addBtn=document.getElementById('addPetBtn');
+      if(addBtn) addBtn.click();
     };
-  });
-  const defaultChoice=root.querySelector('[data-pet-type="cat"]');
-  if(defaultChoice) defaultChoice.classList.add('selected');
-
-  const add=document.getElementById('onboardAddPet');
-  if(add) add.onclick=()=>{
-    closeOnboarding();
-    const addBtn=document.getElementById('addPetBtn');
-    if(addBtn) addBtn.click();
-    setTimeout(()=>{
-      const type=document.getElementById('petType');
-      if(type) type.value=selectedType;
-    },0);
-  };
+  }
 })();
+
