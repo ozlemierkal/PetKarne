@@ -290,9 +290,10 @@ Gerçek bildirim testi native/TestFlight sürümünde yapılacaktır.
 - Kartta 🩺 ve 🐾 detayları ile kısa açıklama bulunur.
 - Veteriner/klinik ekleme alanı ve mevcut işlevler değiştirilmedi.
 
-## v2.32 — Takvim renkli durum etiketi testi
-- BUGÜN: yeşil.
-- Önümüzdeki 1–7 gün: turuncu, X GÜN KALDI.
-- Geçmiş tarih: kırmızı, X GÜN GECİKTİ.
-- 7 günden ilerideki tarihler normal kalır.
-- v2.31 ana sürüm korunmuştur; bu ayrı test sürümüdür.
+## v2.33 — Takvim sadeleştirme
+- v2.31 ana sürümünden üretildi.
+- Takvim = yapılacak/planlanmış işler.
+- Takvimde Bugün (yeşil), 1–7 gün Yaklaşıyor (turuncu), gecikenler (kırmızı) mantığı eklendi.
+- Takvim içindeki Geçmiş seçeneği kaldırıldı/gizlendi.
+- Sağlık Geçmişi aynen korunur ve yapılmış sağlık kayıtlarının arşivi olmaya devam eder.
+- Kilo gibi son tarih gerektirmeyen kayıtların amacı Sağlık Geçmişi olarak kalır.

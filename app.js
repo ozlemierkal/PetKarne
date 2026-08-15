@@ -892,31 +892,13 @@ document.addEventListener('click',(e)=>{
 
 
 function pkDueStatus(dateStr){
-  if(!dateStr) return {key:'normal',label:''};
-  const today=new Date();
-  today.setHours(0,0,0,0);
+  if(!dateStr) return {key:'normal',label:'',diff:null};
+  const today=new Date(); today.setHours(0,0,0,0);
   const due=new Date(String(dateStr).slice(0,10)+'T00:00:00');
-  if(Number.isNaN(due.getTime())) return {key:'normal',label:''};
+  if(Number.isNaN(due.getTime())) return {key:'normal',label:'',diff:null};
   const diff=Math.round((due-today)/86400000);
-  if(diff<0){
-    const n=Math.abs(diff);
-    return {key:'overdue',label:`${n} GÜN GECİKTİ`};
-  }
-  if(diff===0) return {key:'today',label:'BUGÜN'};
-  if(diff<=7) return {key:'soon',label:`${diff} GÜN KALDI`};
-  return {key:'normal',label:''};
-}
-
-function pkDecorateCalendarStatuses(){
-  document.querySelectorAll('#calendarView [data-date], #calendarView .eventItem, #calendarView .calEvent').forEach(el=>{
-    const date=el.dataset?.date;
-    if(!date || el.querySelector('.pkDueBadge')) return;
-    const st=pkDueStatus(date);
-    if(!st.label) return;
-    const badge=document.createElement('span');
-    badge.className=`pkDueBadge ${st.key}`;
-    badge.textContent=st.label;
-    el.appendChild(badge);
-    el.classList.add(`pkDue-${st.key}`);
-  });
+  if(diff<0) return {key:'overdue',label:`${Math.abs(diff)} GÜN GECİKTİ`,diff};
+  if(diff===0) return {key:'today',label:'BUGÜN',diff};
+  if(diff<=7) return {key:'soon',label:`${diff} GÜN KALDI`,diff};
+  return {key:'normal',label:'',diff};
 }
