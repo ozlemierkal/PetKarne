@@ -363,20 +363,7 @@ Gerçek bildirim testi native/TestFlight sürümünde yapılacaktır.
 - Tarih güncellemesi sonrası Takvim otomatik olarak Yaklaşanlar görünümüne döner; kayıt yeni tarihiyle görünmeye devam eder.
 - Sağlık kayıt detayındaki sıra kesin olarak Uygulama → Uygulayan → Sonraki tarih yapıldı.
 
-## v2.44
-- Bugün tarihi diğer günlerle aynı tek tıklama seçim mantığını kullanır.
-- Bir tık: o günün kayıtları. Aynı güne ikinci tık: Yaklaşanlar.
-
-## v2.45 — Takvim açılış davranışı
-- Takvim açıldığında bugünün tarihi otomatik seçili görünür.
-- Aynı anda altta doğrudan Yaklaşanlar listesi gösterilir.
-- Kullanıcının bugünün tarihine tıklaması gerekmez.
-- Başka bir güne dokununca yalnızca o günün kayıtları gösterilir.
-- Takvim sekmesine her dönüşte görünüm yeniden Bugün + Yaklaşanlar olarak açılır.
-
-## v2.46 — Kod çalışmama düzeltmesi
-- v2.45'te takvim açılış durumunun top-level'da todayISO() ile başlatılması kaldırıldı.
-- Takvim başlangıç durumu artık uygulama yüklendikten sonra pkResetCalendarOpeningState() ile kuruluyor.
-- Takvim sekmesine girildiğinde bugün seçili + Yaklaşanlar görünümü güvenli biçimde sıfırlanıyor.
-- selectedCalendarDate ve calendarListMode tekrar tanımları kontrol edildi.
-- JavaScript sözdizimi kontrolü: True
+## v2.43 — Yeni varsayılan pet görselleri
+- v2.44–v2.46 takvim değişiklikleri alınmadı; çalışan v2.43 tabanı korundu.
+- Varsayılan kedi görseli son gönderilen oturan yavru kedi ile değiştirildi.
+- Varsayılan köpek görseli son gönderilen oturan Golden yavru ile değiştirildi.
