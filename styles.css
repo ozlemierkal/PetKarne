@@ -1,11 +1,1903 @@
 
-*{box-sizing:border-box}html,body,#app{margin:0;width:100%;height:100%;overflow:hidden;background:#fff;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
-.slide{position:absolute;inset:0;display:none;background:#fff;overflow:hidden}.slide.active{display:block}
-.crop{position:absolute;inset:0;background-image:url("triptych.png");background-repeat:no-repeat;background-size:300% 100%;background-color:#fff}
-.c1{background-position:0 0}.c2{background-position:50% 0}.c3{background-position:100% 0}
-.skip{position:absolute;right:4.8%;top:calc(env(safe-area-inset-top) + 2.4%);width:22%;height:7%;border:0;background:transparent;color:transparent;z-index:5}
-.next{position:absolute;right:4.7%;bottom:calc(env(safe-area-inset-bottom) + 3.2%);width:18%;height:10%;border:0;background:transparent;color:transparent;z-index:5}
-.add{position:absolute;left:8%;right:8%;bottom:calc(env(safe-area-inset-bottom) + 10.5%);height:8%;border:0;border-radius:40px;background:transparent;color:transparent;z-index:5}
-.dots{position:absolute;left:35%;right:35%;bottom:calc(env(safe-area-inset-bottom) + 4%);height:5%;z-index:4;display:flex;justify-content:center;gap:22px;align-items:center}
-.dots i{width:20px;height:20px;border-radius:50%;background:transparent}
-#done{position:fixed;inset:0;display:none;place-items:center;text-align:center;background:#fff;padding:30px}#done.show{display:grid}#done h2{color:#24743a}#done button{border:0;background:#24743a;color:#fff;padding:14px 22px;border-radius:12px;font-weight:800}
+:root{
+  --green:#237A57; --green2:#3E8E68; --mint:#EAF6EF; --bg:#F7FAF8;
+  --text:#1D2A23; --muted:#6E7D74; --line:#E2E9E4; --red:#C94C4C;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);color:var(--text)}
+button,input,select,textarea{font:inherit}
+#app{max-width:540px;margin:0 auto;min-height:100vh;padding-bottom:86px}
+.topbar{position:sticky;top:0;z-index:5;display:flex;justify-content:space-between;align-items:center;padding:18px 16px;background:rgba(247,250,248,.94);backdrop-filter:blur(16px);border-bottom:1px solid var(--line)}
+.brand{font-size:24px;font-weight:800;color:var(--green)}
+.subtitle{font-size:12px;color:var(--muted)}
+main{padding:16px}
+.view{display:none}.view.active{display:block}
+h2{font-size:24px;margin:10px 0 14px} h3{margin:0 0 10px}
+.card{background:#fff;border:1px solid var(--line);border-radius:20px;padding:16px;box-shadow:0 6px 20px rgba(35,122,87,.05)}
+.stack{display:grid;gap:12px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0 22px}
+.petcard{display:flex;align-items:center;gap:12px;cursor:pointer}
+.avatar{width:52px;height:52px;border-radius:50%;display:grid;place-items:center;background:var(--mint);font-size:28px}
+.petmeta{flex:1}.petname{font-weight:800;font-size:18px}.muted{color:var(--muted);font-size:13px}
+.primary,.secondary,.danger,.iconbtn{border:0;border-radius:14px;padding:12px 16px}
+.primary{background:var(--green);color:white;font-weight:700}
+.secondary{background:#EEF3F0;color:var(--text);font-weight:700}
+.danger{background:#FFF0F0;color:var(--red);font-weight:700}
+.big{width:100%;min-height:52px}
+.iconbtn{background:transparent;padding:8px}
+.summary{margin-top:18px}
+.actionCard{background:#fff;border:1px solid var(--line);border-radius:18px;padding:16px;text-align:left}
+.actionCard b{display:block;margin-top:8px}
+.chips{display:flex;gap:8px;overflow:auto;padding-bottom:4px}
+.chip{border:1px solid var(--line);background:white;border-radius:999px;padding:8px 12px;white-space:nowrap}
+.chip.active{background:var(--green);color:#fff;border-color:var(--green)}
+.status-overdue{border-left:4px solid var(--red)}
+.status-today{border-left:4px solid #E6A23C}
+.status-upcoming{border-left:4px solid var(--green2)}
+.row{display:flex;gap:8px;align-items:center}
+.row>*{flex:1}
+label{display:block;font-size:13px;font-weight:700;margin:10px 0 6px}
+input,select,textarea{width:100%;padding:12px;border:1px solid var(--line);border-radius:14px;background:#fff}
+textarea{min-height:80px}
+.bottomnav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:min(540px,100%);display:grid;grid-template-columns:repeat(5,1fr);background:#fff;border-top:1px solid var(--line);padding:8px 6px calc(8px + env(safe-area-inset-bottom));z-index:6}
+.navitem{background:transparent;border:0;color:var(--muted);display:grid;gap:3px;place-items:center;font-size:18px}
+.navitem span{font-size:10px}.navitem.active{color:var(--green);font-weight:700}
+dialog{border:0;border-radius:22px;width:min(92vw,500px);padding:0;box-shadow:0 30px 80px rgba(0,0,0,.25)}
+dialog::backdrop{background:rgba(0,0,0,.35)}
+#modalForm{padding:18px}.modalHead{display:flex;justify-content:space-between;align-items:center}.modalActions{display:flex;gap:10px;justify-content:flex-end;margin-top:18px}
+.empty{color:var(--muted);text-align:center;padding:24px}
+.smallbtn{border:0;border-radius:10px;padding:8px 10px;background:#EEF3F0}
+
+.grid2 .actionCard:last-child:nth-child(odd){grid-column:1/-1}
+
+.summaryLine{padding:7px 0;border-bottom:1px solid var(--line);font-size:14px}
+.summaryLine:last-child{border-bottom:0}
+.calendarActions{display:flex;gap:6px;flex-wrap:wrap}
+.calendarActions button{flex:1;min-width:90px}
+
+.petHomeGroup{display:grid;gap:8px;margin-bottom:18px}
+.petSummaryCard{margin-left:12px;border-top-left-radius:10px}
+
+.brandPets{font-size:21px;letter-spacing:-4px;margin-right:6px}
+.welcomeHero{display:flex;align-items:center;gap:14px;background:linear-gradient(135deg,#EAF6EF,#fff);border:1px solid var(--line);border-radius:22px;padding:16px;margin-bottom:14px}
+.welcomeHero h2{margin:0 0 5px;font-size:20px}.heroPets{display:flex;min-width:88px}
+.heroPet{width:54px;height:54px;border-radius:50%;display:grid;place-items:center;font-size:34px;background:#fff;border:1px solid var(--line);box-shadow:0 6px 18px rgba(35,122,87,.08)}
+.heroPet.dog{margin-left:-14px;background:#F4FBF6}
+.basicCard{background:linear-gradient(135deg,#EAF6EF,#fff);margin-bottom:18px}.basicBadge{display:inline-block;background:var(--green);color:#fff;border-radius:999px;padding:6px 10px;font-size:12px;font-weight:800;margin-bottom:8px}
+.settingsGroup{margin:20px 0}.settingsCard label{margin-top:12px}.toggleRow{display:flex!important;align-items:center;justify-content:space-between;gap:12px;padding:12px 0}.toggleRow input{width:auto;transform:scale(1.2)}
+.settingsNote{margin-top:12px;line-height:1.4}.settingsRow{display:flex;justify-content:space-between;gap:14px;padding:10px 0;border-bottom:1px solid var(--line)}.settingsLink{display:flex;justify-content:space-between;padding:13px 0;border-top:1px solid var(--line);color:var(--green);font-weight:700}
+
+.sectionHead{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.compactBtn{padding:9px 12px}.historyChips{margin-bottom:12px}.calendarCard{padding:14px;margin-bottom:14px}
+.calendarTop{display:flex;align-items:center;justify-content:space-between}.calendarTop h3{margin:0;text-transform:capitalize}
+.weekHead{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin:10px 0 4px;text-align:center;font-size:11px;color:var(--muted);font-weight:700}
+.monthGrid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}.dayCell{position:relative;min-height:44px;border:0;border-radius:12px;background:#F8FBF9;color:var(--text);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px}.dayCell.blank{background:transparent}.dayCell.today{outline:2px solid var(--green)}.dayCell.selected{background:var(--green);color:#fff}.dayDots{display:flex;gap:2px}.dayDots i{width:5px;height:5px;border-radius:50%;display:block;background:var(--green2)}.dayDots i.appointment{background:#7A6FE8}.dayDots i.vaccine{background:#3E8E68}.dayDots i.internal{background:#C79840}.dayDots i.external{background:#4E86C6}
+.calendarTabs{display:flex;gap:8px;margin:12px 0}.selectedDayTitle{margin:6px 0 10px;font-weight:700}.calendarPetTitle{font-size:15px;margin-bottom:6px}
+
+/* v2.3.5: Sağlık Geçmişi kategorilerinin tamamı telefonda görünür */
+.historyChips{
+  display:flex;
+  flex-wrap:wrap;
+  gap:7px;
+  overflow:visible;
+}
+.historyChips .chip{
+  flex:0 0 auto;
+  white-space:nowrap;
+}
+
+/* v2.4 — daha sıcak ve renkli PetKarnem görsel dili */
+:root{
+  --mintSoft:#EAF7F0;
+  --peachSoft:#FFF0E7;
+  --blueSoft:#EAF3FF;
+  --pinkSoft:#FCECF4;
+  --yellowSoft:#FFF6D9;
+  --lilacSoft:#F2ECFF;
+  --sageSoft:#EFF6EA;
+}
+
+body{
+  background:
+    radial-gradient(circle at top left, rgba(35,122,87,.06), transparent 34%),
+    linear-gradient(180deg,#FBFDFB 0%,#F7FAF8 100%);
+}
+
+.topbar{
+  background:rgba(252,254,252,.94);
+  box-shadow:0 4px 18px rgba(35,122,87,.05);
+}
+
+.brand{
+  letter-spacing:-.3px;
+}
+
+.welcomeHero{
+  position:relative;
+  overflow:hidden;
+  background:
+    radial-gradient(circle at 90% 10%, rgba(255,216,191,.55), transparent 28%),
+    radial-gradient(circle at 8% 85%, rgba(210,236,255,.7), transparent 30%),
+    linear-gradient(135deg,#EEF9F2 0%,#FFF9F4 100%);
+  border-color:#DCEBE1;
+  box-shadow:0 10px 28px rgba(35,122,87,.08);
+}
+.welcomeHero::after{
+  content:"🐾  ♡  🐾";
+  position:absolute;
+  right:14px;
+  bottom:8px;
+  font-size:16px;
+  opacity:.12;
+  letter-spacing:5px;
+}
+
+.heroPet{
+  border:none;
+  box-shadow:0 7px 20px rgba(35,122,87,.12);
+}
+.heroPet:first-child{background:var(--peachSoft)}
+.heroPet.dog{background:var(--blueSoft)}
+
+.card{
+  border-color:#E7ECE8;
+  box-shadow:0 7px 22px rgba(35,122,87,.055);
+}
+
+.petHomeGroup:nth-child(odd) .petcard{
+  background:linear-gradient(135deg,#FFF9F5,#FFFFFF);
+}
+.petHomeGroup:nth-child(even) .petcard{
+  background:linear-gradient(135deg,#F2F8FF,#FFFFFF);
+}
+.petSummaryCard{
+  background:linear-gradient(135deg,#F3FAF6,#FFFFFF);
+}
+
+.avatar{
+  box-shadow:inset 0 0 0 1px rgba(35,122,87,.06);
+}
+
+/* Sağlık kayıt giriş kartları */
+#healthActions .actionCard{
+  transition:transform .12s ease, box-shadow .12s ease;
+  border:none;
+  box-shadow:0 7px 18px rgba(35,122,87,.07);
+}
+#healthActions .actionCard:active{transform:scale(.98)}
+#healthActions .actionCard:nth-child(1){background:var(--lilacSoft)}
+#healthActions .actionCard:nth-child(2){background:var(--blueSoft)}
+#healthActions .actionCard:nth-child(3){background:var(--pinkSoft)}
+#healthActions .actionCard:nth-child(4){background:var(--yellowSoft)}
+#healthActions .actionCard:nth-child(5){background:var(--mintSoft)}
+
+#healthActions .actionCard:nth-child(1) b{color:#6751A8}
+#healthActions .actionCard:nth-child(2) b{color:#3D6E9F}
+#healthActions .actionCard:nth-child(3) b{color:#A64F73}
+#healthActions .actionCard:nth-child(4) b{color:#8B6A18}
+#healthActions .actionCard:nth-child(5) b{color:#317557}
+
+/* Sağlık özeti */
+#petHealthSummary{
+  background:linear-gradient(135deg,#F5FBF7,#FFFFFF);
+  border-color:#DDEBE2;
+}
+.summaryLine{
+  border-bottom-color:#E9EFEB;
+}
+
+/* Sağlık geçmişi chipleri */
+.historyChips .chip{
+  background:#fff;
+  box-shadow:0 3px 10px rgba(35,122,87,.04);
+}
+.historyChips .chip.active{
+  box-shadow:0 5px 14px rgba(35,122,87,.16);
+}
+
+/* Takvim */
+.calendarCard{
+  background:linear-gradient(180deg,#FFFFFF,#FBFDFB);
+}
+.dayCell{
+  background:#FAFCFA;
+}
+.dayCell:nth-child(7n+6), .dayCell:nth-child(7n+7){
+  background:#FFF9F5;
+}
+.dayCell.today{
+  background:#EEF8F2;
+}
+.dayCell.selected{
+  background:linear-gradient(135deg,#237A57,#3E8E68);
+  box-shadow:0 6px 16px rgba(35,122,87,.2);
+}
+
+/* Veteriner */
+#vetCard .card:first-child{
+  background:linear-gradient(135deg,#FFF8EA,#FFFFFF);
+  border-color:#F3E6C8;
+}
+
+/* Profil */
+.basicCard{
+  background:
+    radial-gradient(circle at 88% 18%, rgba(255,217,189,.45), transparent 25%),
+    linear-gradient(135deg,#EEF9F2,#FFFFFF);
+  box-shadow:0 10px 26px rgba(35,122,87,.08);
+}
+
+.primary{
+  box-shadow:0 6px 14px rgba(35,122,87,.16);
+}
+.secondary{
+  background:#F0F5F2;
+}
+
+.bottomnav{
+  box-shadow:0 -6px 20px rgba(35,122,87,.06);
+}
+.navitem.active{
+  background:#EEF8F2;
+  border-radius:12px;
+  padding:6px 4px;
+}
+
+/* Modal */
+dialog{
+  border:1px solid #E4EAE6;
+}
+#modalForm{
+  background:linear-gradient(180deg,#FFFFFF,#FCFEFC);
+}
+
+/* v2.4.1 — Sağlık Geçmişi kategori sekmelerinde kontrast düzeltmesi */
+.historyChips .chip{
+  color:#2F3D35;
+  border:1px solid #D9E5DD;
+  background:#FFFFFF;
+  font-weight:700;
+}
+
+.historyChips .chip.active{
+  color:#FFFFFF !important;
+  background:#237A57 !important;
+  border-color:#237A57 !important;
+  box-shadow:0 5px 14px rgba(35,122,87,.20);
+}
+
+.historyChips .chip:focus,
+.historyChips .chip:active{
+  color:#FFFFFF;
+}
+
+#healthHistoryFilters .chip:not(.active){
+  color:#33463B !important;
+  background:#FFFFFF !important;
+}
+
+/* v2.12 Home + Dost Bilgileri reference */
+
+.refTopbar{
+  min-height:66px;
+  padding:7px 14px;
+  background:#fff;
+  border-bottom:1px solid #EFF0EB;
+  box-shadow:none;
+  overflow:visible;
+}
+.refBrand{display:flex;align-items:center;gap:7px;height:54px;overflow:visible}
+.refBrand img{width:72px;height:54px;object-fit:contain;display:block}
+.refWordmark{display:flex;align-items:baseline;white-space:nowrap;font-family:Arial Rounded MT Bold,Arial,sans-serif;font-size:27px;font-weight:900;letter-spacing:-1.5px}
+.refWordmark span{color:#16582B}.refWordmark b{color:#6EAA27}
+
+.refHome{padding-top:4px}
+.refWelcome{height:119px;background:linear-gradient(135deg,#67A918,#7FB71E);border-radius:14px;color:#fff;padding:17px 19px;margin:4px 0 20px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 6px 16px rgba(98,152,25,.14)}
+.refWelcome h2{margin:0 0 8px;color:#fff;font-size:19px}.refWelcome p{margin:0;color:#fff;font-size:13px;line-height:1.55}
+.refWelcomePaw{font-size:58px;opacity:.10;filter:grayscale(1) brightness(4);transform:rotate(-15deg)}
+.refSectionHead{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}.refSectionHead h2{margin:0;font-size:19px}
+.refSectionHead button{border:0;background:transparent;color:#5F981D;font-size:12px;font-weight:800;padding:5px 0}
+.refPetsGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin-bottom:27px}
+.refPetCard,.refAddCard{min-width:0;height:220px;border:1px solid #E7E9E2;border-radius:15px;background:#fff;padding:8px;box-shadow:0 4px 13px rgba(41,72,34,.07);text-align:left}
+.refPetVisual{height:126px;border-radius:11px;position:relative;overflow:hidden;background:#F3EFE6}
+.refPetVisual img{width:100%;height:100%;object-fit:cover;object-position:center;display:block}
+.refPawBadge{position:absolute;right:-1px;bottom:-1px;width:38px;height:38px;border-radius:50%;background:#72AE29;display:grid;place-items:center;font-size:17px}
+.refPetName{margin:8px 2px 5px;font-size:14px;font-weight:850}.refSpecies{display:inline-block;margin-left:2px;padding:3px 6px;border-radius:6px;background:#EAF5D8;color:#42751D;font-size:9px;font-weight:800}
+.refPetMeta{margin:7px 2px 0;color:#4F5850;font-size:9px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.refAddCard{border:1.5px dashed #B9C8A7;box-shadow:none;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;color:#65A020}
+.refAddCircle{width:48px;height:48px;border:2px solid #67A523;border-radius:50%;display:grid;place-items:center;font-size:34px;line-height:1;margin-bottom:15px}
+.refUpcomingHead{margin-bottom:11px}.refUpcomingList{display:grid;gap:9px}
+.refUpcomingCard{min-height:75px;border:1px solid #E7E9E2;border-radius:13px;background:#fff;box-shadow:0 3px 10px rgba(40,69,34,.055);padding:9px 10px;display:flex;align-items:center;gap:10px}
+.refUpcomingIcon{width:49px;height:49px;flex:0 0 49px;border-radius:50%;display:grid;place-items:center;font-size:22px}.refUpcomingIcon.green{background:#EAF5D8}.refUpcomingIcon.blue{background:#E7EEFF}.refUpcomingIcon.aqua{background:#E6F5F4}.refUpcomingIcon.purple{background:#F0E9FA}
+.refUpcomingText{min-width:0;flex:1;display:grid;gap:4px}.refUpcomingText b{font-size:12px}.refUpcomingText span{font-size:10px;color:#687169}
+.refUpcomingCard em{font-style:normal;white-space:nowrap;padding:5px 8px;border-radius:13px;background:#EDF6DC;color:#477B20;font-size:9px;font-weight:800}
+.refUpcomingEmpty{border:1px solid #E7E9E2;border-radius:13px;padding:18px;color:#788079;text-align:center;font-size:12px}
+.refAllPetRow{width:100%;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;text-align:left}
+.srOnly{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
+
+/* Dost Bilgileri */
+.petDetailView{padding-top:2px}
+.detailTop{display:grid;grid-template-columns:70px 1fr 70px;align-items:center;margin-bottom:18px}
+.detailTop h2{text-align:center;margin:0;font-size:19px}
+.detailBack,.detailEdit{border:0;background:transparent;padding:8px 0;font-weight:800}
+.detailBack{text-align:left;font-size:31px;line-height:1;color:#111}
+.detailEdit{text-align:right;font-size:13px;color:#69A124}
+
+.detailIdentity{text-align:center;margin-bottom:21px}
+.detailPhotoWrap{width:142px;height:142px;border-radius:50%;margin:0 auto 11px;position:relative;background:#F3F0E8;box-shadow:0 2px 8px rgba(0,0,0,.04)}
+.detailPhotoWrap img{width:100%;height:100%;border-radius:50%;object-fit:cover;object-position:center;display:block}
+.cameraBadge{position:absolute;right:-2px;bottom:7px;width:42px;height:42px;border-radius:50%;border:1px solid #E4E6DF;background:#fff;box-shadow:0 3px 8px rgba(0,0,0,.09);display:grid;place-items:center;font-size:20px}
+.detailIdentity h1{font-size:23px;margin:0 0 7px;letter-spacing:-.4px}.detailIdentity h1 span{font-size:17px}
+.detailMeta{font-size:13px;color:#484F49}
+
+.detailInfoCard{background:#fff;border:1px solid #E8E9E4;border-radius:15px;padding:10px 16px;margin-bottom:14px;box-shadow:0 4px 13px rgba(40,69,34,.055)}
+.detailInfoRow{min-height:48px;display:flex;align-items:center;justify-content:space-between;gap:15px}
+.detailInfoRow span{font-size:13px;font-weight:750}.detailInfoRow b{font-size:13px;font-weight:500;text-align:right;color:#383E39;max-width:55%;overflow-wrap:anywhere}
+
+.detailMenuCard{background:#fff;border:1px solid #E8E9E4;border-radius:15px;overflow:hidden;box-shadow:0 4px 13px rgba(40,69,34,.055)}
+.detailMenuCard button{width:100%;min-height:62px;border:0;border-bottom:1px solid #ECEDE8;background:#fff;display:grid;grid-template-columns:42px 1fr 22px;align-items:center;text-align:left;padding:0 14px}
+.detailMenuCard button:last-child{border-bottom:0}
+.detailMenuCard button span{font-size:22px}.detailMenuCard button b{font-size:14px}.detailMenuCard button strong{font-size:25px;color:#737A74;font-weight:400}
+
+#modalCloseX{cursor:pointer;min-width:42px;min-height:42px;display:grid;place-items:center;position:relative;z-index:30}
+
+.bottomnav{box-shadow:0 -3px 12px rgba(40,69,34,.05);padding-top:6px}.navitem{font-size:17px}.navitem span{font-size:9px}.navitem.active{color:#66A21F;background:transparent}
+
+@media(max-width:370px){
+  .refPetsGrid{gap:6px}
+  .refPetCard,.refAddCard{height:204px;padding:6px}
+  .refPetVisual{height:113px}
+  .refWelcome{height:112px;padding:15px}
+  .detailPhotoWrap{width:128px;height:128px}
+}
+
+
+/* v2.13 — Dost Bilgileri: kullanıcının gönderdiği referansa yakın düzen.
+   Ana ekran kurallarına dokunulmaz. */
+
+body.petDetailMode .refTopbar{display:none}
+body.petDetailMode main{padding:0 22px 26px}
+body.petDetailMode #app{background:#fff}
+body.petDetailMode .bottomnav{border-top:1px solid #E7E8E4}
+
+.petDetailView{
+  background:#fff;
+  padding:0 0 30px;
+  color:#171A17;
+}
+.petDetailView .detailTop{
+  height:76px;
+  display:grid;
+  grid-template-columns:72px 1fr 72px;
+  align-items:center;
+  margin:0;
+}
+.petDetailView .detailTop h2{
+  margin:0;
+  text-align:center;
+  font-size:20px;
+  line-height:1;
+  font-weight:850;
+  letter-spacing:-.3px;
+}
+.petDetailView .detailBack{
+  border:0;
+  background:transparent;
+  padding:0;
+  text-align:left;
+  font-size:36px;
+  line-height:1;
+  font-weight:400;
+  color:#111;
+}
+.petDetailView .detailEdit{
+  border:0;
+  background:transparent;
+  padding:0;
+  text-align:right;
+  font-size:15px;
+  line-height:1;
+  font-weight:800;
+  color:#72A92B;
+}
+
+.petDetailView .detailIdentity{
+  text-align:center;
+  margin:14px 0 29px;
+}
+.petDetailView .detailPhotoWrap{
+  width:164px;
+  height:164px;
+  margin:0 auto 17px;
+  border-radius:50%;
+  position:relative;
+  background:#F2EEE5;
+  box-shadow:none;
+}
+.petDetailView .detailPhotoWrap img{
+  width:100%;
+  height:100%;
+  border-radius:50%;
+  object-fit:cover;
+  object-position:center;
+  display:block;
+}
+.petDetailView .cameraBadge{
+  position:absolute;
+  right:-3px;
+  bottom:8px;
+  width:47px;
+  height:47px;
+  border-radius:50%;
+  border:1px solid #E8EAE5;
+  background:#fff;
+  box-shadow:0 4px 12px rgba(0,0,0,.08);
+  display:grid;
+  place-items:center;
+  font-size:0;
+}
+.petDetailView .cameraBadge::before{
+  content:"📷";
+  font-size:23px;
+  filter:hue-rotate(45deg) saturate(.8);
+}
+.petDetailView .detailIdentity h1{
+  margin:0 0 8px;
+  font-size:25px;
+  line-height:1.15;
+  font-weight:900;
+  letter-spacing:-.5px;
+}
+.petDetailView .detailIdentity h1 span{
+  display:inline-grid;
+  place-items:center;
+  width:30px;
+  height:30px;
+  margin-left:3px;
+  border-radius:50%;
+  background:#EEF6DB;
+  font-size:17px;
+  vertical-align:3px;
+}
+.petDetailView .detailMeta{
+  color:#4A4D49;
+  font-size:15px;
+  font-weight:500;
+}
+
+.petDetailView .detailInfoCard{
+  margin:0 0 14px;
+  padding:13px 18px;
+  border:1px solid #ECEDE8;
+  border-radius:18px;
+  background:#fff;
+  box-shadow:0 4px 14px rgba(35,50,29,.055);
+}
+.petDetailView .detailInfoRow{
+  min-height:51px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:18px;
+}
+.petDetailView .detailInfoRow span{
+  color:#181B18;
+  font-size:15px;
+  font-weight:800;
+}
+.petDetailView .detailInfoRow b{
+  max-width:58%;
+  color:#424642;
+  font-size:15px;
+  font-weight:500;
+  text-align:right;
+  overflow-wrap:anywhere;
+}
+
+.petDetailView .detailMenuCard{
+  margin:0;
+  border:1px solid #ECEDE8;
+  border-radius:18px;
+  background:#fff;
+  overflow:hidden;
+  box-shadow:0 4px 14px rgba(35,50,29,.055);
+}
+.petDetailView .detailMenuCard button{
+  width:100%;
+  min-height:68px;
+  display:grid;
+  grid-template-columns:44px 1fr 24px;
+  align-items:center;
+  padding:0 18px;
+  border:0;
+  border-bottom:1px solid #ECEDE8;
+  background:#fff;
+  color:#171A17;
+  text-align:left;
+}
+.petDetailView .detailMenuCard button:last-child{border-bottom:0}
+.petDetailView .detailMenuCard button span{
+  font-size:23px;
+  filter:grayscale(1);
+  opacity:.78;
+}
+.petDetailView .detailMenuCard button b{
+  font-size:15px;
+  font-weight:800;
+}
+.petDetailView .detailMenuCard button strong{
+  color:#777C77;
+  font-size:29px;
+  line-height:1;
+  font-weight:300;
+  text-align:right;
+}
+
+body.petDetailMode .bottomnav .navitem{color:#232823}
+body.petDetailMode .bottomnav .navitem[data-view="healthView"]{
+  color:#68A624;
+  font-weight:800;
+}
+body.petDetailMode .bottomnav .navitem[data-view="healthView"]{
+  background:transparent;
+}
+
+@media(max-width:390px){
+  body.petDetailMode main{padding-left:17px;padding-right:17px}
+  .petDetailView .detailPhotoWrap{width:150px;height:150px}
+  .petDetailView .detailIdentity{margin-top:8px;margin-bottom:24px}
+  .petDetailView .detailInfoRow{min-height:48px}
+}
+
+/* v2.14 photo consistency */
+.cameraBadge{display:none!important}
+.editPetPortrait{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  text-align:center;
+  margin:0 0 18px;
+  padding-bottom:17px;
+  border-bottom:1px solid #ECEDE8;
+}
+.editPetPortrait img{
+  width:126px;
+  height:126px;
+  object-fit:cover;
+  object-position:center;
+  border-radius:50%;
+  background:#F2EEE5;
+  display:block;
+  margin-bottom:10px;
+}
+.editPetPortrait b{font-size:20px;line-height:1.2}
+.editPetPortrait span{margin-top:4px;color:#6B726C;font-size:12px}
+
+/* v2.16 — iPhone/Safari randevu formu zıplama düzeltmesi */
+
+/* Dialog ekranda sabit, kendi içinde taşar */
+dialog#modal{
+  width:min(94vw,430px);
+  max-width:430px;
+  max-height:88dvh;
+  margin:auto;
+  padding:0;
+  overflow:hidden;
+  border-radius:20px;
+}
+
+/* iOS eski viewport davranışı için fallback */
+@supports not (height: 1dvh){
+  dialog#modal{
+    max-height:88vh;
+  }
+}
+
+/* Form gövdesi sabit yükseklik mantığıyla kendi içinde scroll olur */
+#modalForm{
+  display:flex;
+  flex-direction:column;
+  max-height:88dvh;
+  overflow:hidden;
+  overscroll-behavior:contain;
+  background:#fff;
+}
+
+@supports not (height: 1dvh){
+  #modalForm{
+    max-height:88vh;
+  }
+}
+
+/* Başlık ve alt butonlar sabit; sadece orta içerik kayar */
+#modalTitle{
+  flex:0 0 auto;
+}
+
+#modalBody{
+  flex:1 1 auto;
+  min-height:0;
+  overflow-y:auto;
+  overflow-x:hidden;
+  -webkit-overflow-scrolling:touch;
+  overscroll-behavior:contain;
+  padding-bottom:18px;
+}
+
+/* Alt aksiyonlar klavye açıldığında da yerinde kalsın */
+#modalForm .modalActions{
+  flex:0 0 auto;
+  position:sticky;
+  bottom:0;
+  background:#fff;
+  padding-top:10px;
+  padding-bottom:max(10px, env(safe-area-inset-bottom));
+  z-index:5;
+  border-top:1px solid #ECEDE8;
+}
+
+/* iOS form alanlarında otomatik zoom/zıplamayı azalt */
+#modalBody input,
+#modalBody select,
+#modalBody textarea{
+  font-size:16px;
+}
+
+/* Tarih/saat/select alanlarının beklenmedik genişlemesini önle */
+#modalBody input,
+#modalBody select,
+#modalBody textarea{
+  width:100%;
+  max-width:100%;
+  box-sizing:border-box;
+}
+
+/* Randevu formunda üst-alt ani layout değişimini azalt */
+#modalBody label{
+  display:block;
+}
+
+body:has(dialog#modal[open]){
+  overflow:hidden;
+}
+
+/* v2.17 — Dost Bilgileri ekranı iPhone dikey kayma/zıplama düzeltmesi */
+
+/* Detail ekranı açıldığında üst uygulama alanının yüksekliği değişmesin. */
+body.petDetailMode .refTopbar{
+  display:block!important;
+  height:0!important;
+  min-height:0!important;
+  padding:0!important;
+  margin:0!important;
+  border:0!important;
+  overflow:hidden!important;
+}
+
+/* Ana taşıyıcı sabit viewport yüksekliği kullanır. */
+body.petDetailMode main{
+  height:calc(100dvh - 70px);
+  min-height:0;
+  overflow:hidden;
+  padding:0 22px 0!important;
+}
+
+@supports not (height:1dvh){
+  body.petDetailMode main{
+    height:calc(100vh - 70px);
+  }
+}
+
+/* Dost Bilgileri kendi içinde scroll olur; tüm sayfa yukarı-aşağı oynamaz. */
+body.petDetailMode #petDetailView{
+  height:100%;
+  min-height:0;
+  overflow-y:auto;
+  overflow-x:hidden;
+  -webkit-overflow-scrolling:touch;
+  overscroll-behavior-y:contain;
+  padding-bottom:24px;
+  box-sizing:border-box;
+}
+
+/* Sabit alt menü yüksekliği ve safe-area. */
+body.petDetailMode .bottomnav{
+  min-height:70px;
+  height:calc(70px + env(safe-area-inset-bottom));
+  box-sizing:border-box;
+  padding-bottom:env(safe-area-inset-bottom);
+}
+
+/* İçerik ölçü değişimlerinin scroll pozisyonunu sıçratmasını azalt. */
+.petDetailView .detailPhotoWrap,
+.petDetailView .detailInfoCard,
+.petDetailView .detailMenuCard{
+  flex-shrink:0;
+}
+.petDetailView img{
+  content-visibility:auto;
+}
+
+@media(max-width:390px){
+  body.petDetailMode main{
+    padding-left:17px!important;
+    padding-right:17px!important;
+  }
+}
+
+/* v2.18 — Dost Bilgileri fotoğraf ve sağlık başlığı düzeltmeleri */
+.petDetailView .detailPhotoWrap{
+  width:154px!important;
+  height:154px!important;
+  aspect-ratio:1/1!important;
+  border-radius:50%!important;
+  overflow:hidden!important;
+  display:block!important;
+}
+.petDetailView .detailPhotoWrap img{
+  width:100%!important;
+  height:100%!important;
+  aspect-ratio:1/1!important;
+  border-radius:50%!important;
+  object-fit:cover!important;
+  object-position:center!important;
+  display:block!important;
+  transform:none!important;
+}
+
+/* v2.19 — true circular pet detail portraits */
+.petDetailView .detailPhotoWrap{
+  width:154px!important;
+  height:154px!important;
+  min-width:154px!important;
+  min-height:154px!important;
+  max-width:154px!important;
+  max-height:154px!important;
+  aspect-ratio:1 / 1!important;
+  border-radius:999px!important;
+  overflow:hidden!important;
+  padding:0!important;
+  margin-left:auto!important;
+  margin-right:auto!important;
+}
+.petDetailView .detailPhotoWrap img{
+  width:154px!important;
+  height:154px!important;
+  min-width:154px!important;
+  min-height:154px!important;
+  max-width:154px!important;
+  max-height:154px!important;
+  aspect-ratio:1 / 1!important;
+  border-radius:999px!important;
+  object-fit:cover!important;
+  object-position:50% 50%!important;
+  display:block!important;
+  margin:0!important;
+  padding:0!important;
+  transform:none!important;
+}
+
+/* v2.20 — one pet image source everywhere */
+.petDetailView .detailPhotoWrap img,
+.editPetPortrait img{
+  object-fit:cover!important;
+  object-position:center!important;
+}
+
+/* v2.21 — uploaded pet photos, one source everywhere */
+.petDetailView .detailPhotoWrap,
+.editPetPortrait img{
+  aspect-ratio:1 / 1!important;
+}
+.petDetailView .detailPhotoWrap{
+  width:154px!important;
+  height:154px!important;
+  border-radius:50%!important;
+  clip-path:circle(50% at 50% 50%)!important;
+  overflow:hidden!important;
+}
+.petDetailView .detailPhotoWrap img{
+  width:100%!important;
+  height:100%!important;
+  border-radius:0!important;
+  clip-path:none!important;
+  object-fit:cover!important;
+  object-position:50% 50%!important;
+  display:block!important;
+}
+.editPetPortrait img{
+  width:126px!important;
+  height:126px!important;
+  border-radius:50%!important;
+  clip-path:circle(50% at 50% 50%)!important;
+  object-fit:cover!important;
+  object-position:50% 50%!important;
+}
+
+/* v2.22 — Sağlık ekranı sadeleştirme */
+.healthSimpleView{
+  padding-top:4px;
+}
+.healthSimpleHeader{
+  display:grid;
+  gap:10px;
+  margin-bottom:12px;
+}
+.healthSimpleHeader h2{
+  margin:0;
+  font-size:21px;
+  letter-spacing:-.4px;
+}
+.healthPetPicker{
+  margin:0;
+  gap:7px;
+}
+.healthSummarySimple{
+  margin-top:0!important;
+  padding:15px 16px!important;
+  border-radius:16px!important;
+  background:#fff!important;
+  border:1px solid #E7EAE5!important;
+  box-shadow:0 4px 14px rgba(35,65,31,.05)!important;
+}
+.healthSummarySimple h3{
+  font-size:15px;
+  margin:0 0 8px;
+}
+.healthSummarySimple .summaryLine{
+  min-height:44px;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  border-bottom:1px solid #EEF0EC;
+}
+.healthSummarySimple .summaryLine:last-child{
+  border-bottom:0;
+}
+.healthActionTitle{
+  margin:18px 0 9px;
+}
+.healthActionTitle h3{
+  margin:0;
+  font-size:16px;
+}
+.healthActionsSimple{
+  gap:9px;
+}
+.healthActionsSimple .actionCard{
+  min-height:88px;
+  padding:13px 12px!important;
+  border-radius:14px!important;
+  border:1px solid #E8EAE5!important;
+  box-shadow:none!important;
+}
+.healthActionsSimple .actionCard b{
+  font-size:13px!important;
+  line-height:1.25;
+}
+.healthHistoryHead{
+  margin:22px 0 9px;
+}
+.healthHistoryHead h3{
+  margin:0;
+  font-size:17px;
+}
+.healthHistoryFilters{
+  margin-bottom:10px;
+  gap:7px;
+}
+.healthHistoryFilters .chip{
+  padding:7px 10px;
+  font-size:10px;
+}
+.healthHistoryList{
+  gap:8px;
+}
+.healthHistoryList .card{
+  border-radius:13px!important;
+  box-shadow:0 3px 10px rgba(35,65,31,.045)!important;
+}
+
+/* v2.23 — Sağlık ekranı gerçek yeniden tasarım */
+.healthRebuildView{
+  padding-top:4px;
+}
+.healthTopRow{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:12px;
+  margin-bottom:12px;
+}
+.healthTopRow h2{
+  margin:0;
+  font-size:21px;
+  letter-spacing:-.4px;
+}
+.healthTopHint{
+  margin-top:3px;
+  color:#7A827B;
+  font-size:11px;
+}
+.healthPetPickerCompact{
+  justify-content:flex-end;
+  max-width:52%;
+  gap:6px;
+  overflow-x:auto;
+  padding-bottom:2px;
+}
+.healthPetPickerCompact .chip{
+  padding:6px 9px;
+  font-size:10px;
+  white-space:nowrap;
+}
+
+.healthOverviewCard{
+  border:1px solid #E7EAE4;
+  border-radius:18px;
+  background:linear-gradient(180deg,#FFFFFF,#FBFCF9);
+  padding:14px;
+  box-shadow:0 5px 15px rgba(42,72,34,.05);
+}
+.healthOverviewHeader{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding-bottom:11px;
+  border-bottom:1px solid #EDF0EA;
+  margin-bottom:11px;
+}
+.healthOverviewHeader>div:first-child{
+  display:grid;
+  gap:2px;
+}
+.healthOverviewHeader b{
+  font-size:16px;
+}
+.healthOverviewHeader span{
+  color:#7A827B;
+  font-size:10px;
+}
+.healthPetMini{
+  width:36px;
+  height:36px;
+  border-radius:50%;
+  background:#F1F6E9;
+  display:grid;
+  place-items:center;
+  font-size:21px;
+}
+.healthOverviewGrid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+}
+.healthStat{
+  min-height:70px;
+  border-radius:12px;
+  padding:9px 10px;
+  background:#F7F9F4;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  gap:5px;
+}
+.healthStat span{
+  color:#6E766F;
+  font-size:10px;
+  font-weight:700;
+}
+.healthStat b{
+  font-size:11px;
+  line-height:1.3;
+}
+
+.healthAddSection{
+  margin-top:19px;
+}
+.healthSectionTitle{
+  display:flex;
+  align-items:end;
+  justify-content:space-between;
+  margin-bottom:9px;
+}
+.healthSectionTitle h3{
+  margin:0;
+  font-size:17px;
+}
+.healthSectionTitle span{
+  color:#8A918B;
+  font-size:10px;
+}
+.healthQuickActions{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+}
+.healthQuickBtn{
+  min-height:58px;
+  border:1px solid #E6E9E3;
+  border-radius:13px;
+  background:#fff;
+  padding:9px 10px;
+  display:grid;
+  grid-template-columns:30px 1fr 20px;
+  align-items:center;
+  gap:7px;
+  text-align:left;
+  box-shadow:none;
+}
+.healthQuickBtn span{
+  font-size:20px;
+}
+.healthQuickBtn b{
+  font-size:12px;
+}
+.healthQuickBtn em{
+  font-style:normal;
+  color:#6B9E2E;
+  font-size:18px;
+  text-align:right;
+}
+.healthQuickBtn.internal{background:#F7F3FF}
+.healthQuickBtn.external{background:#F1F7FF}
+.healthQuickBtn.vaccine{background:#FFF3F8}
+.healthQuickBtn.med{background:#FFF9E8}
+.healthQuickBtn.weight{
+  grid-column:1 / -1;
+  background:#EFF8F1;
+}
+
+.healthHistorySection{
+  margin-top:22px;
+}
+.healthHistoryTop{
+  margin-bottom:9px;
+}
+.healthHistoryTop h3{
+  margin:0;
+  font-size:17px;
+}
+.healthHistoryFiltersCompact{
+  display:flex;
+  flex-wrap:wrap;
+  gap:6px;
+  margin-bottom:10px;
+}
+.healthHistoryFiltersCompact .chip{
+  padding:6px 9px;
+  font-size:9px;
+}
+.healthHistoryListCompact{
+  gap:7px;
+}
+.healthHistoryListCompact .card{
+  border-radius:12px!important;
+  padding:11px 12px!important;
+  box-shadow:none!important;
+  border:1px solid #E8EAE5!important;
+}
+
+/* v2.24 — Sağlık sayfası onaylanan görsel referansına göre */
+.healthReferenceView{
+  padding-top:4px;
+  color:#1F241F;
+}
+.healthRefPageTitle{
+  font-size:22px;
+  font-weight:900;
+  margin:0 0 12px;
+  letter-spacing:-.5px;
+}
+.healthRefPetStrip{
+  margin-bottom:12px;
+}
+.healthRefPetPicker{
+  display:flex;
+  gap:8px;
+  overflow-x:auto;
+  padding-bottom:2px;
+  -webkit-overflow-scrolling:touch;
+}
+.healthRefPetChip{
+  min-width:150px;
+  flex:0 0 auto;
+  min-height:62px;
+  border:1px solid #DFE6DC;
+  border-radius:15px;
+  background:#fff;
+  padding:8px 10px;
+  display:grid;
+  grid-template-columns:38px 1fr 18px;
+  align-items:center;
+  gap:8px;
+  text-align:left;
+}
+.healthRefPetChip.active{
+  border-color:#77B66B;
+  background:#F4FAF1;
+  box-shadow:0 0 0 1px rgba(86,165,77,.10);
+}
+.healthRefPetThumb{
+  width:38px;
+  height:38px;
+  border-radius:50%;
+  display:grid;
+  place-items:center;
+  background:#EEF4EA;
+  font-size:22px;
+}
+.healthRefPetChip span:nth-child(2){
+  display:grid;
+  gap:2px;
+}
+.healthRefPetChip b{font-size:12px}
+.healthRefPetChip small{font-size:9px;color:#838A83}
+.healthRefPetChip em{font-style:normal;color:#1D211D}
+
+.healthRefCard{
+  border:1px solid #E5E9E3;
+  border-radius:18px;
+  background:#fff;
+  box-shadow:0 5px 16px rgba(34,67,31,.05);
+  margin-bottom:14px;
+  overflow:hidden;
+}
+.healthRefCardTitle{
+  display:flex;
+  align-items:center;
+  gap:9px;
+  padding:14px 15px;
+  border-bottom:1px solid #ECEFEA;
+  background:linear-gradient(180deg,#fff,#FCFDFC);
+}
+.healthRefCardTitle h2{
+  margin:0;
+  font-size:17px;
+  letter-spacing:-.3px;
+}
+.healthRefTitleIcon{
+  width:30px;
+  height:30px;
+  border-radius:8px;
+  display:grid;
+  place-items:center;
+  background:#EEF8EA;
+  font-size:17px;
+}
+.healthRefSummary{
+  padding:12px 14px 0;
+}
+.healthRefGrid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+}
+.healthRefMetric{
+  min-height:90px;
+  display:grid;
+  grid-template-columns:34px 1fr;
+  gap:8px;
+  align-items:start;
+  padding:12px 10px;
+  border-bottom:1px solid #ECEFEA;
+}
+.healthRefMetric:nth-child(odd){
+  border-right:1px solid #ECEFEA;
+}
+.healthRefMetric:nth-last-child(-n+2){
+  border-bottom:0;
+}
+.metricIcon{
+  width:30px;
+  height:30px;
+  display:grid;
+  place-items:center;
+  font-size:20px;
+  filter:hue-rotate(55deg) saturate(.7);
+}
+.healthRefMetric div{
+  display:grid;
+  gap:3px;
+}
+.healthRefMetric small{
+  font-size:10px;
+  font-weight:800;
+  color:#222822;
+}
+.healthRefMetric b{
+  font-size:11px;
+  line-height:1.25;
+}
+.healthRefMetric em{
+  font-style:normal;
+  font-size:9px;
+  color:#55A046;
+  font-weight:700;
+}
+.healthRefAutoNote{
+  border-top:1px solid #ECEFEA;
+  padding:9px 12px;
+  color:#878E87;
+  font-size:9px;
+  background:#FCFDFC;
+}
+
+.healthRefAddCard{
+  padding:14px;
+}
+.healthRefSectionTitle{
+  font-size:16px;
+  font-weight:900;
+  margin-bottom:11px;
+}
+.healthRefActions{
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  gap:8px;
+}
+.healthRefAction{
+  min-width:0;
+  height:82px;
+  border:1px solid #E4E8E2;
+  border-radius:13px;
+  background:#fff;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  gap:8px;
+  padding:7px 4px;
+}
+.healthRefAction span{
+  font-size:22px;
+  filter:hue-rotate(55deg) saturate(.7);
+}
+.healthRefAction b{
+  font-size:9px;
+  line-height:1.1;
+  text-align:center;
+}
+
+.healthRefHistoryCard{
+  padding:14px 14px 12px;
+}
+.healthRefHistoryHeader h3{
+  margin:0 0 10px;
+  font-size:17px;
+}
+.healthRefFilters{
+  display:flex;
+  gap:6px;
+  flex-wrap:wrap;
+  margin-bottom:10px;
+}
+.healthRefFilters .chip,
+.healthRefFilters button{
+  border:1px solid #E0E5DE;
+  border-radius:999px;
+  background:#fff;
+  padding:6px 9px;
+  font-size:9px;
+  color:#5F665F;
+}
+.healthRefFilters .active{
+  background:#82C36F!important;
+  border-color:#82C36F!important;
+  color:#fff!important;
+}
+.healthRefHistoryList{
+  display:grid;
+  gap:0;
+  border:1px solid #E7EAE5;
+  border-radius:13px;
+  overflow:hidden;
+}
+.healthRefHistoryList .card{
+  margin:0!important;
+  border:0!important;
+  border-bottom:1px solid #ECEFEA!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+  padding:11px 12px!important;
+  background:#fff!important;
+}
+.healthRefHistoryList .card:last-child{
+  border-bottom:0!important;
+}
+
+/* Hide duplicate generic headings from older styles */
+.healthReferenceView > .healthSimpleHeader,
+.healthReferenceView > .healthTopRow{
+  display:none!important;
+}
+
+@media(max-width:390px){
+  .healthRefActions{gap:5px}
+  .healthRefAction{height:76px;padding:6px 2px}
+  .healthRefAction span{font-size:20px}
+  .healthRefAction b{font-size:8.5px}
+  .healthRefMetric{min-height:84px;padding:10px 8px}
+}
+
+/* v2.28 — Veterinerim sayfası görsel kimliği */
+.vetHeroArt{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  margin:8px auto 18px;
+}
+.vetHeroArt img{
+  width:116px;
+  height:116px;
+  display:block;
+  object-fit:cover;
+  border-radius:50%;
+  background:#EFF8EC;
+  box-shadow:0 5px 16px rgba(48,91,40,.09);
+}
+
+/* v2.29 — Veteriner görselini mobilde kesin olarak küçük tut */
+#vetView .vetHeroArt{
+  width:100% !important;
+  height:auto !important;
+  min-height:0 !important;
+  display:flex !important;
+  justify-content:center !important;
+  align-items:center !important;
+  margin:10px auto 16px !important;
+  padding:0 !important;
+  overflow:visible !important;
+}
+#vetView .vetHeroArt img{
+  width:108px !important;
+  height:108px !important;
+  min-width:108px !important;
+  max-width:108px !important;
+  min-height:108px !important;
+  max-height:108px !important;
+  aspect-ratio:1 / 1 !important;
+  object-fit:cover !important;
+  object-position:center !important;
+  border-radius:50% !important;
+  display:block !important;
+  margin:0 auto !important;
+  padding:0 !important;
+}
+
+/* v2.30 — Veterinerim küçük sıcak avatar; eski hero'dan bağımsız */
+#vetView .vetWarmAvatar{
+  box-sizing:border-box !important;
+  width:96px !important;
+  height:96px !important;
+  max-width:96px !important;
+  max-height:96px !important;
+  margin:10px auto 14px !important;
+  padding:0 !important;
+  border:3px solid #fff !important;
+  border-radius:999px !important;
+  overflow:hidden !important;
+  background:#eef7ea !important;
+  box-shadow:0 4px 14px rgba(43,92,35,.12) !important;
+  display:block !important;
+  position:relative !important;
+}
+#vetView .vetWarmAvatar > img{
+  box-sizing:border-box !important;
+  position:absolute !important;
+  inset:0 !important;
+  width:96px !important;
+  height:96px !important;
+  min-width:0 !important;
+  min-height:0 !important;
+  max-width:96px !important;
+  max-height:96px !important;
+  margin:0 !important;
+  padding:0 !important;
+  object-fit:cover !important;
+  object-position:center !important;
+  border:0 !important;
+  border-radius:0 !important;
+  transform:none !important;
+}
+
+/* v2.31 — Veterinerim sade sıcak üst kart */
+#vetView .vetWarmAvatar,
+#vetView .vetHeroArt{
+  display:none !important;
+}
+#vetView .vetWelcomeCard{
+  display:flex;
+  align-items:center;
+  gap:13px;
+  width:100%;
+  box-sizing:border-box;
+  margin:12px 0 18px;
+  padding:16px;
+  border:1px solid #DDEBD8;
+  border-radius:18px;
+  background:linear-gradient(135deg,#F3FAF0 0%,#FBFDF9 100%);
+  box-shadow:0 4px 14px rgba(48,92,40,.05);
+}
+#vetView .vetWelcomeIcon{
+  flex:0 0 48px;
+  width:48px;
+  height:48px;
+  border-radius:15px;
+  display:grid;
+  place-items:center;
+  background:#E5F3DF;
+  font-size:25px;
+}
+#vetView .vetWelcomeText{
+  min-width:0;
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+}
+#vetView .vetWelcomeText strong{
+  color:#244421;
+  font-size:15px;
+  line-height:1.25;
+}
+#vetView .vetWelcomeText span{
+  color:#71806F;
+  font-size:12px;
+  line-height:1.4;
+}
+
+/* v2.33 — Takvim sade: yapılacaklar; Sağlık Geçmişi yapılmışlar */
+.pkCalendarLegend{
+  display:flex; gap:11px; flex-wrap:wrap;
+  margin:8px 0 12px; font-size:9px; color:#737B73;
+}
+.pkCalendarLegend span{display:inline-flex;align-items:center;gap:4px}
+.pkLegendDot{width:7px;height:7px;border-radius:50%;display:inline-block}
+.pkLegendDot.today{background:#67B65B}
+.pkLegendDot.soon{background:#E8A13B}
+.pkLegendDot.overdue{background:#D85B52}
+.pkDueBadge{
+  display:inline-flex;align-items:center;margin-left:7px;padding:4px 7px;
+  border-radius:999px;font-size:8px;line-height:1;font-weight:900;white-space:nowrap;
+}
+.pkDueBadge.today{background:#E6F5E2;color:#398831}
+.pkDueBadge.soon{background:#FFF0D7;color:#C57917}
+.pkDueBadge.overdue{background:#FDE5E3;color:#C34840}
+
+#calendarView .calendarPast,
+#calendarView .pastEvents,
+#calendarView [data-calendar-section="past"]{
+  display:none!important;
+}
+
+/* v2.34 — Takvim yaklaşan listesi */
+.pkUpcomingRow{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+}
+.pkUpcomingMain{
+  min-width:0;
+  display:grid;
+  gap:3px;
+}
+.pkUpcomingMain b{font-size:12px}
+.pkUpcomingMain span{font-size:10px;color:#6F776F}
+
+/* v2.35 — Dost Bilgileri mobil yerleşim düzeltmesi
+   Eski sabit viewport/overflow kurallarını geçersiz kılar. */
+
+body.petDetailMode{
+  overflow-y:auto !important;
+  overflow-x:hidden !important;
+}
+
+body.petDetailMode .refTopbar{
+  display:none !important;
+}
+
+body.petDetailMode main{
+  height:auto !important;
+  min-height:0 !important;
+  max-height:none !important;
+  overflow:visible !important;
+  padding:0 18px calc(92px + env(safe-area-inset-bottom)) !important;
+  box-sizing:border-box !important;
+}
+
+body.petDetailMode #petDetailView{
+  height:auto !important;
+  min-height:0 !important;
+  max-height:none !important;
+  overflow:visible !important;
+  overscroll-behavior:auto !important;
+  padding:0 0 24px !important;
+  box-sizing:border-box !important;
+}
+
+.petDetailView .detailTop{
+  position:sticky !important;
+  top:0 !important;
+  z-index:20 !important;
+  background:#fff !important;
+  padding-top:max(6px, env(safe-area-inset-top)) !important;
+}
+
+.petDetailView .detailIdentity,
+.petDetailView .detailInfoCard,
+.petDetailView .detailMenuCard{
+  width:100% !important;
+  max-width:100% !important;
+  box-sizing:border-box !important;
+}
+
+.petDetailView .detailInfoRow{
+  min-width:0 !important;
+}
+
+.petDetailView .detailInfoRow span,
+.petDetailView .detailInfoRow b{
+  min-width:0 !important;
+}
+
+body.petDetailMode .bottomnav{
+  position:fixed !important;
+  left:50% !important;
+  transform:translateX(-50%) !important;
+  bottom:0 !important;
+  width:100% !important;
+  max-width:430px !important;
+  height:auto !important;
+  min-height:64px !important;
+  z-index:50 !important;
+  background:#fff !important;
+}
+
+@media(max-width:390px){
+  body.petDetailMode main{
+    padding-left:15px !important;
+    padding-right:15px !important;
+  }
+
+  .petDetailView .detailTop{
+    grid-template-columns:58px 1fr 58px !important;
+  }
+
+  .petDetailView .detailTop h2{
+    font-size:18px !important;
+  }
+
+  .petDetailView .detailInfoRow span,
+  .petDetailView .detailInfoRow b{
+    font-size:13px !important;
+  }
+}
+
+.calendarDynamicTitle{margin:16px 0 10px;font-size:17px;font-weight:850}
+
+/* v2.39 — gelecek tarihli Yapıldı pasif */
+.disabledAction,
+button:disabled.disabledAction{
+  opacity:.42!important;
+  cursor:not-allowed!important;
+  filter:grayscale(.35);
+  box-shadow:none!important;
+}
+
+/* v2.40 — Takvim başlık temizliği */
+#calendarView .upcomingTitle,
+#calendarView .calendarListTitle,
+#calendarView .calendarUpcomingTitle,
+#calendarView [data-role="upcoming-title"]{
+  display:none!important;
+}
+#calendarView #selectedDayTitle{
+  display:block!important;
+  margin:16px 0 10px!important;
+  font-size:17px!important;
+  font-weight:850!important;
+}
+
+/* v2.41 — Takvim sade başlık + zamana göre renk */
+#calendarView button[data-tab="upcoming"],
+#calendarView .calendarTabUpcoming,
+#calendarView .upcomingToggle{
+  display:none!important;
+}
+#calendarView #selectedDayTitle{
+  margin:16px 0 10px!important;
+  font-size:17px!important;
+  font-weight:850!important;
+}
+.dayDots .pkDot{
+  width:6px!important;
+  height:6px!important;
+  border-radius:50%!important;
+  display:inline-block!important;
+  margin:0 1px!important;
+}
+.dayDots .pkDot.today{background:#67B65B!important}
+.dayDots .pkDot.soon{background:#E8A13B!important}
+.dayDots .pkDot.overdue{background:#D85B52!important}
+.dayDots .pkDot.normal{background:#BFC6BF!important}
+
+/* v2.42 — köpek görseli güncellemesi */
+.refPetVisual img,
+.petDetailView .detailPhotoWrap img,
+.editPetPortrait img{
+  object-position:center!important;
+}
+
+/* Ekran 2 */
+.onboardReminderVisual{
+  position:relative;
+  width:min(86vw,365px);
+  height:405px;
+  margin-top:76px;
+  border-radius:32px;
+  background:#f0f8f1;
+}
+.onboardPhoneMock{
+  position:absolute;
+  left:34px;top:12px;
+  width:205px;height:300px;
+  background:#fff;
+  border:7px solid #347a43;
+  border-radius:31px;
+  padding:24px 14px 12px;
+  box-sizing:border-box;
+  box-shadow:0 10px 22px rgba(31,91,47,.12);
+}
+.mockTitle{font-size:14px;font-weight:800;color:#2d6f3a}
+.mockMonth{text-align:center;font-size:12px;font-weight:800;margin:18px 0 14px}
+.mockWeek,.mockDays{display:grid;grid-template-columns:repeat(7,1fr);gap:7px;text-align:center}
+.mockWeek span{font-size:7px;font-weight:700;color:#47524a}
+.mockDays span{font-size:9px}
+.mockDays .today{
+  width:24px;height:24px;margin:auto;
+  border-radius:50%;
+  display:grid;place-items:center;
+  background:#4b9a43;color:#fff;
+}
+.onboardBell{
+  position:absolute;
+  right:20px;top:72px;
+  width:92px;height:92px;
+  border-radius:50%;
+  display:grid;place-items:center;
+  font-size:42px;
+  background:#307d43;
+  color:white;
+}
+.onboardBell b{
+  position:absolute;
+  right:0;top:-5px;
+  width:27px;height:27px;border-radius:50%;
+  display:grid;place-items:center;
+  background:#f04e31;color:#fff;font-size:13px;
+}
+.onboardReminderCard{
+  position:absolute;
+  left:35px;right:25px;bottom:22px;
+  padding:17px 18px;
+  border-radius:18px;
+  display:grid;gap:7px;
+  background:#fff;
+  box-shadow:0 9px 24px rgba(29,77,41,.13);
+  text-align:left;
+}
+.onboardReminderCard strong{font-size:13px}
+.onboardReminderCard span{font-size:12px}
+.onboardReminderCard small{font-size:11px;color:#5b655c}
+.onboardReminderCard em{float:right;color:#2f7c3d;font-style:normal}
+.reminderCopy{margin-top:25px}
+
+/* Ekran 3 */
+.petAddCopy{
+  margin-top:56px;
+  margin-bottom:28px;
+}
+.petAddCopy h2{font-size:29px}
+.onboardPetChoice{
+  width:min(88vw,370px);
+  height:155px;
+  border:0;
+  border-radius:24px;
+  overflow:hidden;
+  margin-bottom:17px;
+  padding:0;
+  position:relative;
+  background:#eff8f0;
+  display:block;
+  text-align:left;
+}
+.onboardPetChoice.dogChoice{background:#fff2e7}
+.onboardPetChoice img{
+  position:absolute;
+  right:0;top:0;
+  width:54%;height:100%;
+  object-fit:cover;
+  object-position:center 36%;
+}
+.choiceText{
+  position:absolute;
+  z-index:2;
+  left:24px;top:22px;bottom:22px;
+  width:42%;
+  display:grid;
+  align-content:center;
+  grid-template-columns:1fr auto;
+  gap:12px 8px;
+}
+.choiceText span{
+  grid-column:1 / -1;
+  width:52px;height:52px;border-radius:50%;
+  background:#fff;
+  display:grid;place-items:center;
+  font-size:27px;
+  box-shadow:0 4px 12px rgba(30,70,35,.08);
+}
+.choiceText b{font-size:23px;color:#2f743d}
+.dogChoice .choiceText b{color:#8c4f1d}
+.choiceText em{font-style:normal;font-size:28px;color:#2f743d}
+.onboardPetChoice.selected{
+  box-shadow:inset 0 0 0 3px #2f7c3d;
+}
+.onboardAddPet{
+  width:min(88vw,370px);
+  height:64px;
+  margin-top:10px;
+  border:0;
+  border-radius:14px;
+  background:#2e7c39;
+  color:white;
+  font-size:20px;
+  font-weight:850;
+  box-shadow:0 8px 18px rgba(34,110,48,.18);
+}
+@media(max-height:740px){
+  .onboardPetsHero{height:220px;margin-top:22px}
+  .onboardReminderVisual{height:330px;margin-top:52px}
+  .onboardPhoneMock{transform:scale(.86);transform-origin:top left}
+  .onboardReminderCard{bottom:12px}
+  .onboardCopy{margin-top:20px}
+  .onboardPetChoice{height:132px}
+}
+
+/* v2.51 — Takvim gün ve kayıt noktası ayrımı */
+#monthGrid .dayCell.today{
+  box-shadow:inset 0 0 0 1.5px #67B65B;
+}
+#monthGrid .dayCell.today .dayDots{
+  display:flex;
+}
+.dayDots .pkDot{
+  width:6px!important;
+  height:6px!important;
+  border-radius:50%!important;
+  display:inline-block!important;
+  margin:0 1px!important;
+}
+.dayDots .pkDot.today{background:#67B65B!important}
+.dayDots .pkDot.soon{background:#E8A13B!important}
+.dayDots .pkDot.overdue{background:#D85B52!important}
+.dayDots .pkDot.normal{background:#BFC6BF!important}
+
+/* v2.54 — Uygulama ekranlarında normal dikey scroll'u geri getir */
+html,
+body{
+  height:auto !important;
+  min-height:100% !important;
+  overflow-x:hidden !important;
+  overflow-y:auto !important;
+  -webkit-overflow-scrolling:touch;
+}
+
+body:not(.onboardingOpen):not(.onboardingExactOpen){
+  overflow-y:auto !important;
+  position:static !important;
+}
+
+#app{
+  height:auto !important;
+  min-height:100vh !important;
+  max-height:none !important;
+  overflow:visible !important;
+}
+
+main{
+  height:auto !important;
+  min-height:0 !important;
+  max-height:none !important;
+  overflow:visible !important;
+  padding-bottom:calc(86px + env(safe-area-inset-bottom)) !important;
+}
+
+.view{
+  height:auto !important;
+  min-height:0 !important;
+  max-height:none !important;
+  overflow:visible !important;
+}
+
+#homeView,
+#healthView,
+#calendarView,
+#vetView,
+#profileView{
+  overflow:visible !important;
+  height:auto !important;
+  max-height:none !important;
+}
+
+/* Dost Bilgileri kendi özel modunu korur ama tüm uygulamayı kilitlemez */
+body.petDetailMode{
+  overflow-y:auto !important;
+  overflow-x:hidden !important;
+}
+body.petDetailMode main{
+  height:auto !important;
+  max-height:none !important;
+  overflow:visible !important;
+}
+body.petDetailMode #petDetailView{
+  height:auto !important;
+  max-height:none !important;
+  overflow:visible !important;
+}
+
+/* Alt menü sabit kalırken içerik onun altına girmesin */
+.bottomnav{
+  position:fixed !important;
+  left:50% !important;
+  transform:translateX(-50%) !important;
+  bottom:0 !important;
+  width:100% !important;
+  max-width:430px !important;
+  z-index:100 !important;
+  background:#fff !important;
+}
+
+/* v2.61 — approved onboarding; isolated from the app */
+#pk61Onboarding{
+  position:fixed; inset:0; z-index:2147483000;
+  width:100vw; height:100dvh; overflow:hidden; background:#fff;
+  touch-action:pan-y; overscroll-behavior:none;
+}
+#pk61Onboarding .pk61Slide{
+  position:absolute; inset:0; display:none; overflow:hidden; background:#fff;
+}
+#pk61Onboarding .pk61Slide.active{display:block}
+#pk61Onboarding .pk61Crop{
+  position:absolute; inset:0;
+  background-image:url("onboarding-triptych.png");
+  background-repeat:no-repeat;
+  background-size:300% 100%;
+  background-color:#fff;
+}
+#pk61Onboarding .pk61C1{background-position:0 0}
+#pk61Onboarding .pk61C2{background-position:50% 0}
+#pk61Onboarding .pk61C3{background-position:100% 0}
+#pk61Onboarding .pk61Skip{
+  position:absolute; z-index:10;
+  right:4.8%; top:calc(env(safe-area-inset-top) + 2.4%);
+  width:22%; height:7%; border:0; padding:0; background:transparent;
+}
+#pk61Onboarding .pk61Next{
+  position:absolute; z-index:10;
+  right:4.7%; bottom:calc(env(safe-area-inset-bottom) + 3.2%);
+  width:18%; height:10%; border:0; padding:0; background:transparent;
+}
+#pk61Onboarding .pk61AddFriend{
+  position:absolute; z-index:10;
+  left:8%; right:8%; bottom:calc(env(safe-area-inset-bottom) + 10.5%);
+  height:8%; border:0; padding:0; background:transparent;
+}
+#pk61Onboarding .pk61Dots{
+  position:absolute; z-index:9;
+  left:35%; right:35%; bottom:calc(env(safe-area-inset-bottom) + 4%);
+  height:5%; display:flex; align-items:center; justify-content:center; gap:8px;
+}
+#pk61Onboarding .pk61Dot{
+  width:34px; height:34px; border:0; padding:0; background:transparent; border-radius:50%;
+}

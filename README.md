@@ -436,3 +436,14 @@ Gerçek bildirim testi native/TestFlight sürümünde yapılacaktır.
 - Eski/deneysel onboarding HTML, CSS ve JS kodları tamamen kaldırılmıştır.
 - Uygulama artık doğrudan Ana Sayfa ile açılır.
 - Takvimde bugün = Yaklaşanlar mantığı ve diğer v2.58 özellikleri aynen korunur.
+
+
+## v2.61 — CLEAN + Approved Onboarding Always
+- Confirmed working v2.58 CLEAN is the base.
+- The separately tested/approved 3-panel onboarding visual is added as an isolated overlay.
+- Onboarding is intentionally shown on EVERY page load.
+- Atla closes it immediately.
+- Swipe left/right, arrow areas, and progress-dot areas navigate the 3 screens.
+- Dostunu Ekle closes onboarding and attempts to open the existing add-pet flow.
+- No localStorage/sessionStorage flag is used for onboarding.
+- Existing application CSS/HTML logic was not replaced; onboarding selectors are namespaced under #pk61Onboarding.
