@@ -431,10 +431,13 @@ Gerçek bildirim testi native/TestFlight sürümünde yapılacaktır.
 - Gelecek 7 gün içindeki kayıtlar aynı listede görünür.
 - Başka bir gün seçilirse yalnız o günün kayıtları gösterilir.
 
-## v2.59 Onboarding Approved
-- v2.58 FINAL baz alındı.
-- Kullanıcının ayrı ayrı onayladığı 3 onboarding ekranı kullanıldı.
-- Sağa/sola kaydırma aktiftir.
+## v2.60 — Clean Onboarding Test
+- v2.58 FINAL temiz taban olarak alındı.
+- Önceki onboarding denemelerine ait HTML/CSS/JS blokları temizlendi.
+- Yalnızca tek onboarding sistemi bırakıldı.
+- Kullanıcının onayladığı 3 ayrı ekran kullanıldı.
+- Sağa/sola kaydırma çalışır.
 - Atla gerçek dokunma alanıdır.
-- Son ekranda + Dostunu Ekle gerçek butondur ve mevcut Dost Ekle akışını açar.
-- Bir kez tamamlandıktan/atlandıktan sonra tekrar gösterilmez.
+- 3. ekranda + Dostunu Ekle mevcut Dost Ekle akışını açar.
+- Test kolaylığı için bu sürümde onboarding her sayfa yenilemede yeniden görünür.
+- Uygulamanın takvim, sağlık, menü ve diğer v2.58 özelliklerine dokunulmadı.
