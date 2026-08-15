@@ -1958,3 +1958,23 @@ body.petDetailMode #petDetailView{
   min-height:38px !important;
   z-index:9999 !important;
 }
+
+/* v2.75 — Bildirim testi */
+.pkNotificationTestCard{
+  margin-top:16px;
+  display:grid;
+  gap:12px;
+}
+.pkNotificationTestHead{
+  display:flex;
+  align-items:flex-start;
+  gap:10px;
+}
+.pkNotificationTestStatus{
+  min-height:20px;
+  line-height:1.4;
+}
+#pkNotificationTestBtn:disabled{
+  opacity:.55;
+  pointer-events:none;
+}

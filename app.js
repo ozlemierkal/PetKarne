@@ -1131,3 +1131,109 @@ function pkDueStatus(dateStr){
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',initPetCamera,{once:true});
   else initPetCamera();
 })();
+
+
+/* v2.75 — 1 dakikalık bildirim testi */
+(function(){
+  function setPkNotificationStatus(text){
+    const el=document.getElementById('pkNotificationTestStatus');
+    if(el) el.textContent=text;
+  }
+
+  async function ensurePkNotificationWorker(){
+    if(!('serviceWorker' in navigator)) return null;
+    try{
+      const reg=await navigator.serviceWorker.register('./sw-notifications.js', {scope:'./'});
+      await navigator.serviceWorker.ready;
+      return reg;
+    }catch(err){
+      console.error('PetKarnem SW register error', err);
+      return null;
+    }
+  }
+
+  async function sendPkTestNotification(reg){
+    try{
+      if(reg?.active){
+        reg.active.postMessage({type:'PK_SHOW_TEST_NOTIFICATION'});
+        return true;
+      }
+      const ready=await navigator.serviceWorker.ready;
+      if(ready?.active){
+        ready.active.postMessage({type:'PK_SHOW_TEST_NOTIFICATION'});
+        return true;
+      }
+    }catch(err){
+      console.error('PetKarnem notification send error', err);
+    }
+    return false;
+  }
+
+  async function startPkNotificationTest(){
+    const btn=document.getElementById('pkNotificationTestBtn');
+    if(btn) btn.disabled=true;
+
+    if(!('Notification' in window)){
+      setPkNotificationStatus('Bu tarayıcı bildirimleri desteklemiyor.');
+      if(btn) btn.disabled=false;
+      return;
+    }
+
+    let permission=Notification.permission;
+    if(permission!=='granted'){
+      try{
+        permission=await Notification.requestPermission();
+      }catch(err){
+        console.error(err);
+      }
+    }
+
+    if(permission!=='granted'){
+      setPkNotificationStatus('Bildirim izni verilmedi. iPhone’da Ana Ekrana eklenen uygulamada tekrar dene.');
+      if(btn) btn.disabled=false;
+      return;
+    }
+
+    const reg=await ensurePkNotificationWorker();
+    if(!reg){
+      setPkNotificationStatus('Bildirim servisi başlatılamadı.');
+      if(btn) btn.disabled=false;
+      return;
+    }
+
+    setPkNotificationStatus('Test başladı. 1 dakika sonra bildirim göndermeyi deneyeceğim.');
+
+    let remaining=60;
+    const statusTimer=setInterval(()=>{
+      remaining--;
+      if(remaining>0){
+        setPkNotificationStatus(`Test başladı. ${remaining} saniye kaldı.`);
+      }else{
+        clearInterval(statusTimer);
+      }
+    },1000);
+
+    setTimeout(async()=>{
+      clearInterval(statusTimer);
+      const ok=await sendPkTestNotification(reg);
+      setPkNotificationStatus(
+        ok
+          ? 'Test bildirimi gönderildi. Bildirim ekranını kontrol et.'
+          : 'Bildirim gönderilemedi. Uygulamayı Ana Ekrana ekleyip tekrar dene.'
+      );
+      if(btn) btn.disabled=false;
+    },60000);
+  }
+
+  function initPkNotificationTest(){
+    const btn=document.getElementById('pkNotificationTestBtn');
+    if(btn) btn.addEventListener('click', startPkNotificationTest);
+  }
+
+  if(document.readyState==='loading'){
+    document.addEventListener('DOMContentLoaded',initPkNotificationTest,{once:true});
+  }else{
+    initPkNotificationTest();
+  }
+})();
+

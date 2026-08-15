@@ -480,3 +480,12 @@ Gerçek bildirim testi native/TestFlight sürümünde yapılacaktır.
 - Bu hata, fotoğraf seçildikten sonra JavaScript akışını kesiyordu.
 - Fotoğraf artık kaydedildikten hemen sonra Dost Bilgileri ekranında yeniden gösterilir.
 - Kamera ve dikdörtgen fotoğraf görünümü korunmuştur.
+
+## v2.75 — Bildirim Testi
+- v2.74 çalışan test sürümü baz alındı.
+- Profil/Ayarlar bölümüne “1 Dakika Sonra Test Bildirimi” butonu eklendi.
+- Bildirim izni istenir.
+- sw-notifications.js service worker kaydedilir.
+- Test başladıktan 60 saniye sonra service worker üzerinden PetKarnem Test Bildirimi gösterilmeye çalışılır.
+- Bu ilk aşama gerçek tarih bazlı push altyapısı değildir; yalnız cihaz/tarayıcı bildirim kabiliyetini test etmek içindir.
+- iPhone’da web bildirimleri için uygulamanın Ana Ekrana eklenmiş olması gerekebilir.
