@@ -415,3 +415,10 @@ Gerçek bildirim testi native/TestFlight sürümünde yapılacaktır.
 - v2.49'dan kalan çok aşamalı scroll reset mantığı sadeleştirildi; kullanıcı scroll'u ile kavga etmesi engellendi.
 - Alt menü sabit kalır, içerik altında kaybolmasın diye alt padding korunur.
 - Onboarding açıkken scroll kilidi korunur; onboarding kapalıyken uygulama normal kayar.
+
+## v2.55 — Takvim seçimi + alt menü düzeltmesi
+- Takvimde bir gün seçilince aynı güne tekrar dokunmak Yaklaşanlar'a geri dönmez.
+- Takvim sekmesi ilk açıldığında bugün seçili görünür ve Yaklaşanlar gösterilir.
+- Başka bir güne dokununca yalnız o günün kayıtları gösterilir.
+- Alt menü fixed ve transform'suz hale getirildi; scroll sırasında oynaması azaltıldı.
+- Alt menü sekmeleri capture-level tek dokunuş handler ile bağlandı; iki kez basma ihtiyacı azaltıldı.
