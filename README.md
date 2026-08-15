@@ -459,12 +459,17 @@ Gerçek bildirim testi native/TestFlight sürümünde yapılacaktır.
 - styles.css SHA256: fdbd632e83fdb98264dfd731ee93ce6cd9d726ea9371cdf0ab1eecc52a09c0dc
 - app.js SHA256: 19defaf62e8e3cd943a0468107a4cfc67453fd40375ecbd8074dab695781d3a6
 
-## v2.69 — Pet detay fotoğrafında kamera butonu
-- v2.63 sağlam sürüm baz alındı.
-- Pet detayındaki büyük fotoğrafın sağ alt köşesine yuvarlak kamera butonu eklendi.
-- Kamera butonuna basınca telefondan fotoğraf seçilir.
-- Seçilen fotoğraf küçültülerek pet kaydına kaydedilir.
-- Yeni fotoğraf hem detay ekranında hem Ana Sayfa dost kartında görünür.
-- Ayrı “Fotoğrafı Değiştir” yazılı buton yoktur.
-- Fotoğraf seçilmezse mevcut varsayılan kedi/köpek görseli kalır.
+## v2.70 — Kamera görünürlük düzeltmesi
+- v2.63 baz alındı.
+- Kamera, pet detay fotoğrafının kendi 118x118 kutusuna doğrudan sabitlendi.
+- Sağ-alt köşede yüksek z-index, yeşil zemin ve beyaz çerçeve ile görünür.
+- Fotoğraf seçme/kaydetme ve ana kartta gösterme eklendi.
 - Onboarding'e dokunulmadı.
+
+## v2.71 — Dost fotoğrafı daireden çıkarıldı
+- Kamera çalışan sürüm baz alındı.
+- Dost Bilgileri fotoğrafı yuvarlak/oval maskeden çıkarıldı.
+- Fotoğraf 180x210 hafif yuvarlatılmış dikdörtgen alanda object-fit: contain ile gösterilir.
+- Böylece kedinin kulakları ve fotoğrafın tamamı için daha fazla alan vardır.
+- Kamera sağ alt köşede fotoğraf alanının içine alındı.
+- Onboarding değiştirilmedi.

@@ -1858,39 +1858,77 @@ body.petDetailMode #petDetailView{
   background:#fff !important;
 }
 
-/* v2.69 — detail photo camera */
-.petDetailPhotoWrap{
-  position:relative;
-  display:block;
-  width:max-content;
-  max-width:100%;
-  margin-left:auto;
-  margin-right:auto;
+/* v2.70 — camera button visibly anchored to pet detail image */
+.pkPhotoEditWrap{
+  position:relative !important;
+  width:118px !important;
+  height:118px !important;
+  flex:0 0 118px !important;
+  overflow:visible !important;
 }
-.petDetailPhotoWrap #petDetailPhoto{
-  display:block;
+.pkPhotoEditWrap #petDetailPhoto{
+  width:118px !important;
+  height:118px !important;
+  display:block !important;
+  object-fit:cover !important;
+  border-radius:22px !important;
 }
-.petPhotoCameraBtn{
-  position:absolute;
-  right:8px;
-  bottom:8px;
-  z-index:5;
-  width:46px;
-  height:46px;
-  border-radius:50%;
-  border:3px solid #fff;
-  background:#2f7f3f;
-  color:#fff;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:21px;
-  line-height:1;
-  box-shadow:0 3px 12px rgba(0,0,0,.18);
-  padding:0;
-  cursor:pointer;
-  touch-action:manipulation;
+.pkCameraButton{
+  position:absolute !important;
+  right:-7px !important;
+  bottom:-7px !important;
+  z-index:9999 !important;
+  width:42px !important;
+  height:42px !important;
+  min-width:42px !important;
+  min-height:42px !important;
+  border:3px solid #fff !important;
+  border-radius:50% !important;
+  background:#24743a !important;
+  color:#fff !important;
+  box-shadow:0 3px 10px rgba(0,0,0,.28) !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  padding:0 !important;
+  margin:0 !important;
+  opacity:1 !important;
+  visibility:visible !important;
+  font-size:20px !important;
+  line-height:1 !important;
 }
-.petPhotoCameraBtn:active{
-  transform:scale(.96);
+.pkCameraButton span{display:block !important; line-height:1 !important}
+
+/* v2.71 — Dost Bilgileri fotoğrafını daireden çıkar */
+.pkPhotoEditWrap{
+  position:relative !important;
+  width:180px !important;
+  height:210px !important;
+  margin:0 auto !important;
+  overflow:visible !important;
+  border-radius:22px !important;
+  background:#f7f8f6 !important;
+}
+.pkPhotoEditWrap #petDetailPhoto{
+  width:180px !important;
+  height:210px !important;
+  display:block !important;
+  object-fit:contain !important;
+  object-position:center center !important;
+  border-radius:22px !important;
+  clip-path:none !important;
+  -webkit-clip-path:none !important;
+  background:#f7f8f6 !important;
+}
+.pkPhotoEditWrap .pkCameraButton,
+.pkPhotoEditWrap .petPhotoCameraBtn{
+  right:8px !important;
+  bottom:8px !important;
+  width:38px !important;
+  height:38px !important;
+  min-width:38px !important;
+  min-height:38px !important;
+  border:2px solid #fff !important;
+  border-radius:50% !important;
+  overflow:visible !important;
 }

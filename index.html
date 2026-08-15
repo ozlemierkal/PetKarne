@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-<input id="petPhotoPicker" type="file" accept="image/*" style="display:none" aria-hidden="true">
+<input id="petPhotoPicker" type="file" accept="image/*" style="display:none">
 
 <div id="pkOnboardingHost" style="position:fixed;left:0;top:0;width:100vw;height:100svh;z-index:2147483000;background:#fff;overflow:hidden;overscroll-behavior:none;">
   <iframe
@@ -70,9 +70,11 @@
 
       <div class="detailIdentity">
         <div class="detailPhotoWrap">
-          <div class="petDetailPhotoWrap">
+          <div class="pkPhotoEditWrap">
   <img id="petDetailPhoto" src="pet-cat.jpg" alt="">
-  <button id="petPhotoCameraBtn" class="petPhotoCameraBtn" type="button" aria-label="Pet fotoğrafını değiştir">📷</button>
+  <button id="petPhotoCameraBtn" class="pkCameraButton" type="button" aria-label="Fotoğrafı değiştir">
+    <span aria-hidden="true">📷</span>
+  </button>
 </div>
         </div>
         <h1 id="petDetailName">Dostum <span>🐾</span></h1>

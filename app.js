@@ -1088,51 +1088,43 @@ function pkDueStatus(dateStr){
 
 
 
-
-/* v2.69 — pet detail camera photo picker */
+/* v2.70 visible camera photo picker */
 (function(){
-  const picker=document.getElementById('petPhotoPicker');
-  const camera=document.getElementById('petPhotoCameraBtn');
-  if(!picker || !camera) return;
+  function initPetCamera(){
+    const picker=document.getElementById('petPhotoPicker');
+    const camera=document.getElementById('petPhotoCameraBtn');
+    if(!picker || !camera) return;
 
-  camera.addEventListener('click', function(e){
-    e.preventDefault();
-    e.stopPropagation();
-    if(!detailPetId) return;
-    picker.value='';
-    picker.click();
-  });
-
-  picker.addEventListener('change', function(){
-    const file=picker.files && picker.files[0];
-    if(!file || !file.type.startsWith('image/')) return;
-
-    const reader=new FileReader();
-    reader.onload=function(){
-      const image=new Image();
-      image.onload=function(){
-        const maxSide=900;
-        const ratio=Math.min(1,maxSide/Math.max(image.width,image.height));
-        const w=Math.max(1,Math.round(image.width*ratio));
-        const h=Math.max(1,Math.round(image.height*ratio));
-        const canvas=document.createElement('canvas');
-        canvas.width=w; canvas.height=h;
-        const ctx=canvas.getContext('2d');
-        ctx.drawImage(image,0,0,w,h);
-
-        const p=petById(detailPetId);
-        if(!p) return;
-
-        p.photo=canvas.toDataURL('image/jpeg',0.82);
-        save();
-
-        const detail=document.getElementById('petDetailPhoto');
-        if(detail) detail.src=p.photo;
-        renderHome();
-      };
-      image.src=reader.result;
+    camera.onclick=function(e){
+      e.preventDefault(); e.stopPropagation();
+      picker.value='';
+      picker.click();
     };
-    reader.readAsDataURL(file);
-  });
-})();
 
+    picker.onchange=function(){
+      const file=picker.files && picker.files[0];
+      if(!file || !file.type.startsWith('image/')) return;
+      const reader=new FileReader();
+      reader.onload=function(){
+        const image=new Image();
+        image.onload=function(){
+          const max=900, ratio=Math.min(1,max/Math.max(image.width,image.height));
+          const canvas=document.createElement('canvas');
+          canvas.width=Math.round(image.width*ratio);
+          canvas.height=Math.round(image.height*ratio);
+          canvas.getContext('2d').drawImage(image,0,0,canvas.width,canvas.height);
+          const p=petById(detailPetId);
+          if(!p) return;
+          p.photo=canvas.toDataURL('image/jpeg',0.82);
+          save();
+          document.getElementById('petDetailPhoto').src=p.photo;
+          renderHome();
+        };
+        image.src=reader.result;
+      };
+      reader.readAsDataURL(file);
+    };
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',initPetCamera,{once:true});
+  else initPetCamera();
+})();
