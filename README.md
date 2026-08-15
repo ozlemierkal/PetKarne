@@ -447,3 +447,14 @@ Gerçek bildirim testi native/TestFlight sürümünde yapılacaktır.
 - Onboarding appears on every page load.
 - Atla removes only the iframe overlay.
 - Dostunu Ekle removes the overlay and triggers the existing addPetBtn flow.
+
+
+## v2.63 — Onboarding stable viewport
+- v2.62 baz alındı.
+- Ana uygulamanın styles.css ve app.js dosyalarına dokunulmadı.
+- Onboarding host ve iframe 100svh ile sabitlendi; Safari'nin dinamik toolbar yüksekliği sırasında ekran boyutunun oynaması azaltıldı.
+- Üç slide aynı sabit 100vw × 100svh ölçüsünde çalışır.
+- Triptych görseli 300vw genişlikte sabitlendi; ekranlar 0 / -100vw / -200vw konumlarından gösterilir.
+- touchmove preventDefault ile swipe sırasında Safari rubber-band / sayfa sürükleme engellenir.
+- styles.css SHA256: fdbd632e83fdb98264dfd731ee93ce6cd9d726ea9371cdf0ab1eecc52a09c0dc
+- app.js SHA256: 19defaf62e8e3cd943a0468107a4cfc67453fd40375ecbd8074dab695781d3a6
