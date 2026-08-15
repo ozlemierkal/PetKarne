@@ -1857,3 +1857,26 @@ body.petDetailMode #petDetailView{
   z-index:100 !important;
   background:#fff !important;
 }
+
+/* v2.66 REAL — ana uygulamadaki gerçek pet img elemanları */
+.refPetVisual{
+  background:#f7f8f6 !important;
+}
+.refPetVisual .pkPetPortrait,
+#petDetailPhoto.pkPetPortrait{
+  width:100% !important;
+  height:100% !important;
+  object-fit:contain !important;
+  object-position:center center !important;
+  background:#f7f8f6 !important;
+  padding:0 !important;
+  transform:none !important;
+}
+.refPetVisual .pkPetPortrait.pkPetCat{
+  object-fit:contain !important;
+  object-position:center center !important;
+}
+.refPetVisual .pkPetPortrait.pkPetDog{
+  object-fit:contain !important;
+  object-position:center center !important;
+}

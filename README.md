@@ -459,8 +459,9 @@ Gerçek bildirim testi native/TestFlight sürümünde yapılacaktır.
 - styles.css SHA256: fdbd632e83fdb98264dfd731ee93ce6cd9d726ea9371cdf0ab1eecc52a09c0dc
 - app.js SHA256: 19defaf62e8e3cd943a0468107a4cfc67453fd40375ecbd8074dab695781d3a6
 
-## v2.65 — Pet fotoğrafları gerçek kadraj düzeltmesi
+## v2.66 REAL
 - v2.63 baz alındı.
-- pet-cat.jpg dosyası küçültülüp beyaz canvas içine yeniden yerleştirildi; kulakların tamamen görünmesi için üstte ve yanlarda daha fazla boşluk bırakıldı.
-- pet-dog.jpg de benzer görsel ağırlık için yeniden ölçeklendirildi.
-- Onboarding dosyalarına ve onboarding tasarımına dokunulmadı.
+- Ana sayfadaki gerçek refPetVisual img markup'ı hedeflendi.
+- Pet detayındaki gerçek #petDetailPhoto da aynı kadraj mantığına alındı.
+- cover yerine contain kullanıldığı için kulak/kafa kesilmemeli.
+- Onboarding dosyalarına dokunulmadı.

@@ -367,7 +367,11 @@ function showPetDetail(id){
   document.body.classList.add('petDetailMode');
 
   const photo=$('#petDetailPhoto');
-  if(photo) photo.src=p.type==='cat'?'pet-cat.jpg':'pet-dog.jpg';
+  if(photo){
+    photo.src=p.type==='cat'?'pet-cat.jpg':'pet-dog.jpg';
+    photo.classList.remove('pkPetCat','pkPetDog');
+    photo.classList.add(p.type==='cat'?'pkPetCat':'pkPetDog');
+  }
 
   $('#petDetailName').innerHTML=`${p.name} <span>🐾</span>`;
   $('#petDetailMeta').textContent=[p.type==='cat'?'Kedi':'Köpek',p.sex,petAgeLabel(p)].filter(Boolean).join(' • ');
@@ -399,7 +403,7 @@ function renderPets(){
   const cards=state.pets.slice(0,2).map(p=>{
     const meta=[petAgeLabel(p),p.weight?`${p.weight} kg`:null].filter(Boolean).join(' • ');
     return `<button type="button" class="refPetCard" data-pet-detail="${p.id}">
-      <div class="refPetVisual"><img src="${p.type==='cat'?'pet-cat.jpg':'pet-dog.jpg'}" alt=""><span class="refPawBadge">🐾</span></div>
+      <div class="refPetVisual"><img class="pkPetPortrait ${p.type==='cat'?'pkPetCat':'pkPetDog'}" src="${p.type==='cat'?'pet-cat.jpg':'pet-dog.jpg'}" alt=""><span class="refPawBadge">🐾</span></div>
       <div class="refPetName">${p.name}</div>
       <span class="refSpecies">${p.type==='cat'?'Kedi':'Köpek'}</span>
       <div class="refPetMeta">${meta || p.breed || 'Bilgileri görüntüle'}</div>
