@@ -11,39 +11,14 @@
 </head>
 <body>
 
-<div id="pk61Onboarding" class="pk61Onboarding" aria-label="PetKarnem onboarding">
-  <section class="pk61Slide active" data-index="0">
-    <div class="pk61Crop pk61C1"></div>
-    <button class="pk61Skip" type="button" aria-label="Atla"></button>
-    <button class="pk61Next" type="button" aria-label="İleri"></button>
-    <div class="pk61Dots">
-      <button class="pk61Dot" data-go="0" aria-label="1. ekran"></button>
-      <button class="pk61Dot" data-go="1" aria-label="2. ekran"></button>
-      <button class="pk61Dot" data-go="2" aria-label="3. ekran"></button>
-    </div>
-  </section>
-
-  <section class="pk61Slide" data-index="1">
-    <div class="pk61Crop pk61C2"></div>
-    <button class="pk61Skip" type="button" aria-label="Atla"></button>
-    <button class="pk61Next" type="button" aria-label="İleri"></button>
-    <div class="pk61Dots">
-      <button class="pk61Dot" data-go="0" aria-label="1. ekran"></button>
-      <button class="pk61Dot" data-go="1" aria-label="2. ekran"></button>
-      <button class="pk61Dot" data-go="2" aria-label="3. ekran"></button>
-    </div>
-  </section>
-
-  <section class="pk61Slide" data-index="2">
-    <div class="pk61Crop pk61C3"></div>
-    <button class="pk61Skip" type="button" aria-label="Atla"></button>
-    <button id="pk61AddFriend" class="pk61AddFriend" type="button" aria-label="Dostunu Ekle"></button>
-    <div class="pk61Dots">
-      <button class="pk61Dot" data-go="0" aria-label="1. ekran"></button>
-      <button class="pk61Dot" data-go="1" aria-label="2. ekran"></button>
-      <button class="pk61Dot" data-go="2" aria-label="3. ekran"></button>
-    </div>
-  </section>
+<div id="pkOnboardingHost" style="position:fixed;inset:0;z-index:2147483000;background:#fff;">
+  <iframe
+    id="pkOnboardingFrame"
+    src="onboarding.html"
+    title="PetKarnem tanıtım"
+    style="display:block;width:100%;height:100%;border:0;background:#fff;"
+    allow="fullscreen">
+  </iframe>
 </div>
 
 
@@ -232,5 +207,26 @@
 </dialog>
 
 <script src="app.js"></script>
+
+<script>
+(function(){
+  window.addEventListener('message', function(e){
+    if(e.origin !== location.origin) return;
+    const d=e.data || {};
+    if(d.source !== 'petkarnem-onboarding') return;
+
+    const host=document.getElementById('pkOnboardingHost');
+    if(host) host.remove();
+
+    if(d.type === 'addFriend'){
+      setTimeout(function(){
+        const btn=document.getElementById('addPetBtn');
+        if(btn) btn.click();
+      },0);
+    }
+  });
+})();
+</script>
+
 </body>
 </html>

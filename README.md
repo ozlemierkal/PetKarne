@@ -438,12 +438,12 @@ Gerçek bildirim testi native/TestFlight sürümünde yapılacaktır.
 - Takvimde bugün = Yaklaşanlar mantığı ve diğer v2.58 özellikleri aynen korunur.
 
 
-## v2.61 — CLEAN + Approved Onboarding Always
-- Confirmed working v2.58 CLEAN is the base.
-- The separately tested/approved 3-panel onboarding visual is added as an isolated overlay.
-- Onboarding is intentionally shown on EVERY page load.
-- Atla closes it immediately.
-- Swipe left/right, arrow areas, and progress-dot areas navigate the 3 screens.
-- Dostunu Ekle closes onboarding and attempts to open the existing add-pet flow.
-- No localStorage/sessionStorage flag is used for onboarding.
-- Existing application CSS/HTML logic was not replaced; onboarding selectors are namespaced under #pk61Onboarding.
+## v2.62 — Isolated iframe onboarding
+- v2.58 CLEAN is the base.
+- styles.css SHA256 remains exactly unchanged: fdbd632e83fdb98264dfd731ee93ce6cd9d726ea9371cdf0ab1eecc52a09c0dc
+- app.js SHA256 remains exactly unchanged: 19defaf62e8e3cd943a0468107a4cfc67453fd40375ecbd8074dab695781d3a6
+- Onboarding lives in its own onboarding.html iframe, so its CSS/JS cannot alter the main application.
+- The approved 3-panel onboarding visual is used exactly as in the standalone test.
+- Onboarding appears on every page load.
+- Atla removes only the iframe overlay.
+- Dostunu Ekle removes the overlay and triggers the existing addPetBtn flow.
