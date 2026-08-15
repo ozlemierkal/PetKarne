@@ -466,10 +466,10 @@ Gerçek bildirim testi native/TestFlight sürümünde yapılacaktır.
 - Fotoğraf seçme/kaydetme ve ana kartta gösterme eklendi.
 - Onboarding'e dokunulmadı.
 
-## v2.71 — Dost fotoğrafı daireden çıkarıldı
-- Kamera çalışan sürüm baz alındı.
-- Dost Bilgileri fotoğrafı yuvarlak/oval maskeden çıkarıldı.
-- Fotoğraf 180x210 hafif yuvarlatılmış dikdörtgen alanda object-fit: contain ile gösterilir.
-- Böylece kedinin kulakları ve fotoğrafın tamamı için daha fazla alan vardır.
-- Kamera sağ alt köşede fotoğraf alanının içine alındı.
+## v2.72 — Gerçek daire kırpma düzeltmesi
+- v2.70 kamera çalışan sürüm baz alındı.
+- Sorunun kaynağı bulundu: eski v2.21 CSS'indeki `.detailPhotoWrap { clip-path:circle(...); overflow:hidden }`.
+- Bu gerçek dış sarmalayıcıdaki circle clip-path kaldırıldı.
+- Dost fotoğrafı 180x210, hafif yuvarlatılmış dikdörtgen ve `object-fit:contain`.
+- v2.70 kamera kodu korunarak kamera fotoğraf alanının sağ alt içine alındı.
 - Onboarding değiştirilmedi.

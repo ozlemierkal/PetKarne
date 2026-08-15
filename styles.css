@@ -1899,36 +1899,62 @@ body.petDetailMode #petDetailView{
 }
 .pkCameraButton span{display:block !important; line-height:1 !important}
 
-/* v2.71 — Dost Bilgileri fotoğrafını daireden çıkar */
-.pkPhotoEditWrap{
+/* v2.72 — REAL fix: remove the old circular clipping wrapper */
+.petDetailView .detailIdentity .detailPhotoWrap{
+  width:180px !important;
+  height:210px !important;
+  min-width:180px !important;
+  min-height:210px !important;
+  max-width:180px !important;
+  max-height:210px !important;
+  aspect-ratio:auto !important;
+  border-radius:22px !important;
+  clip-path:none !important;
+  -webkit-clip-path:none !important;
+  overflow:visible !important;
+  padding:0 !important;
+  margin-left:auto !important;
+  margin-right:auto !important;
+  background:#f7f8f6 !important;
+}
+
+.petDetailView .detailIdentity .detailPhotoWrap .pkPhotoEditWrap{
   position:relative !important;
   width:180px !important;
   height:210px !important;
-  margin:0 auto !important;
+  min-width:180px !important;
+  min-height:210px !important;
+  max-width:180px !important;
+  max-height:210px !important;
+  flex:0 0 180px !important;
   overflow:visible !important;
   border-radius:22px !important;
   background:#f7f8f6 !important;
 }
-.pkPhotoEditWrap #petDetailPhoto{
+
+.petDetailView .detailIdentity .detailPhotoWrap .pkPhotoEditWrap #petDetailPhoto{
   width:180px !important;
   height:210px !important;
-  display:block !important;
+  min-width:180px !important;
+  min-height:210px !important;
+  max-width:180px !important;
+  max-height:210px !important;
+  aspect-ratio:auto !important;
   object-fit:contain !important;
   object-position:center center !important;
   border-radius:22px !important;
   clip-path:none !important;
   -webkit-clip-path:none !important;
+  transform:none !important;
   background:#f7f8f6 !important;
 }
-.pkPhotoEditWrap .pkCameraButton,
-.pkPhotoEditWrap .petPhotoCameraBtn{
-  right:8px !important;
-  bottom:8px !important;
+
+.petDetailView .detailIdentity .pkCameraButton{
+  right:7px !important;
+  bottom:7px !important;
   width:38px !important;
   height:38px !important;
   min-width:38px !important;
   min-height:38px !important;
-  border:2px solid #fff !important;
-  border-radius:50% !important;
-  overflow:visible !important;
+  z-index:9999 !important;
 }
