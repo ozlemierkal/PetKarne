@@ -987,6 +987,11 @@ function bindProfileSettings(){
 }
 
 function renderAll(){ renderPets(); renderHealth(); renderCalendar(); renderVet(); renderProfile(); bindProfileSettings(); renderPetDetailIfOpen(); }
+state.pets=state.pets||[];
+state.records=state.records||[];
+state.vets=state.vets||[];
+state.meds=state.meds||[];
+state.weights=state.weights||[];
 renderAll();
 
 if('serviceWorker' in navigator){

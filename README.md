@@ -367,3 +367,10 @@ Gerçek bildirim testi native/TestFlight sürümünde yapılacaktır.
 - v2.44–v2.46 takvim değişiklikleri alınmadı; çalışan v2.43 tabanı korundu.
 - Varsayılan kedi görseli son gönderilen oturan yavru kedi ile değiştirildi.
 - Varsayılan köpek görseli son gönderilen oturan Golden yavru ile değiştirildi.
+
+## v2.47 — Çalışan sürüm onarımı
+- v2.43 tabanındaki JavaScript çalışma hatası onarıldı.
+- Yeni kedi ve köpek görselleri korundu.
+- Riskli Uygulayan form enjeksiyonu kaldırıldı; mevcut kayıt şeması korunarak detay sırası Uygulama → Uygulayan → Sonraki tarih tutuldu.
+- Uygulama açılışında state dizileri güvenli varsayılanlarla tamamlandı.
+- JavaScript syntax kontrolü başarıyla geçti.
