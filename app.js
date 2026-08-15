@@ -759,7 +759,7 @@ function renderCalendar(){
     cells+=`<button class="dayCell${selectedCalendarDate===ds?' selected':''}${ds===todayISO()?' today':''}"
       onclick="selectCalendarDay('${ds}')">
       <span>${d}</span>
-      ${di.length?`<span class="dayDots">${di.slice(0,3).map(x=>`<i class="${x.type}"></i>`).join('')}</span>`:''}
+      ${di.length?`<span class="dayDots">${di.slice(0,3).map(x=>{const s=pkDueStatus(x.calendarDate); return `<i class="pkDot ${s.key}"></i>`}).join('')}</span>`:''}
     </button>`;
   }
   grid.innerHTML=cells;

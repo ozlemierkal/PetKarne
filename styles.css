@@ -1597,3 +1597,26 @@ button:disabled.disabledAction{
   font-size:17px!important;
   font-weight:850!important;
 }
+
+/* v2.41 — Takvim sade başlık + zamana göre renk */
+#calendarView button[data-tab="upcoming"],
+#calendarView .calendarTabUpcoming,
+#calendarView .upcomingToggle{
+  display:none!important;
+}
+#calendarView #selectedDayTitle{
+  margin:16px 0 10px!important;
+  font-size:17px!important;
+  font-weight:850!important;
+}
+.dayDots .pkDot{
+  width:6px!important;
+  height:6px!important;
+  border-radius:50%!important;
+  display:inline-block!important;
+  margin:0 1px!important;
+}
+.dayDots .pkDot.today{background:#67B65B!important}
+.dayDots .pkDot.soon{background:#E8A13B!important}
+.dayDots .pkDot.overdue{background:#D85B52!important}
+.dayDots .pkDot.normal{background:#BFC6BF!important}

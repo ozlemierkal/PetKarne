@@ -344,3 +344,10 @@ Gerçek bildirim testi native/TestFlight sürümünde yapılacaktır.
 - Takvimde kalan eski “Yaklaşan” ve “Yaklaşan Kayıtlar” başlıkları kaldırıldı.
 - Tek dinamik başlık bırakıldı: Yaklaşanlar.
 - Bir gün seçildiğinde aynı başlık örn. “18 Eylül Kayıtları” olarak değişmeye devam eder.
+
+## v2.41 — Toplu düzeltme
+- Takvim açılışındaki yeşil “Yaklaşan” düğmesi kaldırıldı; yalnızca tek dinamik “Yaklaşanlar” başlığı kaldı.
+- Gelecek veteriner randevuları Sağlık Geçmişi'nden çıkarıldı; yalnız Takvim'de görünür.
+- Takvim gün noktaları işlem türüne göre değil zamana göre renklendirilir:
+  Bugün yeşil, 1–7 gün turuncu, gecikmiş kırmızı, uzak tarihler nötr gri.
+- Yeni kedi ve köpek görselleri pet-cat.jpg / pet-dog.jpg olarak uygulamanın tüm ilgili ekranlarında aynı kaynakla kullanılır.
