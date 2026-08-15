@@ -730,7 +730,7 @@ window.showCalendarDetail=(id)=>{
 
 window.changeCalendarMonth=(delta)=>{calendarCursor=new Date(calendarCursor.getFullYear(),calendarCursor.getMonth()+delta,1);selectedCalendarDate=null;renderCalendar();};
 window.setCalendarTab=(tab,btn)=>{calendarTab='upcoming';selectedCalendarDate=null;renderCalendar();};
-window.selectCalendarDay=(dateStr)=>{selectedCalendarDate=dateStr;renderCalendar();};
+window.selectCalendarDay=(dateStr)=>{selectedCalendarDate=(selectedCalendarDate===dateStr?null:dateStr);renderCalendar();};
 
 function calendarItems(){
   const allowed=new Set(['vaccine','internal','external','appointment']);
@@ -756,7 +756,6 @@ function renderCalendar(){
   for(let d=1;d<=days;d++){
     const ds=`${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
     const di=items.filter(x=>x.calendarDate===ds);
-
     cells+=`<button class="dayCell${selectedCalendarDate===ds?' selected':''}${ds===todayISO()?' today':''}"
       onclick="selectCalendarDay('${ds}')">
       <span>${d}</span>
@@ -765,21 +764,26 @@ function renderCalendar(){
   }
   grid.innerHTML=cells;
 
-  // Tek ve sabit "Yaklaşan" mantığı:
-  // gecikenler + bugün + önümüzdeki 7 gün.
-  const now=new Date();
-  now.setHours(0,0,0,0);
-
+  const now=new Date(); now.setHours(0,0,0,0);
   let list=items.map(r=>{
     const d=new Date(r.calendarDate+'T00:00:00');
     return {...r,diff:Math.round((d-now)/86400000)};
   });
 
-  list=list.filter(r=>r.diff<=7);
-  list.sort((a,b)=>a.calendarDate.localeCompare(b.calendarDate));
-
   const title=$('#selectedDayTitle');
-  if(title) title.textContent='Yaklaşan kayıtlar';
+  if(selectedCalendarDate){
+    list=list.filter(r=>r.calendarDate===selectedCalendarDate);
+    if(title){
+      const pretty=new Intl.DateTimeFormat('tr-TR',{day:'numeric',month:'long'})
+        .format(new Date(selectedCalendarDate+'T00:00:00'));
+      title.textContent=`${pretty} Kayıtları`;
+    }
+  }else{
+    list=list.filter(r=>r.diff<=7);
+    if(title) title.textContent='Yaklaşanlar';
+  }
+
+  list.sort((a,b)=>(a.calendarDate+(a.time||'')).localeCompare(b.calendarDate+(b.time||'')));
 
   const listEl=$('#calendarList');
   if(!listEl) return;
@@ -793,17 +797,13 @@ function renderCalendar(){
       r.type==='internal'?'🪱 İç Parazit':
       '🛡️ Dış Parazit';
 
-    const when=r.diff<0
-      ? `${Math.abs(r.diff)} gün gecikti`
-      : r.diff===0
-      ? 'Bugün'
-      : `${r.diff} gün kaldı`;
-
     const status=r.diff<0
       ? {key:'overdue',label:`${Math.abs(r.diff)} GÜN GECİKTİ`}
       : r.diff===0
       ? {key:'today',label:'BUGÜN'}
-      : {key:'soon',label:`${r.diff} GÜN KALDI`};
+      : r.diff<=7
+      ? {key:'soon',label:`${r.diff} GÜN KALDI`}
+      : {key:'normal',label:''};
 
     const bell=
       (r.type==='appointment'&&r.reminder!==0) ||
@@ -814,9 +814,9 @@ function renderCalendar(){
       <div class="calendarPetTitle">${petIcon} <b>${p?.name||''}</b></div>
       <div>
         <b>${typeLabel} • ${r.title}${bell}</b>
-        <span class="pkDueBadge ${status.key}">${status.label}</span>
+        ${status.label?`<span class="pkDueBadge ${status.key}">${status.label}</span>`:''}
       </div>
-      <div class="muted">${fmt(r.calendarDate)}${r.time?' • '+r.time:''} • ${when}</div>
+      <div class="muted">${fmt(r.calendarDate)}${r.time?' • '+r.time:''}</div>
       <div class="calendarActions" style="margin-top:10px">
         ${r.type==='appointment'
           ? `<button class="secondary smallbtn" onclick="showCalendarDetail('${r.id}')">Detay</button>
@@ -828,7 +828,7 @@ function renderCalendar(){
         }
       </div>
     </div>`;
-  }).join(''):'<div class="card empty">Yaklaşan veya geciken kayıt yok.</div>';
+  }).join(''):`<div class="card empty">${selectedCalendarDate?'Bu tarihte kayıt yok.':'Yaklaşan veya geciken kayıt yok.'}</div>`;
 }
 
 window.completeRecord=(id)=>{

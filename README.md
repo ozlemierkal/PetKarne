@@ -325,3 +325,10 @@ Gerçek bildirim testi native/TestFlight sürümünde yapılacaktır.
 - Takvimde bir güne dokunmak yalnız o günü işaretler; Yaklaşan listesini filtrelemez veya silmez.
 - Tarih güncellendiğinde saveState -> renderAll -> renderCalendar zinciriyle liste anında yeniden hesaplanır.
 - Tarihi Değiştir/Düzenle ekranında geçmiş tarih hem min alanıyla hem kayıt sırasında doğrulamayla engellenir.
+
+## v2.38
+- Takvimde tek dinamik başlık: Yaklaşanlar.
+- Güne dokununca başlık ör. 18 Eylül Kayıtları olur ve o güne ait kayıtlar gösterilir.
+- Aynı güne tekrar dokununca Yaklaşanlar görünümüne dönülür.
+- 7 günden uzak seçili günlerde kayıtlar görünür ama Yaklaşıyor etiketi gösterilmez.
+- Sağlık takvim detayında Uygulama → Uygulayan → Sonraki tarih sırası düzenlendi.
