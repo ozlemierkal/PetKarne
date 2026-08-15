@@ -3,36 +3,115 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>PetKarnem Onboarding Test</title>
+<title>PetKarnem Onboarding</title>
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-<div id="app">
-  <section class="slide active" data-index="0">
-    <img src="screen-1.jpg" alt="">
-    <button class="skip" type="button">Atla</button>
-    <div class="dots">
+<div id="onboarding">
+
+  <section class="screen active" data-index="0">
+    <button class="skip">Atla</button>
+
+    <div class="brandIcon">
+      <div class="heartArc"></div>
+      <div class="paw">🐾</div>
+    </div>
+
+    <div class="brand">Pet<span>Karnem</span></div>
+    <div class="tagline">Sevginin karnesi, sağlığın güvencesi 💚</div>
+
+    <div class="heroPets">
+      <div class="blob"></div>
+      <img class="heroCat" src="cat.jpg" alt="">
+      <img class="heroDog" src="dog.jpg" alt="">
+      <span class="heartDoodle">♡</span>
+      <span class="pawDoodle">🐾</span>
+    </div>
+
+    <div class="copy">
+      <h1>Hoş Geldin! 👋</h1>
+      <p>Dostunun sağlık takibini kolaylaştır.<br>
+      Aşıları, parazit uygulamalarını<br>
+      ve ilaçları unutma.</p>
+    </div>
+
+    <div class="pager">
       <button class="dot active" data-go="0"></button>
       <button class="dot" data-go="1"></button>
       <button class="dot" data-go="2"></button>
     </div>
   </section>
 
-  <section class="slide" data-index="1">
-    <img src="screen-2.jpg" alt="">
-    <button class="skip" type="button">Atla</button>
-    <div class="dots">
+  <section class="screen" data-index="1">
+    <button class="skip">Atla</button>
+
+    <div class="reminderArt">
+      <div class="phoneMock">
+        <div class="mockTop">Takvim</div>
+        <div class="mockMonth">Mayıs 2026</div>
+        <div class="mockWeek">
+          <span>Pzt</span><span>Sal</span><span>Çar</span><span>Per</span><span>Cum</span><span>Cmt</span><span>Paz</span>
+        </div>
+        <div class="mockGrid">
+          <span></span><span></span><span></span><span>1</span><span>2</span><span>3</span><span>4</span>
+          <span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>10</span><span>11</span>
+          <span>12</span><span>13</span><span>14</span><span>15</span><span>16</span><span>17</span><span>18</span>
+          <span>19</span><span class="today">20</span><span>21</span><span>22</span><span>23</span><span>24</span><span>25</span>
+        </div>
+      </div>
+
+      <div class="bellBubble">🔔<b>1</b></div>
+
+      <div class="reminderCard">
+        <strong>🔔 Yaklaşan Hatırlatma</strong>
+        <span>Karma Aşı (DHPPiL)</span>
+        <div><small>20 Mayıs 2026</small><em>5 gün kaldı</em></div>
+      </div>
+    </div>
+
+    <div class="copy reminderCopy">
+      <h1>PetKarnem takip etsin 🔔</h1>
+      <p>Yaklaşan işlemleri önceden haber versin,<br>
+      zamanı geçenleri sana göstersin.<br>
+      Böylece hiçbir şeyi unutmayasın.</p>
+    </div>
+
+    <div class="pager">
       <button class="dot" data-go="0"></button>
       <button class="dot active" data-go="1"></button>
       <button class="dot" data-go="2"></button>
     </div>
   </section>
 
-  <section class="slide" data-index="2">
-    <img src="screen-3.jpg" alt="">
-    <button class="skip" type="button">Atla</button>
-    <button id="addFriend" class="addFriend" type="button">＋ Dostunu Ekle</button>
-    <div class="dots">
+  <section class="screen" data-index="2">
+    <button class="skip">Atla</button>
+
+    <div class="copy topCopy">
+      <h1>Dostunu ekle,<br>takibe başla! 💚</h1>
+      <p>Kedini veya köpeğini ekle<br>sağlık takvimini oluştur.</p>
+    </div>
+
+    <button class="petCard catCard" data-pet="cat">
+      <div class="petCardText">
+        <div class="roundIcon">🐱</div>
+        <div class="petName">Kedi</div>
+        <div class="chev">›</div>
+      </div>
+      <img src="cat.jpg" alt="">
+    </button>
+
+    <button class="petCard dogCard" data-pet="dog">
+      <div class="petCardText">
+        <div class="roundIcon">🐶</div>
+        <div class="petName">Köpek</div>
+        <div class="chev">›</div>
+      </div>
+      <img src="dog.jpg" alt="">
+    </button>
+
+    <button id="addFriend" class="addFriend">＋ Dostunu Ekle</button>
+
+    <div class="pager">
       <button class="dot" data-go="0"></button>
       <button class="dot" data-go="1"></button>
       <button class="dot active" data-go="2"></button>
@@ -41,11 +120,12 @@
 
   <div id="done" class="done">
     <div>
-      <h1>Onboarding tamamlandı 💚</h1>
-      <p>Bu yalnızca giriş ekranı testidir. Buradan sonra v2.58 uygulaması açılacak.</p>
+      <h2>Onboarding tamamlandı 💚</h2>
+      <p>Bu yalnızca test sürümü. Onaylarsan v2.58 FINAL’e bağlayacağız.</p>
       <button id="restart">Tekrar Göster</button>
     </div>
   </div>
+
 </div>
 <script src="app.js"></script>
 </body>

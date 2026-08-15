@@ -1,27 +1,130 @@
 
+:root{
+  --green:#1f6f36;
+  --green2:#67a93b;
+  --text:#17351f;
+  --muted:#465046;
+  --mint:#edf7ef;
+  --cream:#fff3e8;
+}
 *{box-sizing:border-box}
-html,body,#app{margin:0;width:100%;height:100%;overflow:hidden;background:#fff;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
-.slide{position:absolute;inset:0;display:none;background:#fff;overflow:hidden;touch-action:pan-y}
-.slide.active{display:block}
-.slide>img{position:absolute;inset:0;width:100%;height:100%;object-fit:fill;pointer-events:none;user-select:none;-webkit-user-drag:none}
+html,body,#onboarding{
+  margin:0;width:100%;height:100%;overflow:hidden;background:#fff;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--text)
+}
+.screen{
+  position:absolute;inset:0;display:none;background:#fff;
+  padding:calc(env(safe-area-inset-top) + 26px) 24px calc(env(safe-area-inset-bottom) + 24px);
+  overflow:hidden;
+}
+.screen.active{display:flex;flex-direction:column;align-items:center}
 .skip{
-  position:absolute;top:calc(env(safe-area-inset-top) + 24px);right:5.5%;
-  border:0;background:#fff;color:#1f6f36;font-size:18px;font-weight:800;
-  padding:8px 10px;border-radius:8px;z-index:4
+  position:absolute;top:calc(env(safe-area-inset-top) + 22px);right:22px;
+  border:0;background:none;color:var(--green);font-size:18px;font-weight:800;z-index:5
 }
-.dots{
-  position:absolute;left:50%;bottom:calc(env(safe-area-inset-bottom) + 32px);transform:translateX(-50%);
-  display:flex;gap:17px;z-index:4;background:rgba(255,255,255,.95);padding:7px 10px;border-radius:20px
+.brandIcon{margin-top:58px;width:112px;height:96px;position:relative;display:grid;place-items:center}
+.heartArc{
+  position:absolute;left:12px;right:12px;top:10px;height:56px;border:3px solid var(--green);
+  border-bottom:0;border-radius:60px 60px 0 0;transform:scaleX(1.15)
 }
-.dot{width:13px;height:13px;padding:0;border:0;border-radius:50%;background:#d8d8d8}
-.dot.active{background:#28763b}
+.paw{font-size:52px;position:relative;z-index:2;filter:hue-rotate(70deg) saturate(.8)}
+.brand{font-size:42px;font-weight:900;letter-spacing:-1.6px;color:#1f5e2c;margin-top:8px}
+.brand span{color:var(--green2)}
+.tagline{font-size:15px;color:#2e352f;margin-top:10px;text-align:center}
+.heroPets{
+  position:relative;width:min(92vw,390px);height:310px;margin-top:34px
+}
+.blob{
+  position:absolute;left:6%;right:4%;top:20%;bottom:0;background:var(--mint);
+  border-radius:45% 38% 35% 42%
+}
+.heroPets img{position:absolute;bottom:0;object-fit:cover;border-radius:24px}
+.heroCat{left:3%;width:49%;height:72%;object-position:center 35%}
+.heroDog{right:2%;width:58%;height:92%;object-position:center 28%}
+.heartDoodle{position:absolute;left:5%;top:5%;font-size:48px;color:#cbe5cf}
+.pawDoodle{position:absolute;right:4%;top:10%;font-size:26px;opacity:.15}
+.copy{text-align:center;margin-top:28px}
+.copy h1{margin:0;font-size:29px;line-height:1.18;letter-spacing:-.5px}
+.copy p{margin:14px 0 0;font-size:17px;line-height:1.55;color:#3c463e}
+.pager{margin-top:auto;display:flex;gap:16px;padding-top:20px}
+.dot{width:12px;height:12px;border:0;border-radius:50%;background:#d7d9d7;padding:0}
+.dot.active{background:#2b7a3e}
+
+.reminderArt{
+  position:relative;width:min(92vw,390px);height:440px;margin-top:66px
+}
+.phoneMock{
+  position:absolute;left:0;top:20px;width:235px;height:335px;background:#fff;border:8px solid #347541;
+  border-radius:34px;padding:30px 18px 14px;box-shadow:0 10px 25px rgba(30,80,40,.10)
+}
+.mockTop{font-weight:800;color:#2f733d;font-size:17px}
+.mockMonth{text-align:center;font-weight:800;font-size:14px;margin:22px 0 18px}
+.mockWeek,.mockGrid{display:grid;grid-template-columns:repeat(7,1fr);gap:9px;text-align:center}
+.mockWeek span{font-size:8px;font-weight:700;color:#4d564f}
+.mockGrid span{font-size:11px}
+.mockGrid .today{
+  width:28px;height:28px;border-radius:50%;display:grid;place-items:center;
+  background:#3f8e43;color:#fff;margin:auto
+}
+.bellBubble{
+  position:absolute;right:8px;top:80px;width:104px;height:104px;border-radius:50%;
+  display:grid;place-items:center;background:#2c7a3d;color:white;font-size:48px
+}
+.bellBubble b{
+  position:absolute;right:-2px;top:-5px;width:31px;height:31px;border-radius:50%;
+  display:grid;place-items:center;background:#f24f33;color:#fff;font-size:15px
+}
+.reminderCard{
+  position:absolute;left:18px;right:8px;bottom:16px;background:#fff;border-radius:18px;
+  padding:18px 20px;box-shadow:0 10px 25px rgba(30,80,40,.14);display:grid;gap:8px
+}
+.reminderCard strong{font-size:15px}
+.reminderCard span{font-size:14px}
+.reminderCard div{display:flex;justify-content:space-between}
+.reminderCard small{font-size:13px}
+.reminderCard em{font-style:normal;color:#2f7b3d;font-size:13px}
+.reminderCopy{margin-top:18px}
+
+.topCopy{margin-top:54px;margin-bottom:30px}
+.topCopy h1{font-size:33px}
+.petCard{
+  position:relative;width:min(92vw,390px);height:165px;border:0;border-radius:24px;
+  overflow:hidden;margin-bottom:18px;padding:0;text-align:left
+}
+.catCard{background:var(--mint)}
+.dogCard{background:var(--cream)}
+.petCard img{
+  position:absolute;right:0;top:0;width:55%;height:100%;object-fit:cover;object-position:center 30%
+}
+.petCardText{
+  position:absolute;left:24px;top:20px;bottom:20px;width:42%;z-index:2;
+  display:grid;grid-template-columns:1fr auto;align-content:center;gap:13px 8px
+}
+.roundIcon{
+  grid-column:1/-1;width:56px;height:56px;border-radius:50%;background:#fff;display:grid;place-items:center;
+  font-size:30px;box-shadow:0 5px 13px rgba(30,70,35,.08)
+}
+.petName{font-size:27px;font-weight:800;color:#2f733d}
+.dogCard .petName,.dogCard .chev{color:#8a4d1b}
+.chev{font-size:32px;color:#2f733d}
+.petCard.selected{box-shadow:inset 0 0 0 3px #2f7a3c}
 .addFriend{
-  position:absolute;left:3%;right:3%;bottom:calc(env(safe-area-inset-bottom) + 88px);
-  height:72px;z-index:5;border:0;border-radius:14px;background:#247738;color:#fff;
-  font-size:23px;font-weight:800
+  width:min(92vw,390px);height:66px;border:0;border-radius:14px;background:#28783a;
+  color:#fff;font-size:22px;font-weight:850;margin-top:6px
 }
-.done{position:absolute;inset:0;display:none;align-items:center;justify-content:center;padding:30px;text-align:center;background:#fff}
+.done{position:absolute;inset:0;display:none;align-items:center;justify-content:center;text-align:center;padding:32px;background:#fff}
 .done.show{display:flex}
-.done h1{color:#185b2b}
-.done p{line-height:1.5;color:#555}
-.done button{margin-top:18px;border:0;border-radius:12px;padding:14px 22px;background:#247738;color:white;font-weight:800;font-size:16px}
+.done h2{color:#1f6f36}
+.done p{color:#555;line-height:1.5}
+.done button{margin-top:18px;border:0;border-radius:12px;background:#28783a;color:#fff;padding:14px 22px;font-weight:800}
+
+@media(max-height:760px){
+  .brandIcon{margin-top:38px}
+  .heroPets{height:250px;margin-top:24px}
+  .copy{margin-top:18px}
+  .reminderArt{height:360px;margin-top:50px}
+  .phoneMock{transform:scale(.86);transform-origin:top left}
+  .bellBubble{transform:scale(.9);transform-origin:top right}
+  .topCopy{margin-top:40px;margin-bottom:18px}
+  .petCard{height:135px}
+}
