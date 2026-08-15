@@ -459,9 +459,12 @@ Gerçek bildirim testi native/TestFlight sürümünde yapılacaktır.
 - styles.css SHA256: fdbd632e83fdb98264dfd731ee93ce6cd9d726ea9371cdf0ab1eecc52a09c0dc
 - app.js SHA256: 19defaf62e8e3cd943a0468107a4cfc67453fd40375ecbd8074dab695781d3a6
 
-## v2.67 — Cat Ear Fix
-- v2.63 baz alındı.
-- Ana sayfa pet kartındaki gerçek refPetVisual container'a tür bazlı class eklendi.
-- Kedi görseli kartın içinde %82 boyuta küçültülüp aşağı/ortaya alındı.
-- Köpek de görsel denge için %86 boyutta hizalandı.
+## v2.69 — Pet detay fotoğrafında kamera butonu
+- v2.63 sağlam sürüm baz alındı.
+- Pet detayındaki büyük fotoğrafın sağ alt köşesine yuvarlak kamera butonu eklendi.
+- Kamera butonuna basınca telefondan fotoğraf seçilir.
+- Seçilen fotoğraf küçültülerek pet kaydına kaydedilir.
+- Yeni fotoğraf hem detay ekranında hem Ana Sayfa dost kartında görünür.
+- Ayrı “Fotoğrafı Değiştir” yazılı buton yoktur.
+- Fotoğraf seçilmezse mevcut varsayılan kedi/köpek görseli kalır.
 - Onboarding'e dokunulmadı.

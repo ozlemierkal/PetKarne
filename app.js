@@ -367,7 +367,7 @@ function showPetDetail(id){
   document.body.classList.add('petDetailMode');
 
   const photo=$('#petDetailPhoto');
-  if(photo) photo.src=p.type==='cat'?'pet-cat.jpg':'pet-dog.jpg';
+  if(photo) photo.src=p.photo || (p.type==='cat'?'pet-cat.jpg':'pet-dog.jpg');
 
   $('#petDetailName').innerHTML=`${p.name} <span>🐾</span>`;
   $('#petDetailMeta').textContent=[p.type==='cat'?'Kedi':'Köpek',p.sex,petAgeLabel(p)].filter(Boolean).join(' • ');
@@ -399,7 +399,7 @@ function renderPets(){
   const cards=state.pets.slice(0,2).map(p=>{
     const meta=[petAgeLabel(p),p.weight?`${p.weight} kg`:null].filter(Boolean).join(' • ');
     return `<button type="button" class="refPetCard" data-pet-detail="${p.id}">
-      <div class="refPetVisual ${p.type==='cat'?'pkCatVisual':'pkDogVisual'}"><img src="${p.type==='cat'?'pet-cat.jpg':'pet-dog.jpg'}" alt=""><span class="refPawBadge">🐾</span></div>
+      <div class="refPetVisual"><img src="${p.photo || (p.type==='cat'?'pet-cat.jpg':'pet-dog.jpg')}" alt=""><span class="refPawBadge">🐾</span></div>
       <div class="refPetName">${p.name}</div>
       <span class="refSpecies">${p.type==='cat'?'Kedi':'Köpek'}</span>
       <div class="refPetMeta">${meta || p.breed || 'Bilgileri görüntüle'}</div>
@@ -1086,4 +1086,53 @@ function pkDueStatus(dateStr){
 }
 
 
+
+
+
+/* v2.69 — pet detail camera photo picker */
+(function(){
+  const picker=document.getElementById('petPhotoPicker');
+  const camera=document.getElementById('petPhotoCameraBtn');
+  if(!picker || !camera) return;
+
+  camera.addEventListener('click', function(e){
+    e.preventDefault();
+    e.stopPropagation();
+    if(!detailPetId) return;
+    picker.value='';
+    picker.click();
+  });
+
+  picker.addEventListener('change', function(){
+    const file=picker.files && picker.files[0];
+    if(!file || !file.type.startsWith('image/')) return;
+
+    const reader=new FileReader();
+    reader.onload=function(){
+      const image=new Image();
+      image.onload=function(){
+        const maxSide=900;
+        const ratio=Math.min(1,maxSide/Math.max(image.width,image.height));
+        const w=Math.max(1,Math.round(image.width*ratio));
+        const h=Math.max(1,Math.round(image.height*ratio));
+        const canvas=document.createElement('canvas');
+        canvas.width=w; canvas.height=h;
+        const ctx=canvas.getContext('2d');
+        ctx.drawImage(image,0,0,w,h);
+
+        const p=petById(detailPetId);
+        if(!p) return;
+
+        p.photo=canvas.toDataURL('image/jpeg',0.82);
+        save();
+
+        const detail=document.getElementById('petDetailPhoto');
+        if(detail) detail.src=p.photo;
+        renderHome();
+      };
+      image.src=reader.result;
+    };
+    reader.readAsDataURL(file);
+  });
+})();
 

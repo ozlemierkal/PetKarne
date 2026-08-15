@@ -1858,35 +1858,39 @@ body.petDetailMode #petDetailView{
   background:#fff !important;
 }
 
-/* v2.67 — Kedi kulağı kadraj düzeltmesi */
-.refPetVisual.pkCatVisual{
-  background:#fff !important;
-  overflow:hidden !important;
+/* v2.69 — detail photo camera */
+.petDetailPhotoWrap{
+  position:relative;
+  display:block;
+  width:max-content;
+  max-width:100%;
+  margin-left:auto;
+  margin-right:auto;
 }
-.refPetVisual.pkCatVisual img{
-  width:82% !important;
-  height:82% !important;
-  object-fit:contain !important;
-  object-position:center center !important;
-  position:absolute !important;
-  left:9% !important;
-  top:10% !important;
-  transform:none !important;
-  border-radius:0 !important;
+.petDetailPhotoWrap #petDetailPhoto{
+  display:block;
 }
-
-.refPetVisual.pkDogVisual{
-  background:#fff !important;
-  overflow:hidden !important;
+.petPhotoCameraBtn{
+  position:absolute;
+  right:8px;
+  bottom:8px;
+  z-index:5;
+  width:46px;
+  height:46px;
+  border-radius:50%;
+  border:3px solid #fff;
+  background:#2f7f3f;
+  color:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:21px;
+  line-height:1;
+  box-shadow:0 3px 12px rgba(0,0,0,.18);
+  padding:0;
+  cursor:pointer;
+  touch-action:manipulation;
 }
-.refPetVisual.pkDogVisual img{
-  width:86% !important;
-  height:86% !important;
-  object-fit:contain !important;
-  object-position:center center !important;
-  position:absolute !important;
-  left:7% !important;
-  top:7% !important;
-  transform:none !important;
-  border-radius:0 !important;
+.petPhotoCameraBtn:active{
+  transform:scale(.96);
 }
