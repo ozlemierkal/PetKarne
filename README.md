@@ -422,3 +422,9 @@ Gerçek bildirim testi native/TestFlight sürümünde yapılacaktır.
 - Başka bir güne dokununca yalnız o günün kayıtları gösterilir.
 - Alt menü fixed ve transform'suz hale getirildi; scroll sırasında oynaması azaltıldı.
 - Alt menü sekmeleri capture-level tek dokunuş handler ile bağlandı; iki kez basma ihtiyacı azaltıldı.
+
+## v2.56 — Alt menü tek handler
+- v2.55'te eklenen ikinci/capture click handler kaldırıldı.
+- Alt menü tek bir pointerup handler ile çalışır.
+- İç ikon/yazı elemanları dokunmayı kesmez; tüm dokunma navitem'a gider.
+- Menünün scroll sırasında animasyon/transition ile oynaması engellendi.

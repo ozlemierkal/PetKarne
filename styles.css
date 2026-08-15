@@ -2013,3 +2013,26 @@ main{
 body, #app, main{
   transform:none !important;
 }
+
+/* v2.56 — Alt menü dokunma alanı */
+.bottomnav{
+  pointer-events:auto!important;
+  touch-action:manipulation!important;
+  -webkit-user-select:none!important;
+  user-select:none!important;
+}
+.bottomnav .navitem{
+  pointer-events:auto!important;
+  touch-action:manipulation!important;
+  -webkit-user-select:none!important;
+  user-select:none!important;
+}
+.bottomnav .navitem *{
+  pointer-events:none!important;
+}
+
+.bottomnav,
+.bottomnav .navitem{
+  transition:none!important;
+  animation:none!important;
+}

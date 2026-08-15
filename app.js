@@ -1149,18 +1149,29 @@ function pkDueStatus(dateStr){
   };
 })();
 
-/* v2.55 — Bottom nav single tap */
-(function pkBottomNavSingleTap(){
+
+
+/* v2.56 — Bottom nav tek handler */
+(function(){
   const nav=document.querySelector('.bottomnav');
   if(!nav) return;
-  nav.addEventListener('click',(e)=>{
+
+  let lastTap=0;
+
+  nav.addEventListener('pointerup',(e)=>{
     const item=e.target.closest('.navitem');
     if(!item) return;
+
+    const now=Date.now();
+    if(now-lastTap<180) return;
+    lastTap=now;
+
     e.preventDefault();
-    e.stopPropagation();
+
     const viewId=item.dataset.view;
-    if(viewId && typeof window.switchView==='function'){
-      window.switchView(viewId,item);
-    }
-  },true);
+    if(!viewId || typeof window.switchView!=='function') return;
+
+    window.switchView(viewId,item);
+  },{passive:false});
 })();
+
