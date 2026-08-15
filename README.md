@@ -459,9 +459,9 @@ Gerçek bildirim testi native/TestFlight sürümünde yapılacaktır.
 - styles.css SHA256: fdbd632e83fdb98264dfd731ee93ce6cd9d726ea9371cdf0ab1eecc52a09c0dc
 - app.js SHA256: 19defaf62e8e3cd943a0468107a4cfc67453fd40375ecbd8074dab695781d3a6
 
-## v2.66 REAL
+## v2.67 — Cat Ear Fix
 - v2.63 baz alındı.
-- Ana sayfadaki gerçek refPetVisual img markup'ı hedeflendi.
-- Pet detayındaki gerçek #petDetailPhoto da aynı kadraj mantığına alındı.
-- cover yerine contain kullanıldığı için kulak/kafa kesilmemeli.
-- Onboarding dosyalarına dokunulmadı.
+- Ana sayfa pet kartındaki gerçek refPetVisual container'a tür bazlı class eklendi.
+- Kedi görseli kartın içinde %82 boyuta küçültülüp aşağı/ortaya alındı.
+- Köpek de görsel denge için %86 boyutta hizalandı.
+- Onboarding'e dokunulmadı.

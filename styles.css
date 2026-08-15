@@ -1858,25 +1858,35 @@ body.petDetailMode #petDetailView{
   background:#fff !important;
 }
 
-/* v2.66 REAL — ana uygulamadaki gerçek pet img elemanları */
-.refPetVisual{
-  background:#f7f8f6 !important;
+/* v2.67 — Kedi kulağı kadraj düzeltmesi */
+.refPetVisual.pkCatVisual{
+  background:#fff !important;
+  overflow:hidden !important;
 }
-.refPetVisual .pkPetPortrait,
-#petDetailPhoto.pkPetPortrait{
-  width:100% !important;
-  height:100% !important;
+.refPetVisual.pkCatVisual img{
+  width:82% !important;
+  height:82% !important;
   object-fit:contain !important;
   object-position:center center !important;
-  background:#f7f8f6 !important;
-  padding:0 !important;
+  position:absolute !important;
+  left:9% !important;
+  top:10% !important;
   transform:none !important;
+  border-radius:0 !important;
 }
-.refPetVisual .pkPetPortrait.pkPetCat{
+
+.refPetVisual.pkDogVisual{
+  background:#fff !important;
+  overflow:hidden !important;
+}
+.refPetVisual.pkDogVisual img{
+  width:86% !important;
+  height:86% !important;
   object-fit:contain !important;
   object-position:center center !important;
-}
-.refPetVisual .pkPetPortrait.pkPetDog{
-  object-fit:contain !important;
-  object-position:center center !important;
+  position:absolute !important;
+  left:7% !important;
+  top:7% !important;
+  transform:none !important;
+  border-radius:0 !important;
 }
