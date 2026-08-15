@@ -362,3 +362,14 @@ Gerçek bildirim testi native/TestFlight sürümünde yapılacaktır.
 - Randevu/sağlık kaydı tarihi değiştirildiğinde eski seçili gün temizlenir.
 - Tarih güncellemesi sonrası Takvim otomatik olarak Yaklaşanlar görünümüne döner; kayıt yeni tarihiyle görünmeye devam eder.
 - Sağlık kayıt detayındaki sıra kesin olarak Uygulama → Uygulayan → Sonraki tarih yapıldı.
+
+## v2.44
+- Bugün tarihi diğer günlerle aynı tek tıklama seçim mantığını kullanır.
+- Bir tık: o günün kayıtları. Aynı güne ikinci tık: Yaklaşanlar.
+
+## v2.45 — Takvim açılış davranışı
+- Takvim açıldığında bugünün tarihi otomatik seçili görünür.
+- Aynı anda altta doğrudan Yaklaşanlar listesi gösterilir.
+- Kullanıcının bugünün tarihine tıklaması gerekmez.
+- Başka bir güne dokununca yalnızca o günün kayıtları gösterilir.
+- Takvim sekmesine her dönüşte görünüm yeniden Bugün + Yaklaşanlar olarak açılır.

@@ -9,7 +9,9 @@ normalizeState();
 let selectedPetId = state.pets[0]?.id || null;
 let healthHistoryFilter='all';
 let calendarCursor=new Date();
-let selectedCalendarDate=null;
+let selectedCalendarDate=todayISO();
+    calendarListMode='upcoming';
+let calendarListMode='upcoming';
 let calendarTab='upcoming';
 let modalSave = null;
 
@@ -28,6 +30,10 @@ function petById(id){ return state.pets.find(p=>p.id===id); }
 
 
 window.switchView=(viewId,btn)=>{
+  if(viewId==='calendarView'){
+    selectedCalendarDate=todayISO();
+    calendarListMode='upcoming';
+  }
   document.body.classList.remove('petDetailMode');
   $$('.navitem').forEach(b=>b.classList.remove('active'));
   if(btn) btn.classList.add('active');
@@ -736,7 +742,11 @@ window.showCalendarDetail=(id)=>{
 
 window.changeCalendarMonth=(delta)=>{calendarCursor=new Date(calendarCursor.getFullYear(),calendarCursor.getMonth()+delta,1);selectedCalendarDate=null;renderCalendar();};
 window.setCalendarTab=(tab,btn)=>{calendarTab='upcoming';selectedCalendarDate=null;renderCalendar();};
-window.selectCalendarDay=(dateStr)=>{selectedCalendarDate=(selectedCalendarDate===dateStr?null:dateStr);renderCalendar();};
+window.selectCalendarDay=(dateStr)=>{
+  selectedCalendarDate=dateStr;
+  calendarListMode='day';
+  renderCalendar();
+};
 
 function calendarItems(){
   const allowed=new Set(['vaccine','internal','external','appointment']);
@@ -777,7 +787,7 @@ function renderCalendar(){
   });
 
   const title=$('#selectedDayTitle');
-  if(selectedCalendarDate){
+  if(calendarListMode==='day' && selectedCalendarDate){
     list=list.filter(r=>r.calendarDate===selectedCalendarDate);
     if(title){
       const pretty=new Intl.DateTimeFormat('tr-TR',{day:'numeric',month:'long'})
