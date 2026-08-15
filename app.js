@@ -1087,75 +1087,74 @@ function pkDueStatus(dateStr){
 
 
 
-
-
-/* v2.60 — CLEAN onboarding behavior */
+/* v2.50 — Onboarding */
 (function(){
-  function initPkCleanOnboarding(){
-    const root=document.getElementById('pkCleanOnboarding');
-    if(!root) return;
+  const root=document.getElementById('onboarding');
+  if(!root) return;
 
-    const slides=[...root.querySelectorAll('.pkCleanSlide')];
-    let index=0, sx=0, sy=0;
+  let index=0;
+  let selectedType='cat';
+  const slides=[...root.querySelectorAll('.onboardingSlide')];
 
-    document.body.classList.add('pkCleanOnboardingOpen');
+  function show(i){
+    index=Math.max(0,Math.min(slides.length-1,i));
+    slides.forEach((s,n)=>s.classList.toggle('active',n===index));
+  }
 
-    function show(n){
-      index=Math.max(0,Math.min(slides.length-1,n));
-      slides.forEach((s,i)=>s.classList.toggle('active',i===index));
+  function closeOnboarding(){
+    root.classList.remove('onboardingVisible');
+    document.body.classList.remove('onboardingOpen');
+    try{ sessionStorage.setItem('petkarnemOnboardingSeen','1'); }catch(e){}
+  }
+
+  document.body.classList.add('onboardingOpen');
+  try{
+    if(sessionStorage.getItem('petkarnemOnboardingSeen')==='1'){
+      closeOnboarding();
     }
+  }catch(e){}
 
-    function finish(openAddFriend){
-      document.body.classList.remove('pkCleanOnboardingOpen');
-      root.remove();
+  root.querySelectorAll('.onboardSkip').forEach(btn=>btn.onclick=closeOnboarding);
 
-      if(openAddFriend){
-        setTimeout(()=>{
-          const addBtn=document.getElementById('addPetBtn');
-          if(addBtn) addBtn.click();
-        },0);
-      }
-    }
-
-    root.querySelectorAll('.pkCleanSkip').forEach(btn=>{
-      btn.addEventListener('click',(e)=>{
-        e.preventDefault();
-        e.stopPropagation();
-        finish(false);
-      });
+  // Tap empty area to advance, excluding interactive controls.
+  slides.forEach((slide,n)=>{
+    slide.addEventListener('click',(e)=>{
+      if(e.target.closest('button')) return;
+      if(n<slides.length-1) show(n+1);
     });
+  });
 
-    const add=document.getElementById('pkCleanAddFriend');
-    if(add){
-      add.addEventListener('click',(e)=>{
-        e.preventDefault();
-        e.stopPropagation();
-        finish(true);
-      });
+  // Simple horizontal swipe.
+  let sx=0, sy=0;
+  root.addEventListener('touchstart',e=>{
+    const t=e.touches[0]; sx=t.clientX; sy=t.clientY;
+  },{passive:true});
+  root.addEventListener('touchend',e=>{
+    const t=e.changedTouches[0];
+    const dx=t.clientX-sx, dy=t.clientY-sy;
+    if(Math.abs(dx)>55 && Math.abs(dx)>Math.abs(dy)){
+      if(dx<0 && index<slides.length-1) show(index+1);
+      if(dx>0 && index>0) show(index-1);
     }
+  },{passive:true});
 
-    root.addEventListener('touchstart',(e)=>{
-      const t=e.touches[0];
-      sx=t.clientX; sy=t.clientY;
-    },{passive:true});
+  root.querySelectorAll('.onboardPetChoice').forEach(btn=>{
+    btn.onclick=()=>{
+      selectedType=btn.dataset.petType||'cat';
+      root.querySelectorAll('.onboardPetChoice').forEach(x=>x.classList.toggle('selected',x===btn));
+    };
+  });
+  const defaultChoice=root.querySelector('[data-pet-type="cat"]');
+  if(defaultChoice) defaultChoice.classList.add('selected');
 
-    root.addEventListener('touchend',(e)=>{
-      const t=e.changedTouches[0];
-      const dx=t.clientX-sx, dy=t.clientY-sy;
-
-      if(Math.abs(dx)>50 && Math.abs(dx)>Math.abs(dy)){
-        if(dx<0 && index<slides.length-1) show(index+1);
-        else if(dx>0 && index>0) show(index-1);
-      }
-    },{passive:true});
-
-    show(0);
-  }
-
-  if(document.readyState==='loading'){
-    document.addEventListener('DOMContentLoaded',initPkCleanOnboarding,{once:true});
-  }else{
-    initPkCleanOnboarding();
-  }
+  const add=document.getElementById('onboardAddPet');
+  if(add) add.onclick=()=>{
+    closeOnboarding();
+    const addBtn=document.getElementById('addPetBtn');
+    if(addBtn) addBtn.click();
+    setTimeout(()=>{
+      const type=document.getElementById('petType');
+      if(type) type.value=selectedType;
+    },0);
+  };
 })();
-
