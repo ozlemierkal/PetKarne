@@ -753,7 +753,11 @@ window.changeCalendarMonth=(delta)=>{calendarCursor=new Date(calendarCursor.getF
 window.setCalendarTab=(tab,btn)=>{calendarTab='upcoming';selectedCalendarDate=null;renderCalendar();};
 window.selectCalendarDay=(dateStr)=>{
   selectedCalendarDate=dateStr;
-  calendarListMode=(dateStr===todayISO())?'upcoming':'day';
+  if(dateStr===todayISO()){
+    calendarListMode='upcoming';
+  }else{
+    calendarListMode='day';
+  }
   renderCalendar();
 };
 
@@ -804,6 +808,8 @@ function renderCalendar(){
       title.textContent=`${pretty} Kayıtları`;
     }
   }else{
+    // Yaklaşanlar: gecikenler + bugün + önümüzdeki 7 gün.
+    // diff===0 olan bugünkü kayıtlar da bu listeye dahildir.
     list=list.filter(r=>r.diff<=7);
     if(title) title.textContent='Yaklaşanlar';
   }

@@ -416,9 +416,17 @@ Gerçek bildirim testi native/TestFlight sürümünde yapılacaktır.
 - Alt menü sabit kalır, içerik altında kaybolmasın diye alt padding korunur.
 - Onboarding açıkken scroll kilidi korunur; onboarding kapalıyken uygulama normal kayar.
 
-## v2.57 — Takvim açılış / Yaklaşanlar düzeltmesi
-- Bugünün tarihi görsel olarak seçili olabilir ama liste Yaklaşanlar olarak kalır.
+## v2.58 — Bugün / Yaklaşanlar takvim mantığı
+- v2.54 güvenli temel sürümünden üretildi.
+- selectedCalendarDate yalnız seçili günü tutar.
+- calendarListMode yalnız listenin Yaklaşanlar mı yoksa seçili gün kayıtları mı olduğunu belirler.
+- Bugünün tarihine dokunmak her zaman Yaklaşanlar görünümüne döner.
+- Başka bir güne dokunmak yalnız o günün kayıtlarını gösterir.
 - Takvim sekmesi açıldığında bugün seçili + Yaklaşanlar görünür.
-- Bugünün tarihine dokunmak yine Yaklaşanlar görünümünü korur.
-- Başka bir güne dokununca yalnız o günün kayıtları gösterilir.
-- Alt menü ve scroll davranışına dokunulmadı; v2.54 tabanı korunmuştur.
+- Scroll, alt menü ve diğer ekranlara dokunulmadı.
+
+### v2.58 final kontrol
+- Bugün seçildiğinde Yaklaşanlar görünür.
+- Bugün için kayıt varsa diff=0 olarak Yaklaşanlar listesine dahildir ve BUGÜN etiketi alır.
+- Gelecek 7 gün içindeki kayıtlar aynı listede görünür.
+- Başka bir gün seçilirse yalnız o günün kayıtları gösterilir.
