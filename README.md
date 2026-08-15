@@ -385,3 +385,13 @@ Gerçek bildirim testi native/TestFlight sürümünde yapılacaktır.
 - Safari'nin yeni görünüm açıldıktan sonra eski scroll konumunu geri yüklemesi engellenir.
 - window, html, body, #app, main ve aktif görünümün scroll konumları birlikte sıfırlanır.
 - Browser scroll restoration destekleniyorsa manual moda alınır.
+
+## v2.50 — Giriş / onboarding ekranları
+- v2.49 çalışan temel sürümü korunarak 3 ekranlı onboarding eklendi.
+- Ekran 1: PetKarnem marka alanı, kedi-köpek görseli ve Hoş Geldin metni.
+- Ekran 2: Takvim + yaklaşan hatırlatma görseli ve “PetKarnem takip etsin”.
+- Ekran 3: Kedi/Köpek seçim kartları ve “+ Petimi Ekle”.
+- Atla düğmesi ve 3 noktalı ilerleme göstergesi eklendi.
+- Petimi Ekle, mevcut Pet Ekle formunu açar ve seçilen türü önceden seçer.
+- Telefonda görünen PWA/App Icon, PetKarnem yazısı yanında kullanılan küçük kedi-köpek logosundan üretildi; alt yeşil şerit kaldırıldı.
+- Onboarding sessionStorage kullanır; yeni tarayıcı oturumunda tekrar gösterilir.
