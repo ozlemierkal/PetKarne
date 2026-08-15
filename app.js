@@ -27,12 +27,29 @@ function petById(id){ return state.pets.find(p=>p.id===id); }
 
 
 
+
+function pkResetPageScroll(activeViewId){
+  requestAnimationFrame(()=>{
+    try{ window.scrollTo(0,0); }catch(e){}
+    document.documentElement.scrollTop=0;
+    document.body.scrollTop=0;
+
+    const main=document.querySelector('main');
+    if(main) main.scrollTop=0;
+
+    const active=document.getElementById(activeViewId);
+    if(active) active.scrollTop=0;
+  });
+}
+
 window.switchView=(viewId,btn)=>{
   document.body.classList.remove('petDetailMode');
   $$('.navitem').forEach(b=>b.classList.remove('active'));
   if(btn) btn.classList.add('active');
   $$('.view').forEach(v=>v.classList.toggle('active',v.id===viewId));
   renderAll();
+
+  pkResetPageScroll(viewId);
 };
 
 function openModal(title, bodyHtml, onSave){

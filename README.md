@@ -374,3 +374,8 @@ Gerçek bildirim testi native/TestFlight sürümünde yapılacaktır.
 - Riskli Uygulayan form enjeksiyonu kaldırıldı; mevcut kayıt şeması korunarak detay sırası Uygulama → Uygulayan → Sonraki tarih tutuldu.
 - Uygulama açılışında state dizileri güvenli varsayılanlarla tamamlandı.
 - JavaScript syntax kontrolü başarıyla geçti.
+
+## v2.48 — Sayfa scroll düzeltmesi
+- Sekmeler arasında geçişte önceki sayfanın scroll konumu artık yeni sayfaya taşınmaz.
+- Sağlık sayfasında aşağı kayıp Veterinerim'e geçildiğinde Veterinerim en üstten açılır.
+- Aynı davranış Ana Sayfa, Sağlık, Takvim, Veterinerim ve Profil geçişlerinde uygulanır.
