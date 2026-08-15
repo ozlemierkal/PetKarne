@@ -1883,3 +1883,22 @@ body.onboardingOpen{overflow:hidden!important}
   .onboardCopy{margin-top:20px}
   .onboardPetChoice{height:132px}
 }
+
+/* v2.51 — Takvim gün ve kayıt noktası ayrımı */
+#monthGrid .dayCell.today{
+  box-shadow:inset 0 0 0 1.5px #67B65B;
+}
+#monthGrid .dayCell.today .dayDots{
+  display:flex;
+}
+.dayDots .pkDot{
+  width:6px!important;
+  height:6px!important;
+  border-radius:50%!important;
+  display:inline-block!important;
+  margin:0 1px!important;
+}
+.dayDots .pkDot.today{background:#67B65B!important}
+.dayDots .pkDot.soon{background:#E8A13B!important}
+.dayDots .pkDot.overdue{background:#D85B52!important}
+.dayDots .pkDot.normal{background:#BFC6BF!important}

@@ -395,3 +395,10 @@ Gerçek bildirim testi native/TestFlight sürümünde yapılacaktır.
 - Petimi Ekle, mevcut Pet Ekle formunu açar ve seçilen türü önceden seçer.
 - Telefonda görünen PWA/App Icon, PetKarnem yazısı yanında kullanılan küçük kedi-köpek logosundan üretildi; alt yeşil şerit kaldırıldı.
 - Onboarding sessionStorage kullanır; yeni tarayıcı oturumunda tekrar gösterilir.
+
+## v2.51 — Takvim + Sağlık geçmişi düzeltmeleri
+- Bugün için kayıt yoksa takvimde yalnız tarih vurgusu görünür; kayıt noktası görünmez.
+- Bugün gerçekten kayıt varsa yeşil kayıt noktası görünür.
+- 1–7 gün içindeki kayıtlar turuncu, gecikmiş kayıtlar kırmızı, uzak tarihler nötr nokta kullanır.
+- Veteriner randevuları Sağlık Geçmişi'nden çıkarıldı; randevular yalnız Takvim tarafında gösterilir.
+- v2.50 onboarding ekranları ve diğer özellikler korunmuştur.
