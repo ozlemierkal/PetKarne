@@ -645,8 +645,8 @@ window.showHealthCalendarDetail=(id)=>{
       <h3>${pet?.name||''} • ${typeLabel}</h3>
       <div><b>${r.title||''}</b></div>
       ${r.date?`<div class="muted" style="margin-top:6px">Uygulama: ${fmt(r.date)}</div>`:''}
-      ${r.next?`<div class="muted">Sonraki tarih: ${fmt(r.next)}</div>`:''}
       <div class="muted">Uygulayan: ${r.by==='vet'?'Veteriner':'Evde'}</div>
+      ${r.next?`<div class="muted">Sonraki tarih: ${fmt(r.next)}</div>`:''}
       ${r.by==='vet'?`<div class="muted">Klinik: ${vet?.name||'Seçilmedi'}</div>`:''}
       <div class="muted">${reminderText}</div>
       ${r.note?`<div style="margin-top:10px">${r.note}</div>`:''}
@@ -696,6 +696,10 @@ window.changeRecordDate=(id)=>{
     }
     r.next=d;
 
+    // Tarih değişince eski seçili gün listesi açık kalmasın.
+    // Kullanıcı doğrudan güncellenmiş Yaklaşanlar listesine dönsün.
+    selectedCalendarDate=null;
+
     if(r.type==='appointment'){
       r.title=$('#editCalTitle').value.trim()||'Veteriner Randevusu';
       r.time=$('#editCalTime').value;
@@ -707,6 +711,8 @@ window.changeRecordDate=(id)=>{
     }
 
     saveState();
+    renderCalendar();
+    return true;
   });
 };
 

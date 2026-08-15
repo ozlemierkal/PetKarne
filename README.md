@@ -357,3 +357,8 @@ Gerçek bildirim testi native/TestFlight sürümünde yapılacaktır.
 - Aynı pet-dog.jpg ana ekran, Dost Bilgileri ve Düzenle ekranında kullanılır.
 - Takvim sağlık detayında sıra Uygulama → Uygulayan → Sonraki tarih olarak düzenlendi.
 - Sağlık kayıt formunda Uygulayan alanı yoksa eklendi; varsa kayıt nesnesine appliedBy olarak kaydedilir.
+
+## v2.43 — Tarih güncelleme + Uygulayan sırası
+- Randevu/sağlık kaydı tarihi değiştirildiğinde eski seçili gün temizlenir.
+- Tarih güncellemesi sonrası Takvim otomatik olarak Yaklaşanlar görünümüne döner; kayıt yeni tarihiyle görünmeye devam eder.
+- Sağlık kayıt detayındaki sıra kesin olarak Uygulama → Uygulayan → Sonraki tarih yapıldı.
