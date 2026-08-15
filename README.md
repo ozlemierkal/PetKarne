@@ -332,3 +332,10 @@ Gerçek bildirim testi native/TestFlight sürümünde yapılacaktır.
 - Aynı güne tekrar dokununca Yaklaşanlar görünümüne dönülür.
 - 7 günden uzak seçili günlerde kayıtlar görünür ama Yaklaşıyor etiketi gösterilmez.
 - Sağlık takvim detayında Uygulama → Uygulayan → Sonraki tarih sırası düzenlendi.
+
+## v2.39 — Yapıldı akışı düzeltmesi
+- Gelecek tarihli sağlık kaydında Yapıldı düğmesi pasiftir.
+- 17 Ağustos kaydı 15 Ağustos'ta tamamlanmış olarak işaretlenemez.
+- Yapıldı denince sağlık işlemi Takvim'den kalkar ve Sağlık Geçmişi'ne planlanan uygulama tarihiyle taşınır.
+- Sonraki tarih varsa tamamlanan kayıttan ayrı yeni bir gelecek takvim kaydı oluşturulur.
+- Böylece tamamlanan işlem kaybolmaz ve bugünün tarihiyle yanlış geçmiş kaydı oluşmaz.

@@ -1574,3 +1574,12 @@ body.petDetailMode .bottomnav{
 }
 
 .calendarDynamicTitle{margin:16px 0 10px;font-size:17px;font-weight:850}
+
+/* v2.39 — gelecek tarihli Yapıldı pasif */
+.disabledAction,
+button:disabled.disabledAction{
+  opacity:.42!important;
+  cursor:not-allowed!important;
+  filter:grayscale(.35);
+  box-shadow:none!important;
+}

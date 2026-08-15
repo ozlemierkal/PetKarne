@@ -821,9 +821,9 @@ function renderCalendar(){
         ${r.type==='appointment'
           ? `<button class="secondary smallbtn" onclick="showCalendarDetail('${r.id}')">Detay</button>
              <button class="secondary smallbtn" onclick="changeRecordDate('${r.id}')">Düzenle</button>
-             <button class="primary smallbtn" onclick="completeRecord('${r.id}')">Tamamlandı</button>`
+             <button class="primary smallbtn ${r.diff>0?'disabledAction':''}" ${r.diff>0?'disabled':''} onclick="completeRecord('${r.id}')">Tamamlandı</button>`
           : `<button class="secondary smallbtn" onclick="showHealthCalendarDetail('${r.id}')">Detay</button>
-             <button class="primary smallbtn" onclick="completeRecord('${r.id}')">Yapıldı</button>
+             <button class="primary smallbtn ${r.diff>0?'disabledAction':''}" ${r.diff>0?'disabled':''} onclick="completeRecord('${r.id}')">Yapıldı</button>
              <button class="secondary smallbtn" onclick="changeRecordDate('${r.id}')">Tarihi Değiştir</button>`
         }
       </div>
@@ -832,8 +832,67 @@ function renderCalendar(){
 }
 
 window.completeRecord=(id)=>{
-  const r=state.records.find(x=>x.id===id); if(!r)return;
-  r.date=todayISO(); r.next=''; saveState();
+  const r=(state.records||[]).find(x=>x.id===id);
+  if(!r) return;
+
+  const dueDate=r.date||r.next||r.calendarDate;
+  if(!dueDate) return;
+
+  // Gelecek tarihli kayıt "Yapıldı" olamaz.
+  if(dueDate>todayISO()){
+    alert('Bu kayıt henüz gelmedi. Yapıldı olarak işaretlemek için kayıt tarihini bekleyin.');
+    return;
+  }
+
+  // Randevu tamamlanınca yalnız takvimden kaldırılır.
+  if(r.type==='appointment'){
+    state.records=state.records.filter(x=>x.id!==id);
+    saveState();
+    renderAll();
+    return;
+  }
+
+  // Sağlık işlemi tamamlanınca Sağlık Geçmişi'ne taşınır.
+  // Uygulama tarihi planlanan tarihtir; bugünün tarihine çevrilmez.
+  const historyRecord={
+    id:uid(),
+    petId:r.petId,
+    type:r.type,
+    title:r.title||(
+      r.type==='vaccine'?'Aşı':
+      r.type==='internal'?'İç Parazit':
+      r.type==='external'?'Dış Parazit':
+      'Sağlık Kaydı'
+    ),
+    date:dueDate,
+    application:r.application||r.product||r.name||'',
+    appliedBy:r.appliedBy||r.practitioner||'',
+    note:r.note||'',
+    nextDate:r.nextDate||''
+  };
+
+  // Existing health history is stored in state.health.
+  if(!Array.isArray(state.health)) state.health=[];
+  state.health.push(historyRecord);
+
+  // Completed task disappears from calendar.
+  state.records=state.records.filter(x=>x.id!==id);
+
+  // If a next date was defined, create a fresh future task.
+  const nextDate=r.nextDate||'';
+  if(nextDate && nextDate>dueDate){
+    state.records.push({
+      ...r,
+      id:uid(),
+      date:nextDate,
+      next:nextDate,
+      nextDate:'',
+      completed:false
+    });
+  }
+
+  saveState();
+  renderAll();
 };
 window.snoozeRecord=(id,days)=>{
   const r=state.records.find(x=>x.id===id); if(!r||!r.next)return;
