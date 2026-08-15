@@ -1116,14 +1116,12 @@ function pkDueStatus(dateStr){
           const p=petById(detailPetId);
           if(!p) return;
           p.photo=canvas.toDataURL('image/jpeg',0.82);
-          save();
+          saveState();
+
+          // saveState() yeniden render ettiği için detayı doğrudan yeni kayıtla yenile.
           const detailPhoto=document.getElementById('petDetailPhoto');
-          if(detailPhoto){
-            detailPhoto.src=p.photo;
-            detailPhoto.removeAttribute('srcset');
-          }
-          renderHome();
-          showPetDetail(detailPetId);
+          if(detailPhoto) detailPhoto.src=p.photo;
+          if(detailPetId) showPetDetail(detailPetId);
         };
         image.src=reader.result;
       };
