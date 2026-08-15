@@ -1977,3 +1977,83 @@ body.petDetailMode #petDetailView{
   z-index:100 !important;
   background:#fff !important;
 }
+
+/* v2.59 — gerçek onboarding katmanı; v2.58 uygulaması altta aynen kalır */
+.pkOnboarding{
+  position:fixed;
+  inset:0;
+  z-index:20000;
+  background:#fff;
+  overflow:hidden;
+  overscroll-behavior:none;
+  touch-action:pan-x;
+}
+.pkOnboarding.hidden{display:none!important}
+.pkOnboardingViewport{position:relative;width:100%;height:100%;overflow:hidden}
+.pkOnboardPage{
+  position:absolute;
+  inset:0;
+  display:none;
+  background:#fff;
+  overflow:hidden;
+}
+.pkOnboardPage.active{display:block}
+.pkOnboardArtwork{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:fill;
+  user-select:none;
+  -webkit-user-drag:none;
+  pointer-events:none;
+}
+.pkOnboardSkip{
+  position:absolute;
+  top:calc(env(safe-area-inset-top) + 30px);
+  right:7%;
+  z-index:4;
+  border:0;
+  background:#fff;
+  color:#23723a;
+  font:800 17px/1.1 inherit;
+  padding:8px 5px;
+  border-radius:8px;
+  touch-action:manipulation;
+}
+.pkOnboardDots{
+  position:absolute;
+  left:50%;
+  transform:translateX(-50%);
+  bottom:calc(env(safe-area-inset-bottom) + 35px);
+  z-index:4;
+  display:flex;
+  gap:15px;
+  padding:8px;
+  border-radius:18px;
+  background:rgba(255,255,255,.94);
+}
+.pkOnboardDots button{
+  width:11px;height:11px;
+  padding:0;border:0;border-radius:50%;
+  background:#d8dad8;
+  touch-action:manipulation;
+}
+.pkOnboardDots button.active{background:#2f7c3d}
+.pkOnboardAddFriend{
+  position:absolute;
+  z-index:5;
+  left:8%;
+  right:8%;
+  bottom:calc(env(safe-area-inset-bottom) + 104px);
+  height:64px;
+  border:0;
+  border-radius:13px;
+  background:#28783a;
+  color:#fff;
+  font:800 20px/1 inherit;
+  box-shadow:none;
+  touch-action:manipulation;
+}
+.pkOnboardAddFriend span{font-size:27px;vertical-align:-1px;margin-right:5px}
+body.pkOnboardingOpen{overflow:hidden!important}
