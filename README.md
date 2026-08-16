@@ -489,3 +489,12 @@ Gerçek bildirim testi native/TestFlight sürümünde yapılacaktır.
 - Test başladıktan 60 saniye sonra service worker üzerinden PetKarnem Test Bildirimi gösterilmeye çalışılır.
 - Bu ilk aşama gerçek tarih bazlı push altyapısı değildir; yalnız cihaz/tarayıcı bildirim kabiliyetini test etmek içindir.
 - iPhone’da web bildirimleri için uygulamanın Ana Ekrana eklenmiş olması gerekebilir.
+
+
+## v2.77 — Takvim Hatırlatmaları
+- v2.76 güvenli tabanı korunur.
+- Veteriner randevularında yeni varsayılan: 1 gün önce + 1 saat önce.
+- Bildirim izni verildiyse uygulama açıkken zamanı gelen hatırlatma gösterilir.
+- Uygulama yeniden açıldığında, etkinlik henüz geçmediyse kaçırılan hatırlatma yakalanır.
+- Aynı kayıt için kaçırılmış iki hatırlatma üst üste gösterilmez.
+- iOS PWA tamamen kapalıyken zamanında bildirim garanti edilmez; bunun için ileride sunucu tabanlı Web Push/native bildirim gerekir.

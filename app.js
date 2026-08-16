@@ -596,14 +596,15 @@ window.addAppointment=()=>{
 
     <label>Hatırlatma</label>
     <select id="apptReminder">
-      <option value="1440" selected>1 gün önce</option>
+      <option value="1500" selected>1 gün önce + 1 saat önce</option>
+      <option value="1440">1 gün önce</option>
       <option value="120">2 saat önce</option>
       <option value="60">1 saat önce</option>
       <option value="0">Hatırlatma yok</option>
     </select>
 
     <div class="muted" style="margin-top:6px">
-      Web testinde gerçek iPhone bildirimi gönderilmez; hatırlatma tercihi kayda eklenir.
+      Bildirim izni açıksa PetKarnem, uygulama açıkken veya yeniden açıldığında zamanı gelen hatırlatmayı gösterir.
     </div>
 
     <label>Not</label>
@@ -686,6 +687,7 @@ window.changeRecordDate=(id)=>{
       </select>
       <label>Hatırlatma</label>
       <select id="editCalReminder">
+        <option value="1500" ${r.reminder===1500?'selected':''}>1 gün önce + 1 saat önce</option>
         <option value="1440" ${(r.reminder??1440)===1440?'selected':''}>1 gün önce</option>
         <option value="120" ${r.reminder===120?'selected':''}>2 saat önce</option>
         <option value="60" ${r.reminder===60?'selected':''}>1 saat önce</option>
@@ -743,7 +745,7 @@ window.showCalendarDetail=(id)=>{
       <h3>${pet?.name||''} • ${r.title}</h3>
       <div>📅 ${fmt(r.next)}${r.time?' • '+r.time:''}</div>
       <div>🩺 ${vet?.name||'Klinik seçilmedi'}</div>
-      <div>🔔 ${r.reminder===0?'Hatırlatma yok':r.reminder===60?'1 saat önce':r.reminder===120?'2 saat önce':'1 gün önce'}</div>
+      <div>🔔 ${r.reminder===0?'Hatırlatma yok':r.reminder===1500?'1 gün önce + 1 saat önce':r.reminder===60?'1 saat önce':r.reminder===120?'2 saat önce':'1 gün önce'}</div>
       ${r.note?`<div style="margin-top:8px">${r.note}</div>`:''}
     </div>
   `);
@@ -1238,6 +1240,115 @@ function pkDueStatus(dateStr){
 })();
 
 
+
+
+/* ===== PetKarnem v2.77 — Takvim Hatırlatıcı Motoru =====
+   Web/PWA kısıtı: iOS uygulamayı tamamen kapattığında yalnızca istemci tarafı zamanlayıcıları garanti etmez.
+   Bu motor uygulama açıkken zamanı geldiğinde ve uygulama yeniden açıldığında kaçırılan hatırlatmayı yakalar.
+*/
+(function(){
+  const FIRED_STORE='petkarnem_calendar_reminders_fired_v1';
+  let reminderTimer=null;
+
+  function readFired(){
+    try{return JSON.parse(localStorage.getItem(FIRED_STORE)||'{}')||{};}catch{return {};}
+  }
+  function writeFired(v){
+    try{localStorage.setItem(FIRED_STORE,JSON.stringify(v));}catch{}
+  }
+  function eventDateTime(r){
+    if(!r?.next) return null;
+    const time=(r.time && /^\d{2}:\d{2}$/.test(r.time))?r.time:'09:00';
+    const d=new Date(`${r.next}T${time}:00`);
+    return Number.isFinite(d.getTime())?d:null;
+  }
+  function reminderOffsets(r){
+    if(r?.type==='appointment'){
+      if(r.reminder===0) return [];
+      if(r.reminder===1500) return [1440,60];
+      const n=Number(r.reminder??1440);
+      return n>0?[n]:[];
+    }
+    if(['vaccine','internal','external'].includes(r?.type)){
+      const d=Number(r.reminderDays||0);
+      return d>0?[d*1440]:[];
+    }
+    return [];
+  }
+  function reminderLabel(minutes){
+    if(minutes===1440) return '1 gün';
+    if(minutes%1440===0) return `${minutes/1440} gün`;
+    if(minutes===60) return '1 saat';
+    if(minutes%60===0) return `${minutes/60} saat`;
+    return `${minutes} dakika`;
+  }
+  function notificationCopy(r, minutes){
+    const pet=(state.pets||[]).find(p=>p.id===r.petId);
+    const petName=pet?.name||'Dostun';
+    const when=r.time?`${fmt(r.next)} • ${r.time}`:fmt(r.next);
+    const kind=r.type==='appointment'?'Veteriner randevusu':r.type==='vaccine'?'Aşı':r.type==='internal'?'İç parazit':'Dış parazit';
+    return {
+      title:`${petName} • ${kind} 🐾`,
+      body:`${r.title||kind} için ${reminderLabel(minutes)} kaldı. ${when}`
+    };
+  }
+  async function getWorker(){
+    if(!('serviceWorker' in navigator)) return null;
+    try{
+      const reg=await navigator.serviceWorker.register('./sw-notifications.js',{scope:'./'});
+      await navigator.serviceWorker.ready;
+      return reg;
+    }catch(err){console.error('PetKarnem reminder worker error',err);return null;}
+  }
+  async function showReminder(r,minutes){
+    if(!('Notification' in window) || Notification.permission!=='granted') return false;
+    const reg=await getWorker();
+    if(!reg) return false;
+    const c=notificationCopy(r,minutes);
+    const msg={type:'PK_SHOW_CALENDAR_REMINDER',title:c.title,body:c.body,tag:`pk-reminder-${r.id}-${minutes}`,url:'./'};
+    try{
+      const active=reg.active || (await navigator.serviceWorker.ready).active;
+      if(!active) return false;
+      active.postMessage(msg);
+      return true;
+    }catch(err){console.error('PetKarnem reminder notify error',err);return false;}
+  }
+  async function checkReminders(){
+    if(!state?.records?.length) return;
+    const now=Date.now();
+    const fired=readFired();
+    let changed=false;
+    const allowed=new Set(['appointment','vaccine','internal','external']);
+    for(const r of state.records){
+      if(!r?.id || !r.next || !allowed.has(r.type)) continue;
+      const eventAt=eventDateTime(r);
+      if(!eventAt || eventAt.getTime()<=now) continue;
+      const candidates=reminderOffsets(r).map(minutes=>({minutes,due:eventAt.getTime()-minutes*60000,key:`${r.id}:${r.next}:${r.time||''}:${minutes}`}));
+      const due=candidates.filter(x=>!fired[x.key] && now>=x.due && now<eventAt.getTime()).sort((a,b)=>b.due-a.due);
+      if(!due.length) continue;
+      // Uygulama uzun süre kapalı kaldıysa aynı kayıt için iki bildirimi üst üste göstermeyelim.
+      const chosen=due[0];
+      const ok=await showReminder(r,chosen.minutes);
+      if(ok){
+        for(const x of due){fired[x.key]=Date.now();changed=true;}
+      }
+    }
+    // 45 günden eski işaretleri temizle.
+    const cutoff=Date.now()-45*86400000;
+    for(const [k,v] of Object.entries(fired)) if(Number(v)<cutoff){delete fired[k];changed=true;}
+    if(changed) writeFired(fired);
+  }
+  function startReminderEngine(){
+    checkReminders();
+    if(reminderTimer) clearInterval(reminderTimer);
+    reminderTimer=setInterval(checkReminders,30000);
+    document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')checkReminders();});
+    window.addEventListener('focus',checkReminders);
+  }
+  window.pkCheckCalendarReminders=checkReminders;
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',startReminderEngine,{once:true});
+  else startReminderEngine();
+})();
 
 /* ===== PetKarnem v2.59 — Supabase Takvim Sync ===== */
 const PK_SUPABASE_URL='https://opjtpujxrveadptsizry.supabase.co';

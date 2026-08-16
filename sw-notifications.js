@@ -22,6 +22,19 @@ self.addEventListener('message', event => {
       })
     );
   }
+
+  if (data.type === 'PK_SHOW_CALENDAR_REMINDER') {
+    event.waitUntil(
+      self.registration.showNotification(data.title || 'PetKarnem Hatırlatma 🐾', {
+        body: data.body || 'Takviminde yaklaşan bir kayıt var.',
+        icon: 'icon-192.png',
+        badge: 'icon-192.png',
+        tag: data.tag || 'petkarnem-calendar-reminder',
+        renotify: true,
+        data: { url: data.url || './' }
+      })
+    );
+  }
 });
 
 self.addEventListener('notificationclick', event => {
