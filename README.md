@@ -500,6 +500,7 @@ Gerçek bildirim testi native/TestFlight sürümünde yapılacaktır.
 - iOS PWA tamamen kapalıyken zamanında bildirim garanti edilmez; bunun için ileride sunucu tabanlı Web Push/native bildirim gerekir.
 
 
-## v2.78 — 5 Dakika Bildirim Testi
-- Veteriner randevusu hatırlatma seçeneklerine `5 dakika önce (TEST)` eklendi.
-- v2.77 özellikleri, onboarding, kamera/fotoğraf ve Supabase takvim entegrasyonu korunur.
+## v2.79
+- Web Push subscription support added.
+- Push subscription is saved to Supabase push_subscriptions.
+- Server-side sender is NOT included yet.

@@ -49,3 +49,18 @@ self.addEventListener('notificationclick', event => {
     })
   );
 });
+
+
+// v2.79 — gerçek Web Push alıcısı
+self.addEventListener('push', event => {
+  let data = {};
+  try { data = event.data ? event.data.json() : {}; } catch { data = { body: event.data ? event.data.text() : '' }; }
+  const title = data.title || 'PetKarnem Hatırlatma 🐾';
+  const options = {
+    body: data.body || 'Takviminde yaklaşan bir kayıt var.',
+    icon: 'icon-192.png', badge: 'icon-192.png',
+    tag: data.tag || 'petkarnem-push', renotify: true,
+    data: { url: data.url || './' }
+  };
+  event.waitUntil(self.registration.showNotification(title, options));
+});

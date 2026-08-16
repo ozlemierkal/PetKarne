@@ -326,7 +326,7 @@ window.showPetTodaySummary=(petId)=>{
     const when=r.diff<0?`${Math.abs(r.diff)} gün gecikti`:r.diff===0?'Bugün':`${r.diff} gün sonra`;
     const icon=r.type==='appointment'?'🩺':r.type==='vaccine'?'💉':r.type==='internal'?'🪱':'🛡️';
     const reminderText=r.type==='appointment' && r.reminder!==0
-      ? `<div class="muted">🔔 ${r.reminder===5?'5 dakika önce (TEST)':r.reminder===60?'1 saat önce':r.reminder===120?'2 saat önce':'1 gün önce'} hatırlat</div>`
+      ? `<div class="muted">🔔 ${r.reminder===60?'1 saat önce':r.reminder===120?'2 saat önce':'1 gün önce'} hatırlat</div>`
       : (['vaccine','internal','external'].includes(r.type) && r.reminderDays>0
         ? `<div class="muted">🔔 ${r.reminderDays} gün önce hatırlat</div>` : '');
     rows.push(`<div class="card"><b>${icon} ${r.title}${r.type==='appointment' && r.reminder!==0?' 🔔':''}</b><div class="muted">${fmt(r.next)}${r.time?' • '+r.time:''} • ${when}</div>${reminderText}</div>`);
@@ -596,7 +596,6 @@ window.addAppointment=()=>{
 
     <label>Hatırlatma</label>
     <select id="apptReminder">
-      <option value="5">5 dakika önce (TEST)</option>
       <option value="1500" selected>1 gün önce + 1 saat önce</option>
       <option value="1440">1 gün önce</option>
       <option value="120">2 saat önce</option>
@@ -688,7 +687,6 @@ window.changeRecordDate=(id)=>{
       </select>
       <label>Hatırlatma</label>
       <select id="editCalReminder">
-        <option value="5" ${r.reminder===5?'selected':''}>5 dakika önce (TEST)</option>
         <option value="1500" ${r.reminder===1500?'selected':''}>1 gün önce + 1 saat önce</option>
         <option value="1440" ${(r.reminder??1440)===1440?'selected':''}>1 gün önce</option>
         <option value="120" ${r.reminder===120?'selected':''}>2 saat önce</option>
@@ -747,7 +745,7 @@ window.showCalendarDetail=(id)=>{
       <h3>${pet?.name||''} • ${r.title}</h3>
       <div>📅 ${fmt(r.next)}${r.time?' • '+r.time:''}</div>
       <div>🩺 ${vet?.name||'Klinik seçilmedi'}</div>
-      <div>🔔 ${r.reminder===0?'Hatırlatma yok':r.reminder===1500?'1 gün önce + 1 saat önce':r.reminder===5?'5 dakika önce (TEST)':r.reminder===60?'1 saat önce':r.reminder===120?'2 saat önce':'1 gün önce'}</div>
+      <div>🔔 ${r.reminder===0?'Hatırlatma yok':r.reminder===1500?'1 gün önce + 1 saat önce':r.reminder===60?'1 saat önce':r.reminder===120?'2 saat önce':'1 gün önce'}</div>
       ${r.note?`<div style="margin-top:8px">${r.note}</div>`:''}
     </div>
   `);
@@ -1244,7 +1242,7 @@ function pkDueStatus(dateStr){
 
 
 
-/* ===== PetKarnem v2.78 — Takvim Hatırlatıcı Motoru =====
+/* ===== PetKarnem v2.77 — Takvim Hatırlatıcı Motoru =====
    Web/PWA kısıtı: iOS uygulamayı tamamen kapattığında yalnızca istemci tarafı zamanlayıcıları garanti etmez.
    Bu motor uygulama açıkken zamanı geldiğinde ve uygulama yeniden açıldığında kaçırılan hatırlatmayı yakalar.
 */
@@ -1496,3 +1494,89 @@ window.addEventListener('DOMContentLoaded',()=>{
   if(pkSupabaseKey()) pkLoadCalendarFromSupabase();
 });
 
+
+
+/* ===== PetKarnem v2.79 — Web Push Subscription ===== */
+(function(){
+  const PK_VAPID_PUBLIC_KEY='BBIAUtd_9PWOhIMuL-n0fMNK9j8ZtD3pj85Zt9c_MYSN_MuHqRROO66JwxWVZ5ZOyjmpMQDc5J2Uxig4gFYx8Lo';
+
+  function b64ToUint8Array(base64String){
+    const padding='='.repeat((4-base64String.length%4)%4);
+    const base64=(base64String+padding).replace(/-/g,'+').replace(/_/g,'/');
+    const raw=atob(base64); const out=new Uint8Array(raw.length);
+    for(let i=0;i<raw.length;i++) out[i]=raw.charCodeAt(i);
+    return out;
+  }
+  function setPushStatus(text,ok=false){
+    const el=document.getElementById('pushSubscriptionStatus');
+    if(el){el.textContent=text;el.style.color=ok?'#237A57':'';}
+  }
+  async function getPushWorker(){
+    if(!('serviceWorker' in navigator)) throw new Error('Service Worker desteklenmiyor');
+    await navigator.serviceWorker.register('./sw-notifications.js',{scope:'./'});
+    return await navigator.serviceWorker.ready;
+  }
+  async function saveSubscriptionToSupabase(sub){
+    const key=pkSupabaseKey();
+    if(!key) throw new Error('Önce Supabase bağlantısını kur');
+    const j=sub.toJSON();
+    const row={
+      device_id:pkSupabaseDeviceId(),
+      endpoint:j.endpoint,
+      p256dh:j.keys?.p256dh||'',
+      auth:j.keys?.auth||'',
+      enabled:true,
+      updated_at:new Date().toISOString()
+    };
+    const res=await fetch(`${PK_SUPABASE_URL}/rest/v1/push_subscriptions?on_conflict=endpoint`,{
+      method:'POST',
+      headers:pkSupabaseHeaders({'Prefer':'resolution=merge-duplicates,return=minimal'}),
+      body:JSON.stringify(row)
+    });
+    if(!res.ok) throw new Error(`Supabase ${res.status}`);
+  }
+  async function enablePush(){
+    const btn=document.getElementById('enablePushBtn'); if(btn) btn.disabled=true;
+    try{
+      if(!('PushManager' in window) || !('Notification' in window)) throw new Error('Bu cihaz Web Push desteklemiyor');
+      let perm=Notification.permission;
+      if(perm!=='granted') perm=await Notification.requestPermission();
+      if(perm!=='granted') throw new Error('Bildirim izni verilmedi');
+      const reg=await getPushWorker();
+      let sub=await reg.pushManager.getSubscription();
+      if(!sub) sub=await reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:b64ToUint8Array(PK_VAPID_PUBLIC_KEY)});
+      await saveSubscriptionToSupabase(sub);
+      setPushStatus('Açık • Cihaz kaydedildi',true);
+      alert('Bildirim aboneliği oluşturuldu. Cihaz Supabase’e kaydedildi.');
+    }catch(err){
+      console.error('PetKarnem push subscribe',err);
+      setPushStatus('Hata');
+      alert(err?.message||'Bildirim aboneliği oluşturulamadı.');
+    }finally{if(btn) btn.disabled=false;}
+  }
+  async function disablePush(){
+    try{
+      const reg=await getPushWorker();
+      const sub=await reg.pushManager.getSubscription();
+      if(sub){
+        const endpoint=sub.endpoint;
+        await sub.unsubscribe();
+        const key=pkSupabaseKey();
+        if(key) await fetch(`${PK_SUPABASE_URL}/rest/v1/push_subscriptions?endpoint=eq.${encodeURIComponent(endpoint)}`,{method:'PATCH',headers:pkSupabaseHeaders({'Prefer':'return=minimal'}),body:JSON.stringify({enabled:false,updated_at:new Date().toISOString()})});
+      }
+      setPushStatus('Kapalı');
+    }catch(err){console.error(err);setPushStatus('Hata');}
+  }
+  async function refreshPushStatus(){
+    try{const reg=await getPushWorker();const sub=await reg.pushManager.getSubscription();setPushStatus(sub?'Açık • Cihaz kayıtlı':'Kapalı',!!sub);}catch{setPushStatus('Desteklenmiyor');}
+  }
+  function bindPush(){
+    const a=document.getElementById('enablePushBtn'), d=document.getElementById('disablePushBtn');
+    if(a&&!a.dataset.bound){a.dataset.bound='1';a.addEventListener('click',enablePush);}
+    if(d&&!d.dataset.bound){d.dataset.bound='1';d.addEventListener('click',disablePush);}
+    refreshPushStatus();
+  }
+  const prev=renderAll;
+  renderAll=function(){prev();bindPush();};
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',bindPush,{once:true});else bindPush();
+})();
