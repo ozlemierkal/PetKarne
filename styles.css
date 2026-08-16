@@ -1978,3 +1978,6 @@ body.petDetailMode #petDetailView{
   opacity:.55;
   pointer-events:none;
 }
+
+/* v2.87 iOS tap reliability */
+#calendarPrevBtn,#calendarNextBtn,.calendarActions button,.dayCell{touch-action:manipulation;-webkit-tap-highlight-color:transparent;}

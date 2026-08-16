@@ -7,7 +7,7 @@
   <title>PetKarnem</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="apple-touch-icon" href="icon-192.png">
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles.css?v=287">
 </head>
 <body>
 <input id="petPhotoPicker" type="file" accept="image/*" style="display:none">
@@ -102,7 +102,7 @@
           <span><i class="pkLegendDot overdue"></i>Gecikti</span>
         </div><button class="secondary compactBtn" onclick="window.addAppointment()">＋ Randevu</button></div>
       <div class="card calendarCard">
-        <div class="calendarTop"><button type="button" id="calendarPrevBtn" class="iconbtn" aria-label="Önceki ay">‹</button><h3 id="calendarMonthLabel"></h3><button type="button" id="calendarNextBtn" class="iconbtn" aria-label="Sonraki ay">›</button></div>
+        <div class="calendarTop"><button class="iconbtn" onclick="changeCalendarMonth(-1)">‹</button><h3 id="calendarMonthLabel"></h3><button class="iconbtn" onclick="changeCalendarMonth(1)">›</button></div>
         <div class="weekHead"><span>Pzt</span><span>Sal</span><span>Çar</span><span>Per</span><span>Cum</span><span>Cmt</span><span>Paz</span></div>
         <div id="monthGrid" class="monthGrid"></div>
       </div>
@@ -198,7 +198,7 @@
 
       <div class="settingsGroup"><h3>Hakkında</h3><div class="card">
         <div class="settingsRow"><span>Uygulama</span><b>PetKarnem</b></div>
-        <div class="settingsRow"><span>Sürüm</span><b>Web Test v2.86</b></div>
+        <div class="settingsRow"><span>Sürüm</span><b>Web Test v2.81</b></div>
         <div class="settingsRow"><span>Plan</span><b>Basic • Ücretsiz</b></div>
         <div class="settingsLink">Gizlilik Politikası <span>›</span></div>
         <div class="settingsLink">Kullanım Koşulları <span>›</span></div>
@@ -231,7 +231,7 @@
   </form>
 </dialog>
 
-<script src="app.js"></script>
+<script src="app.js?v=287"></script>
 
 <script>
 (function(){

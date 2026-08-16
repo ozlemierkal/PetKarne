@@ -504,6 +504,3 @@ Gerçek bildirim testi native/TestFlight sürümünde yapılacaktır.
 - Web Push subscription support added.
 - Push subscription is saved to Supabase push_subscriptions.
 - Server-side sender is NOT included yet.
-
-
-v2.85: Takvim önceki/sonraki ay okları iOS/Safari için doğrudan event listener ile bağlandı; ay imleci güvenli biçimde güncelleniyor. v2.83 tabanı korunur.
