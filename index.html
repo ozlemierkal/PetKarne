@@ -171,12 +171,12 @@
         <label>Varsayılan hatırlatma</label>
         <select id="defaultReminder"><option value="1">1 gün önce</option><option value="3">3 gün önce</option><option value="7">7 gün önce</option><option value="14">14 gün önce</option></select>
         <label class="toggleRow"><span>Gecikenleri tekrar göster</span><input id="repeatOverdue" type="checkbox"></label>
-        <div class="muted settingsNote">Web testinde ayarlar kaydedilir; gerçek iPhone bildirimi native/TestFlight sürümünde test edilir.</div>
+        
       </div></div>
 
-      <div class="settingsGroup"><h3>Push Bildirimleri</h3><div class="card settingsCard">
+      <div class="settingsGroup"><h3>Bildirimler</h3><div class="card settingsCard">
         <b>PetKarnem Bildirimleri</b>
-        <div class="muted settingsNote">iPhone'da Ana Ekrana eklenen PetKarnem için gerçek Web Push bildirimlerini açar. Takvim hatırlatmaları zamanı geldiğinde otomatik olarak gönderilir.</div>
+        <div class="muted settingsNote">Randevu, aşı ve diğer hatırlatmalar zamanı geldiğinde bildirim gönderilir.</div>
         <div class="settingsRow"><span>Durum</span><b id="pushSubscriptionStatus">Kapalı</b></div>
         <button class="primary big" id="enablePushBtn" type="button">Bildirimleri Aç</button>
         <button class="secondary big" id="disablePushBtn" type="button" style="margin-top:8px">Bildirimleri Kapat</button>

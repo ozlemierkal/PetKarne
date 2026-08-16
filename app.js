@@ -1439,7 +1439,7 @@ window.addEventListener('DOMContentLoaded',()=>{
   async function enablePush(){
     const btn=document.getElementById('enablePushBtn'); if(btn) btn.disabled=true;
     try{
-      if(!('PushManager' in window) || !('Notification' in window)) throw new Error('Bu cihaz Web Push desteklemiyor');
+      if(!('PushManager' in window) || !('Notification' in window)) throw new Error('Bu cihaz bildirimleri desteklemiyor');
       let perm=Notification.permission;
       if(perm!=='granted') perm=await Notification.requestPermission();
       if(perm!=='granted') throw new Error('Bildirim izni verilmedi');
@@ -1447,8 +1447,8 @@ window.addEventListener('DOMContentLoaded',()=>{
       let sub=await reg.pushManager.getSubscription();
       if(!sub) sub=await reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:b64ToUint8Array(PK_VAPID_PUBLIC_KEY)});
       await saveSubscriptionToSupabase(sub);
-      setPushStatus('Açık • Cihaz kaydedildi',true);
-      alert('Bildirim aboneliği oluşturuldu. Cihaz Supabase’e kaydedildi.');
+      setPushStatus('Açık',true);
+      alert('Bildirimler açıldı.');
     }catch(err){
       console.error('PetKarnem push subscribe',err);
       setPushStatus('Hata');
@@ -1469,7 +1469,7 @@ window.addEventListener('DOMContentLoaded',()=>{
     }catch(err){console.error(err);setPushStatus('Hata');}
   }
   async function refreshPushStatus(){
-    try{const reg=await getPushWorker();const sub=await reg.pushManager.getSubscription();setPushStatus(sub?'Açık • Cihaz kayıtlı':'Kapalı',!!sub);}catch{setPushStatus('Desteklenmiyor');}
+    try{const reg=await getPushWorker();const sub=await reg.pushManager.getSubscription();setPushStatus(sub?'Açık':'Kapalı',!!sub);}catch{setPushStatus('Desteklenmiyor');}
   }
   function bindPush(){
     const a=document.getElementById('enablePushBtn'), d=document.getElementById('disablePushBtn');
