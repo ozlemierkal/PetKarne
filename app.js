@@ -137,11 +137,14 @@ $('#addVetBtn').onclick=()=>openModal('Veteriner / Klinik Ekle',`
   saveState();
 });
 
-$('#resetBtn').onclick=()=>{
-  if(confirm('Tüm PetKarnem test verileri silinsin mi?')){
-    state=baseState(); normalizeState(); selectedPetId=null; saveState();
-  }
-};
+const resetBtn=$('#resetBtn');
+if(resetBtn){
+  resetBtn.onclick=()=>{
+    if(confirm('Tüm PetKarnem test verileri silinsin mi?')){
+      state=baseState(); normalizeState(); selectedPetId=null; saveState();
+    }
+  };
+}
 
 window.healthAction=function healthAction(type){
   if(!selectedPetId && state.pets.length) selectedPetId=state.pets[0].id;
