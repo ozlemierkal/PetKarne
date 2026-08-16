@@ -39,6 +39,8 @@ function pkResetPageScroll(activeViewId){
 
 window.switchView=(viewId,btn)=>{
   if(viewId==='calendarView'){
+    const t=new Date();
+    calendarCursor=new Date(t.getFullYear(),t.getMonth(),1,12,0,0,0);
     selectedCalendarDate=todayISO();
     calendarListMode='upcoming';
   }
@@ -751,7 +753,16 @@ window.showCalendarDetail=(id)=>{
   `);
 };
 
-window.changeCalendarMonth=(delta)=>{calendarCursor=new Date(calendarCursor.getFullYear(),calendarCursor.getMonth()+delta,1);selectedCalendarDate=null;renderCalendar();};
+window.changeCalendarMonth=(delta)=>{
+  const step=Number(delta)||0;
+  const y=calendarCursor.getFullYear();
+  const m=calendarCursor.getMonth();
+  // Ay geçişini ayın 1'i ve öğlen üzerinden kur: iOS/Safari tarih kaymalarını önler.
+  calendarCursor=new Date(y,m+step,1,12,0,0,0);
+  selectedCalendarDate=null;
+  calendarListMode='day';
+  renderCalendar();
+};
 window.setCalendarTab=(tab,btn)=>{calendarTab='upcoming';selectedCalendarDate=null;renderCalendar();};
 window.selectCalendarDay=(dateStr)=>{
   selectedCalendarDate=dateStr;
@@ -852,12 +863,12 @@ function renderCalendar(){
       <div class="muted">${fmt(r.calendarDate)}${r.time?' • '+r.time:''}</div>
       <div class="calendarActions" style="margin-top:10px">
         ${r.type==='appointment'
-          ? `<button class="secondary smallbtn" onclick="showCalendarDetail('${r.id}')">Detay</button>
-             <button class="secondary smallbtn" onclick="changeRecordDate('${r.id}')">Düzenle</button>
-             <button class="primary smallbtn ${r.diff>0?'disabledAction':''}" ${r.diff>0?'disabled':''} onclick="completeRecord('${r.id}')">Tamamlandı</button>`
-          : `<button class="secondary smallbtn" onclick="showHealthCalendarDetail('${r.id}')">Detay</button>
-             <button class="primary smallbtn ${r.diff>0?'disabledAction':''}" ${r.diff>0?'disabled':''} onclick="completeRecord('${r.id}')">Yapıldı</button>
-             <button class="secondary smallbtn" onclick="changeRecordDate('${r.id}')">Tarihi Değiştir</button>`
+          ? `<button type="button" class="secondary smallbtn" data-calendar-action="detail" data-record-id="${r.id}">Detay</button>
+             <button type="button" class="secondary smallbtn" data-calendar-action="edit" data-record-id="${r.id}">Düzenle</button>
+             <button type="button" class="primary smallbtn ${r.diff>0?'disabledAction':''}" ${r.diff>0?'disabled':''} data-calendar-action="complete" data-record-id="${r.id}">Tamamlandı</button>`
+          : `<button type="button" class="secondary smallbtn" data-calendar-action="health-detail" data-record-id="${r.id}">Detay</button>
+             <button type="button" class="primary smallbtn ${r.diff>0?'disabledAction':''}" ${r.diff>0?'disabled':''} data-calendar-action="complete" data-record-id="${r.id}">Yapıldı</button>
+             <button type="button" class="secondary smallbtn" data-calendar-action="edit" data-record-id="${r.id}">Tarihi Değiştir</button>`
         }
       </div>
     </div>`;
@@ -1013,7 +1024,20 @@ function bindProfileSettings(){
   if(rep&&!rep.dataset.bound){rep.dataset.bound='1';rep.onchange=()=>{state.settings.repeatOverdue=rep.checked;saveState();};}
 }
 
-function renderAll(){ renderPets(); renderHealth(); renderCalendar(); renderVet(); renderProfile(); bindProfileSettings(); renderPetDetailIfOpen(); }
+function bindCalendarNavigation(){
+  const prev=$('#calendarPrevBtn');
+  const next=$('#calendarNextBtn');
+  if(prev && !prev.dataset.bound){
+    prev.dataset.bound='1';
+    prev.addEventListener('click',(e)=>{e.preventDefault();e.stopPropagation();window.changeCalendarMonth(-1);});
+  }
+  if(next && !next.dataset.bound){
+    next.dataset.bound='1';
+    next.addEventListener('click',(e)=>{e.preventDefault();e.stopPropagation();window.changeCalendarMonth(1);});
+  }
+}
+
+function renderAll(){ renderPets(); renderHealth(); renderCalendar(); renderVet(); renderProfile(); bindProfileSettings(); bindCalendarNavigation(); renderPetDetailIfOpen(); }
 state.pets=state.pets||[];
 state.records=state.records||[];
 state.vets=state.vets||[];
@@ -1060,6 +1084,23 @@ setTimeout(()=>{
   };
 },0);
 
+
+
+// iPhone/Safari: dynamically rendered calendar buttons use one delegated handler
+// instead of inline onclick attributes, which can be unreliable in standalone/local PWA contexts.
+document.addEventListener('click',(e)=>{
+  const btn=e.target.closest('[data-calendar-action]');
+  if(!btn) return;
+  e.preventDefault();
+  e.stopPropagation();
+  const id=btn.dataset.recordId;
+  const action=btn.dataset.calendarAction;
+  if(!id) return;
+  if(action==='detail') return showCalendarDetail(id);
+  if(action==='health-detail') return showHealthCalendarDetail(id);
+  if(action==='edit') return changeRecordDate(id);
+  if(action==='complete') return completeRecord(id);
+},true);
 
 document.addEventListener('click',(e)=>{
   const btn=e.target.closest('button');
