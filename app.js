@@ -367,7 +367,7 @@ function showPetDetail(id){
   document.body.classList.add('petDetailMode');
 
   const photo=$('#petDetailPhoto');
-  if(photo) photo.src=p.type==='cat'?'pet-cat.jpg':'pet-dog.jpg';
+  if(photo) photo.src=p.photoData || (p.type==='cat'?'pet-cat.jpg':'pet-dog.jpg');
 
   $('#petDetailName').innerHTML=`${p.name} <span>🐾</span>`;
   $('#petDetailMeta').textContent=[p.type==='cat'?'Kedi':'Köpek',p.sex,petAgeLabel(p)].filter(Boolean).join(' • ');
@@ -387,6 +387,25 @@ function showPetDetail(id){
   $$('.view').forEach(v=>v.classList.toggle('active',v.id==='petDetailView'));
 }
 
+
+function bindPetPhotoPicker(){
+  const wrap=$('#petPhotoButton'), input=$('#petPhotoInput');
+  if(!wrap || !input) return;
+  const choose=()=>{ if(detailPetId) input.click(); };
+  wrap.onclick=choose;
+  wrap.onkeydown=(e)=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); choose(); } };
+  input.onchange=()=>{
+    const file=input.files && input.files[0];
+    const p=petById(detailPetId);
+    if(!file || !p) return;
+    if(!file.type.startsWith('image/')){ alert('Lütfen bir fotoğraf seç.'); return; }
+    const reader=new FileReader();
+    reader.onload=()=>{ p.photoData=reader.result; saveState(); showPetDetail(p.id); };
+    reader.readAsDataURL(file);
+    input.value='';
+  };
+}
+
 function renderPetDetailIfOpen(){
   if($('#petDetailView')?.classList.contains('active') && detailPetId) showPetDetail(detailPetId);
 }
@@ -399,7 +418,7 @@ function renderPets(){
   const cards=state.pets.slice(0,2).map(p=>{
     const meta=[petAgeLabel(p),p.weight?`${p.weight} kg`:null].filter(Boolean).join(' • ');
     return `<button type="button" class="refPetCard" data-pet-detail="${p.id}">
-      <div class="refPetVisual"><img src="${p.type==='cat'?'pet-cat.jpg':'pet-dog.jpg'}" alt=""><span class="refPawBadge">🐾</span></div>
+      <div class="refPetVisual"><img src="${p.photoData || (p.type==='cat'?'pet-cat.jpg':'pet-dog.jpg')}" alt=""><span class="refPawBadge">🐾</span></div>
       <div class="refPetName">${p.name}</div>
       <span class="refSpecies">${p.type==='cat'?'Kedi':'Köpek'}</span>
       <div class="refPetMeta">${meta || p.breed || 'Bilgileri görüntüle'}</div>
@@ -1035,6 +1054,7 @@ if('caches' in window){
 }
 
 setTimeout(()=>{
+  bindPetPhotoPicker();
   const back=$('#petDetailBack');
   if(back) back.onclick=()=>{ const nav=$('.navitem[data-view="homeView"]'); if(nav) nav.click(); };
 
@@ -1115,6 +1135,7 @@ function pkDueStatus(dateStr){
   }catch(e){}
 
   root.querySelectorAll('.onboardSkip').forEach(btn=>btn.onclick=closeOnboarding);
+  root.querySelectorAll('.onboardNext').forEach(btn=>btn.onclick=()=>show(index+1));
 
   // Tap empty area to advance, excluding interactive controls.
   slides.forEach((slide,n)=>{
