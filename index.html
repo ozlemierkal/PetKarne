@@ -182,7 +182,7 @@
         <button class="secondary big" id="disablePushBtn" type="button" style="margin-top:8px">Bildirimleri Kapat</button>
       </div></div>
 
-      <div class="settingsGroup"><h3>Takvim Bulut Bağlantısı</h3><div class="card settingsCard">
+      <div class="settingsGroup" id="supabaseTechnicalSettings" style="display:none"><h3>Takvim Bulut Bağlantısı</h3><div class="card settingsCard">
         <b>Supabase Takvim</b>
         <div class="muted settingsNote">Takvim kayıtlarını Supabase'e yedeklemek için Connect ekranındaki Publishable Key'i bir kez gir.</div>
         <label>Publishable Key</label>
@@ -243,12 +243,26 @@
     const host=document.getElementById('pkOnboardingHost');
     if(host) host.remove();
 
-    if(d.type === 'addFriend'){
-      setTimeout(function(){
+    // Onboarding kapandıktan sonra ana ekranı mutlaka yeniden çiz.
+    // Özellikle "Atla" akışında iframe kaldırılırken ilk render kaçabiliyordu.
+    setTimeout(function(){
+      try{
+        document.body.classList.remove('petDetailMode');
+        document.querySelectorAll('.navitem').forEach(function(b){
+          b.classList.toggle('active', b.dataset.view === 'homeView');
+        });
+        document.querySelectorAll('.view').forEach(function(v){
+          v.classList.toggle('active', v.id === 'homeView');
+        });
+        if(typeof renderAll === 'function') renderAll();
+        if(typeof pkResetPageScroll === 'function') pkResetPageScroll('homeView');
+      }catch(err){ console.error('PetKarnem onboarding finalize', err); }
+
+      if(d.type === 'addFriend'){
         const btn=document.getElementById('addPetBtn');
         if(btn) btn.click();
-      },0);
-    }
+      }
+    },50);
   });
 })();
 </script>
