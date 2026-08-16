@@ -1959,22 +1959,18 @@ body.petDetailMode #petDetailView{
   z-index:9999 !important;
 }
 
-/* v2.75 — Bildirim testi */
-.pkNotificationTestCard{
+/* v2.76 — Supabase direct test */
+.pkSupabaseTestCard{
   margin-top:16px;
   display:grid;
   gap:12px;
 }
-.pkNotificationTestHead{
-  display:flex;
-  align-items:flex-start;
-  gap:10px;
+.pkSupabaseTestStatus{
+  min-height:22px;
+  line-height:1.45;
+  word-break:break-word;
 }
-.pkNotificationTestStatus{
-  min-height:20px;
-  line-height:1.4;
-}
-#pkNotificationTestBtn:disabled{
+#pkSupabaseTestBtn:disabled{
   opacity:.55;
   pointer-events:none;
 }
