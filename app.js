@@ -367,7 +367,7 @@ function showPetDetail(id){
   document.body.classList.add('petDetailMode');
 
   const photo=$('#petDetailPhoto');
-  if(photo) photo.src=p.photoData || (p.type==='cat'?'pet-cat.jpg':'pet-dog.jpg');
+  if(photo) photo.src=p.photo || (p.type==='cat'?'pet-cat.jpg':'pet-dog.jpg');
 
   $('#petDetailName').innerHTML=`${p.name} <span>🐾</span>`;
   $('#petDetailMeta').textContent=[p.type==='cat'?'Kedi':'Köpek',p.sex,petAgeLabel(p)].filter(Boolean).join(' • ');
@@ -387,25 +387,6 @@ function showPetDetail(id){
   $$('.view').forEach(v=>v.classList.toggle('active',v.id==='petDetailView'));
 }
 
-
-function bindPetPhotoPicker(){
-  const wrap=$('#petPhotoButton'), input=$('#petPhotoInput');
-  if(!wrap || !input) return;
-  const choose=()=>{ if(detailPetId) input.click(); };
-  wrap.onclick=choose;
-  wrap.onkeydown=(e)=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); choose(); } };
-  input.onchange=()=>{
-    const file=input.files && input.files[0];
-    const p=petById(detailPetId);
-    if(!file || !p) return;
-    if(!file.type.startsWith('image/')){ alert('Lütfen bir fotoğraf seç.'); return; }
-    const reader=new FileReader();
-    reader.onload=()=>{ p.photoData=reader.result; saveState(); showPetDetail(p.id); };
-    reader.readAsDataURL(file);
-    input.value='';
-  };
-}
-
 function renderPetDetailIfOpen(){
   if($('#petDetailView')?.classList.contains('active') && detailPetId) showPetDetail(detailPetId);
 }
@@ -418,7 +399,7 @@ function renderPets(){
   const cards=state.pets.slice(0,2).map(p=>{
     const meta=[petAgeLabel(p),p.weight?`${p.weight} kg`:null].filter(Boolean).join(' • ');
     return `<button type="button" class="refPetCard" data-pet-detail="${p.id}">
-      <div class="refPetVisual"><img src="${p.photoData || (p.type==='cat'?'pet-cat.jpg':'pet-dog.jpg')}" alt=""><span class="refPawBadge">🐾</span></div>
+      <div class="refPetVisual"><img src="${p.photo || (p.type==='cat'?'pet-cat.jpg':'pet-dog.jpg')}" alt=""><span class="refPawBadge">🐾</span></div>
       <div class="refPetName">${p.name}</div>
       <span class="refSpecies">${p.type==='cat'?'Kedi':'Köpek'}</span>
       <div class="refPetMeta">${meta || p.breed || 'Bilgileri görüntüle'}</div>
@@ -1054,7 +1035,6 @@ if('caches' in window){
 }
 
 setTimeout(()=>{
-  bindPetPhotoPicker();
   const back=$('#petDetailBack');
   if(back) back.onclick=()=>{ const nav=$('.navitem[data-view="homeView"]'); if(nav) nav.click(); };
 
@@ -1107,78 +1087,157 @@ function pkDueStatus(dateStr){
 
 
 
-/* v2.50 — Onboarding */
+
+/* v2.70 visible camera photo picker */
 (function(){
-  const root=document.getElementById('onboarding');
-  if(!root) return;
+  function initPetCamera(){
+    const picker=document.getElementById('petPhotoPicker');
+    const camera=document.getElementById('petPhotoCameraBtn');
+    if(!picker || !camera) return;
 
-  let index=0;
-  let selectedType='cat';
-  const slides=[...root.querySelectorAll('.onboardingSlide')];
-
-  function show(i){
-    index=Math.max(0,Math.min(slides.length-1,i));
-    slides.forEach((s,n)=>s.classList.toggle('active',n===index));
-  }
-
-  function closeOnboarding(){
-    root.classList.remove('onboardingVisible');
-    document.body.classList.remove('onboardingOpen');
-    try{ sessionStorage.setItem('petkarnemOnboardingSeen','1'); }catch(e){}
-  }
-
-  document.body.classList.add('onboardingOpen');
-  try{
-    if(sessionStorage.getItem('petkarnemOnboardingSeen')==='1'){
-      closeOnboarding();
-    }
-  }catch(e){}
-
-  root.querySelectorAll('.onboardSkip').forEach(btn=>btn.onclick=closeOnboarding);
-  root.querySelectorAll('.onboardNext').forEach(btn=>btn.onclick=()=>show(index+1));
-
-  // Tap empty area to advance, excluding interactive controls.
-  slides.forEach((slide,n)=>{
-    slide.addEventListener('click',(e)=>{
-      if(e.target.closest('button')) return;
-      if(n<slides.length-1) show(n+1);
-    });
-  });
-
-  // Simple horizontal swipe.
-  let sx=0, sy=0;
-  root.addEventListener('touchstart',e=>{
-    const t=e.touches[0]; sx=t.clientX; sy=t.clientY;
-  },{passive:true});
-  root.addEventListener('touchend',e=>{
-    const t=e.changedTouches[0];
-    const dx=t.clientX-sx, dy=t.clientY-sy;
-    if(Math.abs(dx)>55 && Math.abs(dx)>Math.abs(dy)){
-      if(dx<0 && index<slides.length-1) show(index+1);
-      if(dx>0 && index>0) show(index-1);
-    }
-  },{passive:true});
-
-  root.querySelectorAll('.onboardPetChoice').forEach(btn=>{
-    btn.onclick=()=>{
-      selectedType=btn.dataset.petType||'cat';
-      root.querySelectorAll('.onboardPetChoice').forEach(x=>x.classList.toggle('selected',x===btn));
+    camera.onclick=function(e){
+      e.preventDefault(); e.stopPropagation();
+      picker.value='';
+      picker.click();
     };
-  });
-  const defaultChoice=root.querySelector('[data-pet-type="cat"]');
-  if(defaultChoice) defaultChoice.classList.add('selected');
 
-  const add=document.getElementById('onboardAddPet');
-  if(add) add.onclick=()=>{
-    closeOnboarding();
-    const addBtn=document.getElementById('addPetBtn');
-    if(addBtn) addBtn.click();
-    setTimeout(()=>{
-      const type=document.getElementById('petType');
-      if(type) type.value=selectedType;
-    },0);
-  };
+    picker.onchange=function(){
+      const file=picker.files && picker.files[0];
+      if(!file || !file.type.startsWith('image/')) return;
+      const reader=new FileReader();
+      reader.onload=function(){
+        const image=new Image();
+        image.onload=function(){
+          const max=900, ratio=Math.min(1,max/Math.max(image.width,image.height));
+          const canvas=document.createElement('canvas');
+          canvas.width=Math.round(image.width*ratio);
+          canvas.height=Math.round(image.height*ratio);
+          canvas.getContext('2d').drawImage(image,0,0,canvas.width,canvas.height);
+          const p=petById(detailPetId);
+          if(!p) return;
+          p.photo=canvas.toDataURL('image/jpeg',0.82);
+          saveState();
+
+          // saveState() yeniden render ettiği için detayı doğrudan yeni kayıtla yenile.
+          const detailPhoto=document.getElementById('petDetailPhoto');
+          if(detailPhoto) detailPhoto.src=p.photo;
+          if(detailPetId) showPetDetail(detailPetId);
+        };
+        image.src=reader.result;
+      };
+      reader.readAsDataURL(file);
+    };
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',initPetCamera,{once:true});
+  else initPetCamera();
 })();
+
+
+/* v2.75 — 1 dakikalık bildirim testi */
+(function(){
+  function setPkNotificationStatus(text){
+    const el=document.getElementById('pkNotificationTestStatus');
+    if(el) el.textContent=text;
+  }
+
+  async function ensurePkNotificationWorker(){
+    if(!('serviceWorker' in navigator)) return null;
+    try{
+      const reg=await navigator.serviceWorker.register('./sw-notifications.js', {scope:'./'});
+      await navigator.serviceWorker.ready;
+      return reg;
+    }catch(err){
+      console.error('PetKarnem SW register error', err);
+      return null;
+    }
+  }
+
+  async function sendPkTestNotification(reg){
+    try{
+      if(reg?.active){
+        reg.active.postMessage({type:'PK_SHOW_TEST_NOTIFICATION'});
+        return true;
+      }
+      const ready=await navigator.serviceWorker.ready;
+      if(ready?.active){
+        ready.active.postMessage({type:'PK_SHOW_TEST_NOTIFICATION'});
+        return true;
+      }
+    }catch(err){
+      console.error('PetKarnem notification send error', err);
+    }
+    return false;
+  }
+
+  async function startPkNotificationTest(){
+    const btn=document.getElementById('pkNotificationTestBtn');
+    if(btn) btn.disabled=true;
+
+    if(!('Notification' in window)){
+      setPkNotificationStatus('Bu tarayıcı bildirimleri desteklemiyor.');
+      if(btn) btn.disabled=false;
+      return;
+    }
+
+    let permission=Notification.permission;
+    if(permission!=='granted'){
+      try{
+        permission=await Notification.requestPermission();
+      }catch(err){
+        console.error(err);
+      }
+    }
+
+    if(permission!=='granted'){
+      setPkNotificationStatus('Bildirim izni verilmedi. iPhone’da Ana Ekrana eklenen uygulamada tekrar dene.');
+      if(btn) btn.disabled=false;
+      return;
+    }
+
+    const reg=await ensurePkNotificationWorker();
+    if(!reg){
+      setPkNotificationStatus('Bildirim servisi başlatılamadı.');
+      if(btn) btn.disabled=false;
+      return;
+    }
+
+    setPkNotificationStatus('Test başladı. 1 dakika sonra bildirim göndermeyi deneyeceğim.');
+
+    let remaining=60;
+    const statusTimer=setInterval(()=>{
+      remaining--;
+      if(remaining>0){
+        setPkNotificationStatus(`Test başladı. ${remaining} saniye kaldı.`);
+      }else{
+        clearInterval(statusTimer);
+      }
+    },1000);
+
+    setTimeout(async()=>{
+      clearInterval(statusTimer);
+      const ok=await sendPkTestNotification(reg);
+      setPkNotificationStatus(
+        ok
+          ? 'Test bildirimi gönderildi. Bildirim ekranını kontrol et.'
+          : 'Bildirim gönderilemedi. Uygulamayı Ana Ekrana ekleyip tekrar dene.'
+      );
+      if(btn) btn.disabled=false;
+    },60000);
+  }
+
+  function initPkNotificationTest(){
+    const btn=document.getElementById('pkNotificationTestBtn');
+    if(btn) btn.addEventListener('click', startPkNotificationTest);
+  }
+
+  if(document.readyState==='loading'){
+    document.addEventListener('DOMContentLoaded',initPkNotificationTest,{once:true});
+  }else{
+    initPkNotificationTest();
+  }
+})();
+
+
 
 /* ===== PetKarnem v2.59 — Supabase Takvim Sync ===== */
 const PK_SUPABASE_URL='https://opjtpujxrveadptsizry.supabase.co';
@@ -1323,3 +1382,4 @@ window.addEventListener('DOMContentLoaded',()=>{
   pkBindSupabaseSettings();
   if(pkSupabaseKey()) pkLoadCalendarFromSupabase();
 });
+

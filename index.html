@@ -10,12 +10,20 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+<input id="petPhotoPicker" type="file" accept="image/*" style="display:none">
 
-<div id="onboarding" class="onboarding onboardingVisible" aria-label="PetKarnem tanıtım ekranları"><div class="onboardingSlides">
-<section class="onboardingSlide active" data-onboard-index="0"><button type="button" class="onboardSkip">Atla</button><div class="onboardBrandMark"><img src="icon-192.png" alt=""></div><div class="onboardWordmark">Pet<span>Karnem</span></div><div class="onboardMiniHeart">♡</div><div class="onboardCopy"><h2>PetKarnem’e<br>Hoş Geldin! 👋</h2><p>Sevginin karnesi,<br>sağlığın güvencesi. 💚</p></div><div class="onboardPetsHero"><img class="onboardCat" src="pet-cat.jpg" alt="Kedi"><img class="onboardDog" src="pet-dog.jpg" alt="Köpek"></div><div class="onboardFooter"><div class="onboardDots"><i class="active"></i><i></i><i></i></div><button type="button" class="onboardNext" aria-label="İleri">›</button></div></section>
-<section class="onboardingSlide" data-onboard-index="1"><button type="button" class="onboardSkip">Atla</button><div class="onboardCopy featureCopy"><h2>Sağlığını<br>birlikte takip edelim</h2><div class="onboardMiniHeart">♡</div><p>Aşılar, ilaçlar, parazit uygulamaları<br>ve kontrolleri kolayca planla,<br>hiçbirini unutma.</p></div><div class="onboardFeatures"><div>💉<b>Aşı<br>Takvimi</b></div><div>💊<b>İlaç<br>Hatırlatıcı</b></div><div>🛡️<b>Parazit<br>Takibi</b></div><div>📅<b>Yaklaşan<br>Randevular</b></div></div><div class="onboardPetsHero secondHero"><img class="onboardCat" src="pet-cat.jpg" alt="Kedi"><img class="onboardDog" src="pet-dog.jpg" alt="Köpek"></div><div class="onboardFooter"><div class="onboardDots"><i></i><i class="active"></i><i></i></div><button type="button" class="onboardNext" aria-label="İleri">›</button></div></section>
-<section class="onboardingSlide" data-onboard-index="2"><button type="button" class="onboardSkip">Atla</button><div class="onboardPetsHero thirdHero"><img class="onboardCat" src="pet-cat.jpg" alt="Kedi"><img class="onboardDog" src="pet-dog.jpg" alt="Köpek"></div><div class="onboardCopy petAddCopy"><h2>Dostunu ekle,<br>başlayalım! 💚</h2><p>Dostunu ekle, tüm sağlık<br>bilgilerini tek yerde güvenle sakla.</p></div><button type="button" id="onboardAddPet" class="onboardAddPet">＋ Dostunu Ekle</button><div class="onboardFooter finalFooter"><div class="onboardDots"><i></i><i></i><i class="active"></i></div></div></section>
-</div></div>
+<div id="pkOnboardingHost" style="position:fixed;left:0;top:0;width:100vw;height:100svh;z-index:2147483000;background:#fff;overflow:hidden;overscroll-behavior:none;">
+  <iframe
+    id="pkOnboardingFrame"
+    src="onboarding.html"
+    title="PetKarnem tanıtım"
+    style="display:block;width:100vw;height:100svh;border:0;background:#fff;overflow:hidden;"
+    allow="fullscreen">
+  </iframe>
+</div>
+
+
+
 
 <div id="app">
   <header class="topbar refTopbar">
@@ -61,10 +69,13 @@
       </div>
 
       <div class="detailIdentity">
-        <div class="detailPhotoWrap" id="petPhotoButton" role="button" tabindex="0" aria-label="Dost fotoğrafını değiştir">
-          <img id="petDetailPhoto" src="pet-cat.jpg" alt="">
-          <span class="petPhotoCamera" aria-hidden="true">📷</span>
-          <input id="petPhotoInput" type="file" accept="image/*" capture="environment" hidden>
+        <div class="detailPhotoWrap">
+          <div class="pkPhotoEditWrap">
+  <img id="petDetailPhoto" src="pet-cat.jpg" alt="">
+  <button id="petPhotoCameraBtn" class="pkCameraButton" type="button" aria-label="Fotoğrafı değiştir">
+    <span aria-hidden="true">📷</span>
+  </button>
+</div>
         </div>
         <h1 id="petDetailName">Dostum <span>🐾</span></h1>
         <div id="petDetailMeta" class="detailMeta"></div>
@@ -180,13 +191,25 @@
 
       <div class="settingsGroup"><h3>Hakkında</h3><div class="card">
         <div class="settingsRow"><span>Uygulama</span><b>PetKarnem</b></div>
-        <div class="settingsRow"><span>Sürüm</span><b>Web Test v2.59 Supabase</b></div>
+        <div class="settingsRow"><span>Sürüm</span><b>Web Test v2.76</b></div>
         <div class="settingsRow"><span>Plan</span><b>Basic • Ücretsiz</b></div>
         <div class="settingsLink">Gizlilik Politikası <span>›</span></div>
         <div class="settingsLink">Kullanım Koşulları <span>›</span></div>
       </div></div>
     </section>
-  </main>
+  
+<div class="card pkNotificationTestCard" id="pkNotificationTestCard">
+  <div class="pkNotificationTestHead">
+    <div>
+      <b>🔔 Bildirim Testi</b>
+      <div class="muted">Bildirim iznini ve 1 dakikalık test hatırlatmasını dene.</div>
+    </div>
+  </div>
+  <button type="button" class="primary" id="pkNotificationTestBtn">1 Dakika Sonra Test Bildirimi</button>
+  <div class="muted pkNotificationTestStatus" id="pkNotificationTestStatus">Henüz test başlatılmadı.</div>
+</div>
+
+</main>
 
   <nav class="bottomnav">
     <button data-view="homeView" class="navitem active" onclick="switchView('homeView',this)">🏠<span>Ana Sayfa</span></button>
@@ -212,5 +235,26 @@
 </dialog>
 
 <script src="app.js"></script>
+
+<script>
+(function(){
+  window.addEventListener('message', function(e){
+    if(e.origin !== location.origin) return;
+    const d=e.data || {};
+    if(d.source !== 'petkarnem-onboarding') return;
+
+    const host=document.getElementById('pkOnboardingHost');
+    if(host) host.remove();
+
+    if(d.type === 'addFriend'){
+      setTimeout(function(){
+        const btn=document.getElementById('addPetBtn');
+        if(btn) btn.click();
+      },0);
+    }
+  });
+})();
+</script>
+
 </body>
 </html>

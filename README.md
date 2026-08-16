@@ -431,9 +431,61 @@ Gerçek bildirim testi native/TestFlight sürümünde yapılacaktır.
 - Gelecek 7 gün içindeki kayıtlar aynı listede görünür.
 - Başka bir gün seçilirse yalnız o günün kayıtları gösterilir.
 
+## v2.58 CLEAN — onboarding kaldırıldı
+- v2.58 FINAL uygulama mantığı korunmuştur.
+- Eski/deneysel onboarding HTML, CSS ve JS kodları tamamen kaldırılmıştır.
+- Uygulama artık doğrudan Ana Sayfa ile açılır.
+- Takvimde bugün = Yaklaşanlar mantığı ve diğer v2.58 özellikleri aynen korunur.
 
-## v2.59 Supabase Takvim
-- v2.58 FINAL tabanı korunmuştur.
-- Takvim kayıtları için Supabase REST eşitlemesi eklendi.
-- Profil > Takvim Bulut Bağlantısı alanından Publishable Key girilir.
-- Önce supabase_calendar_migration.sql SQL Editor’da bir kez çalıştırılmalıdır.
+
+## v2.62 — Isolated iframe onboarding
+- v2.58 CLEAN is the base.
+- styles.css SHA256 remains exactly unchanged: fdbd632e83fdb98264dfd731ee93ce6cd9d726ea9371cdf0ab1eecc52a09c0dc
+- app.js SHA256 remains exactly unchanged: 19defaf62e8e3cd943a0468107a4cfc67453fd40375ecbd8074dab695781d3a6
+- Onboarding lives in its own onboarding.html iframe, so its CSS/JS cannot alter the main application.
+- The approved 3-panel onboarding visual is used exactly as in the standalone test.
+- Onboarding appears on every page load.
+- Atla removes only the iframe overlay.
+- Dostunu Ekle removes the overlay and triggers the existing addPetBtn flow.
+
+
+## v2.63 — Onboarding stable viewport
+- v2.62 baz alındı.
+- Ana uygulamanın styles.css ve app.js dosyalarına dokunulmadı.
+- Onboarding host ve iframe 100svh ile sabitlendi; Safari'nin dinamik toolbar yüksekliği sırasında ekran boyutunun oynaması azaltıldı.
+- Üç slide aynı sabit 100vw × 100svh ölçüsünde çalışır.
+- Triptych görseli 300vw genişlikte sabitlendi; ekranlar 0 / -100vw / -200vw konumlarından gösterilir.
+- touchmove preventDefault ile swipe sırasında Safari rubber-band / sayfa sürükleme engellenir.
+- styles.css SHA256: fdbd632e83fdb98264dfd731ee93ce6cd9d726ea9371cdf0ab1eecc52a09c0dc
+- app.js SHA256: 19defaf62e8e3cd943a0468107a4cfc67453fd40375ecbd8074dab695781d3a6
+
+## v2.70 — Kamera görünürlük düzeltmesi
+- v2.63 baz alındı.
+- Kamera, pet detay fotoğrafının kendi 118x118 kutusuna doğrudan sabitlendi.
+- Sağ-alt köşede yüksek z-index, yeşil zemin ve beyaz çerçeve ile görünür.
+- Fotoğraf seçme/kaydetme ve ana kartta gösterme eklendi.
+- Onboarding'e dokunulmadı.
+
+## v2.72 — Gerçek daire kırpma düzeltmesi
+- v2.70 kamera çalışan sürüm baz alındı.
+- Sorunun kaynağı bulundu: eski v2.21 CSS'indeki `.detailPhotoWrap { clip-path:circle(...); overflow:hidden }`.
+- Bu gerçek dış sarmalayıcıdaki circle clip-path kaldırıldı.
+- Dost fotoğrafı 180x210, hafif yuvarlatılmış dikdörtgen ve `object-fit:contain`.
+- v2.70 kamera kodu korunarak kamera fotoğraf alanının sağ alt içine alındı.
+- Onboarding değiştirilmedi.
+
+## v2.74 — Fotoğraf anında güncelleme gerçek hata düzeltmesi
+- v2.72 baz alındı.
+- Fotoğraf yükleme kodundaki hatalı `save()` çağrısı `saveState()` olarak düzeltildi.
+- Bu hata, fotoğraf seçildikten sonra JavaScript akışını kesiyordu.
+- Fotoğraf artık kaydedildikten hemen sonra Dost Bilgileri ekranında yeniden gösterilir.
+- Kamera ve dikdörtgen fotoğraf görünümü korunmuştur.
+
+## v2.75 — Bildirim Testi
+- v2.74 çalışan test sürümü baz alındı.
+- Profil/Ayarlar bölümüne “1 Dakika Sonra Test Bildirimi” butonu eklendi.
+- Bildirim izni istenir.
+- sw-notifications.js service worker kaydedilir.
+- Test başladıktan 60 saniye sonra service worker üzerinden PetKarnem Test Bildirimi gösterilmeye çalışılır.
+- Bu ilk aşama gerçek tarih bazlı push altyapısı değildir; yalnız cihaz/tarayıcı bildirim kabiliyetini test etmek içindir.
+- iPhone’da web bildirimleri için uygulamanın Ana Ekrana eklenmiş olması gerekebilir.
