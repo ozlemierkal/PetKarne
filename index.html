@@ -10,20 +10,93 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-<input id="petPhotoPicker" type="file" accept="image/*" style="display:none">
 
-<div id="pkOnboardingHost" style="position:fixed;left:0;top:0;width:100vw;height:100svh;z-index:2147483000;background:#fff;overflow:hidden;overscroll-behavior:none;">
-  <iframe
-    id="pkOnboardingFrame"
-    src="onboarding.html"
-    title="PetKarnem tanıtım"
-    style="display:block;width:100vw;height:100svh;border:0;background:#fff;overflow:hidden;"
-    allow="fullscreen">
-  </iframe>
+<div id="onboarding" class="onboarding onboardingVisible" aria-label="PetKarnem tanıtım ekranları">
+  <div class="onboardingSlides">
+
+    <section class="onboardingSlide active" data-onboard-index="0">
+      <button type="button" class="onboardSkip">Atla</button>
+
+      <div class="onboardBrandMark">
+        <img src="icon-192.png" alt="">
+      </div>
+      <div class="onboardWordmark">Pet<span>Karnem</span></div>
+      <div class="onboardTagline">Sevginin karnesi, sağlığın güvencesi 💚</div>
+
+      <div class="onboardPetsHero">
+        <img class="onboardCat" src="pet-cat.jpg" alt="Kedi">
+        <img class="onboardDog" src="pet-dog.jpg" alt="Köpek">
+      </div>
+
+      <div class="onboardCopy">
+        <h2>Hoş Geldin! 👋</h2>
+        <p>Dostunun sağlık takibini kolaylaştır.<br>Aşıları, parazit uygulamalarını<br>ve ilaçları unutma.</p>
+      </div>
+
+      <div class="onboardDots" aria-hidden="true">
+        <i class="active"></i><i></i><i></i>
+      </div>
+    </section>
+
+    <section class="onboardingSlide" data-onboard-index="1">
+      <button type="button" class="onboardSkip">Atla</button>
+
+      <div class="onboardReminderVisual">
+        <div class="onboardPhoneMock">
+          <div class="mockTitle">Takvim</div>
+          <div class="mockMonth">Mayıs 2026</div>
+          <div class="mockWeek"><span>Pzt</span><span>Sal</span><span>Çar</span><span>Per</span><span>Cum</span><span>Cmt</span><span>Paz</span></div>
+          <div class="mockDays">
+            <span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>10</span><span>11</span>
+            <span>12</span><span>13</span><span>14</span><span>15</span><span>16</span><span>17</span><span>18</span>
+            <span>19</span><span class="today">20</span><span>21</span><span>22</span><span>23</span><span>24</span><span>25</span>
+          </div>
+        </div>
+        <div class="onboardBell">🔔<b>1</b></div>
+        <div class="onboardReminderCard">
+          <strong>🔔 Yaklaşan Hatırlatma</strong>
+          <span>Karma Aşı (DHPPiL)</span>
+          <small>20 Mayıs 2026 <em>5 gün kaldı</em></small>
+        </div>
+      </div>
+
+      <div class="onboardCopy reminderCopy">
+        <h2>PetKarnem takip etsin 🔔</h2>
+        <p>Yaklaşan işlemleri önceden haber versin,<br>zamanı geçenleri sana göstersin.<br>Böylece hiçbir şeyi unutmayasın.</p>
+      </div>
+
+      <div class="onboardDots">
+        <i></i><i class="active"></i><i></i>
+      </div>
+    </section>
+
+    <section class="onboardingSlide" data-onboard-index="2">
+      <button type="button" class="onboardSkip">Atla</button>
+
+      <div class="onboardCopy petAddCopy">
+        <h2>Dostunu ekle,<br>takibe başla! 💚</h2>
+        <p>Kedini veya köpeğini ekle<br>sağlık takvimini oluştur.</p>
+      </div>
+
+      <button type="button" class="onboardPetChoice" data-pet-type="cat">
+        <div class="choiceText"><span>🐱</span><b>Kedi</b><em>›</em></div>
+        <img src="pet-cat.jpg" alt="Kedi">
+      </button>
+
+      <button type="button" class="onboardPetChoice dogChoice" data-pet-type="dog">
+        <div class="choiceText"><span>🐶</span><b>Köpek</b><em>›</em></div>
+        <img src="pet-dog.jpg" alt="Köpek">
+      </button>
+
+      <button type="button" id="onboardAddPet" class="onboardAddPet">＋ Petimi Ekle</button>
+
+      <div class="onboardDots">
+        <i></i><i></i><i class="active"></i>
+      </div>
+    </section>
+
+  </div>
 </div>
-
-
-
 
 <div id="app">
   <header class="topbar refTopbar">
@@ -70,12 +143,7 @@
 
       <div class="detailIdentity">
         <div class="detailPhotoWrap">
-          <div class="pkPhotoEditWrap">
-  <img id="petDetailPhoto" src="pet-cat.jpg" alt="">
-  <button id="petPhotoCameraBtn" class="pkCameraButton" type="button" aria-label="Fotoğrafı değiştir">
-    <span aria-hidden="true">📷</span>
-  </button>
-</div>
+          <img id="petDetailPhoto" src="pet-cat.jpg" alt="">
         </div>
         <h1 id="petDetailName">Dostum <span>🐾</span></h1>
         <div id="petDetailMeta" class="detailMeta"></div>
@@ -174,40 +242,30 @@
         <div class="muted settingsNote">Web testinde ayarlar kaydedilir; gerçek iPhone bildirimi native/TestFlight sürümünde test edilir.</div>
       </div></div>
 
+      <div class="settingsGroup"><h3>Takvim Bulut Bağlantısı</h3><div class="card settingsCard">
+        <b>Supabase Takvim</b>
+        <div class="muted settingsNote">Takvim kayıtlarını Supabase'e yedeklemek için Connect ekranındaki Publishable Key'i bir kez gir.</div>
+        <label>Publishable Key</label>
+        <input id="supabasePublishableKey" type="password" autocomplete="off" placeholder="sb_publishable_...">
+        <div class="settingsRow"><span>Durum</span><b id="supabaseStatus">Bağlı değil</b></div>
+        <button class="primary big" id="connectSupabaseBtn" type="button">Supabase'e Bağla</button>
+        <button class="secondary big" id="disconnectSupabaseBtn" type="button" style="margin-top:8px">Bağlantıyı Kes</button>
+      </div></div>
+
       <div class="settingsGroup"><h3>Veriler & Gizlilik</h3><div class="card">
-        <b>Veriler bu cihazda saklanır</b><div class="muted">Bu web testinde bilgiler yalnızca tarayıcı belleğinde tutulur.</div>
+        <b>Yerel + Takvim Bulut Yedeği</b><div class="muted">Uygulama verileri cihazda kalır. Supabase bağlandığında yalnızca takvim kayıtları ayrıca buluta eşitlenir.</div>
         <button class="danger big" id="resetBtn" style="margin-top:14px">Tüm Test Verilerini Sil</button>
       </div></div>
 
       <div class="settingsGroup"><h3>Hakkında</h3><div class="card">
         <div class="settingsRow"><span>Uygulama</span><b>PetKarnem</b></div>
-        <div class="settingsRow"><span>Sürüm</span><b>Web Test v2.2.4</b></div>
+        <div class="settingsRow"><span>Sürüm</span><b>Web Test v2.59 Supabase</b></div>
         <div class="settingsRow"><span>Plan</span><b>Basic • Ücretsiz</b></div>
         <div class="settingsLink">Gizlilik Politikası <span>›</span></div>
         <div class="settingsLink">Kullanım Koşulları <span>›</span></div>
       </div></div>
     </section>
-  
-<div class="card pkSupabaseTestCard" id="pkSupabaseTestCard">
-  <div>
-    <b>☁️ Supabase Test</b>
-    <div class="muted">send-push sunucusuna doğrudan bağlanmayı dene.</div>
-  </div>
-  <button type="button" class="primary" id="pkSupabaseTestBtn">Supabase Bağlantısını Test Et</button>
-  <div class="muted pkSupabaseTestStatus" id="pkSupabaseTestStatus">Henüz test yapılmadı.</div>
-</div>
-
-
-<div class="card pkRealPushCard" id="pkRealPushCard">
-  <div>
-    <b>🔔 Gerçek Bildirim Testi</b>
-    <div class="muted">PetKarnem kapalıyken bile gelecek gerçek push bildirimini dene.</div>
-  </div>
-  <button type="button" class="primary" id="pkRealPushBtn">İlk Gerçek Bildirimi Gönder</button>
-  <div class="muted pkRealPushStatus" id="pkRealPushStatus">Henüz test yapılmadı.</div>
-</div>
-
-</main>
+  </main>
 
   <nav class="bottomnav">
     <button data-view="homeView" class="navitem active" onclick="switchView('homeView',this)">🏠<span>Ana Sayfa</span></button>
@@ -233,26 +291,5 @@
 </dialog>
 
 <script src="app.js"></script>
-
-<script>
-(function(){
-  window.addEventListener('message', function(e){
-    if(e.origin !== location.origin) return;
-    const d=e.data || {};
-    if(d.source !== 'petkarnem-onboarding') return;
-
-    const host=document.getElementById('pkOnboardingHost');
-    if(host) host.remove();
-
-    if(d.type === 'addFriend'){
-      setTimeout(function(){
-        const btn=document.getElementById('addPetBtn');
-        if(btn) btn.click();
-      },0);
-    }
-  });
-})();
-</script>
-
 </body>
 </html>

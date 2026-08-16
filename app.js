@@ -367,7 +367,7 @@ function showPetDetail(id){
   document.body.classList.add('petDetailMode');
 
   const photo=$('#petDetailPhoto');
-  if(photo) photo.src=p.photo || (p.type==='cat'?'pet-cat.jpg':'pet-dog.jpg');
+  if(photo) photo.src=p.type==='cat'?'pet-cat.jpg':'pet-dog.jpg';
 
   $('#petDetailName').innerHTML=`${p.name} <span>🐾</span>`;
   $('#petDetailMeta').textContent=[p.type==='cat'?'Kedi':'Köpek',p.sex,petAgeLabel(p)].filter(Boolean).join(' • ');
@@ -399,7 +399,7 @@ function renderPets(){
   const cards=state.pets.slice(0,2).map(p=>{
     const meta=[petAgeLabel(p),p.weight?`${p.weight} kg`:null].filter(Boolean).join(' • ');
     return `<button type="button" class="refPetCard" data-pet-detail="${p.id}">
-      <div class="refPetVisual"><img src="${p.photo || (p.type==='cat'?'pet-cat.jpg':'pet-dog.jpg')}" alt=""><span class="refPawBadge">🐾</span></div>
+      <div class="refPetVisual"><img src="${p.type==='cat'?'pet-cat.jpg':'pet-dog.jpg'}" alt=""><span class="refPawBadge">🐾</span></div>
       <div class="refPetName">${p.name}</div>
       <span class="refSpecies">${p.type==='cat'?'Kedi':'Köpek'}</span>
       <div class="refPetMeta">${meta || p.breed || 'Bilgileri görüntüle'}</div>
@@ -1024,8 +1024,14 @@ if(selectedCalendarDate===null){
 renderAll();
 
 if('serviceWorker' in navigator){
-  navigator.serviceWorker.register('./sw.js', {scope:'./'})
-    .catch(err=>console.error('PetKarnem service worker:', err));
+  navigator.serviceWorker.getRegistrations().then(regs=>{
+    regs.forEach(r=>r.unregister());
+  }).catch(()=>{});
+}
+if('caches' in window){
+  caches.keys().then(keys=>{
+    keys.forEach(k=>caches.delete(k));
+  }).catch(()=>{});
 }
 
 setTimeout(()=>{
@@ -1081,202 +1087,218 @@ function pkDueStatus(dateStr){
 
 
 
-
-/* v2.70 visible camera photo picker */
+/* v2.50 — Onboarding */
 (function(){
-  function initPetCamera(){
-    const picker=document.getElementById('petPhotoPicker');
-    const camera=document.getElementById('petPhotoCameraBtn');
-    if(!picker || !camera) return;
+  const root=document.getElementById('onboarding');
+  if(!root) return;
 
-    camera.onclick=function(e){
-      e.preventDefault(); e.stopPropagation();
-      picker.value='';
-      picker.click();
+  let index=0;
+  let selectedType='cat';
+  const slides=[...root.querySelectorAll('.onboardingSlide')];
+
+  function show(i){
+    index=Math.max(0,Math.min(slides.length-1,i));
+    slides.forEach((s,n)=>s.classList.toggle('active',n===index));
+  }
+
+  function closeOnboarding(){
+    root.classList.remove('onboardingVisible');
+    document.body.classList.remove('onboardingOpen');
+    try{ sessionStorage.setItem('petkarnemOnboardingSeen','1'); }catch(e){}
+  }
+
+  document.body.classList.add('onboardingOpen');
+  try{
+    if(sessionStorage.getItem('petkarnemOnboardingSeen')==='1'){
+      closeOnboarding();
+    }
+  }catch(e){}
+
+  root.querySelectorAll('.onboardSkip').forEach(btn=>btn.onclick=closeOnboarding);
+
+  // Tap empty area to advance, excluding interactive controls.
+  slides.forEach((slide,n)=>{
+    slide.addEventListener('click',(e)=>{
+      if(e.target.closest('button')) return;
+      if(n<slides.length-1) show(n+1);
+    });
+  });
+
+  // Simple horizontal swipe.
+  let sx=0, sy=0;
+  root.addEventListener('touchstart',e=>{
+    const t=e.touches[0]; sx=t.clientX; sy=t.clientY;
+  },{passive:true});
+  root.addEventListener('touchend',e=>{
+    const t=e.changedTouches[0];
+    const dx=t.clientX-sx, dy=t.clientY-sy;
+    if(Math.abs(dx)>55 && Math.abs(dx)>Math.abs(dy)){
+      if(dx<0 && index<slides.length-1) show(index+1);
+      if(dx>0 && index>0) show(index-1);
+    }
+  },{passive:true});
+
+  root.querySelectorAll('.onboardPetChoice').forEach(btn=>{
+    btn.onclick=()=>{
+      selectedType=btn.dataset.petType||'cat';
+      root.querySelectorAll('.onboardPetChoice').forEach(x=>x.classList.toggle('selected',x===btn));
     };
+  });
+  const defaultChoice=root.querySelector('[data-pet-type="cat"]');
+  if(defaultChoice) defaultChoice.classList.add('selected');
 
-    picker.onchange=function(){
-      const file=picker.files && picker.files[0];
-      if(!file || !file.type.startsWith('image/')) return;
-      const reader=new FileReader();
-      reader.onload=function(){
-        const image=new Image();
-        image.onload=function(){
-          const max=900, ratio=Math.min(1,max/Math.max(image.width,image.height));
-          const canvas=document.createElement('canvas');
-          canvas.width=Math.round(image.width*ratio);
-          canvas.height=Math.round(image.height*ratio);
-          canvas.getContext('2d').drawImage(image,0,0,canvas.width,canvas.height);
-          const p=petById(detailPetId);
-          if(!p) return;
-          p.photo=canvas.toDataURL('image/jpeg',0.82);
-          saveState();
+  const add=document.getElementById('onboardAddPet');
+  if(add) add.onclick=()=>{
+    closeOnboarding();
+    const addBtn=document.getElementById('addPetBtn');
+    if(addBtn) addBtn.click();
+    setTimeout(()=>{
+      const type=document.getElementById('petType');
+      if(type) type.value=selectedType;
+    },0);
+  };
+})();
 
-          // saveState() yeniden render ettiği için detayı doğrudan yeni kayıtla yenile.
-          const detailPhoto=document.getElementById('petDetailPhoto');
-          if(detailPhoto) detailPhoto.src=p.photo;
-          if(detailPetId) showPetDetail(detailPetId);
-        };
-        image.src=reader.result;
-      };
-      reader.readAsDataURL(file);
+/* ===== PetKarnem v2.59 — Supabase Takvim Sync ===== */
+const PK_SUPABASE_URL='https://opjtpujxrveadptsizry.supabase.co';
+const PK_SUPABASE_KEY_STORE='petkarnem_supabase_publishable_key';
+const PK_SUPABASE_DEVICE_STORE='petkarnem_supabase_device_id';
+let pkSupabaseSyncTimer=null;
+let pkSupabaseSyncing=false;
+
+function pkSupabaseKey(){ return (localStorage.getItem(PK_SUPABASE_KEY_STORE)||'').trim(); }
+function pkSupabaseDeviceId(){
+  let id=localStorage.getItem(PK_SUPABASE_DEVICE_STORE);
+  if(!id){ id=uid(); localStorage.setItem(PK_SUPABASE_DEVICE_STORE,id); }
+  return id;
+}
+function pkSupabaseHeaders(extra={}){
+  const key=pkSupabaseKey();
+  return {apikey:key,Authorization:`Bearer ${key}`,'Content-Type':'application/json',...extra};
+}
+function pkCalendarSyncRecords(){
+  const allowed=new Set(['vaccine','internal','external','appointment']);
+  return (state.records||[]).filter(r=>r && r.id && r.next && allowed.has(r.type));
+}
+function pkSupabaseStatus(text,ok=false){
+  const el=document.querySelector('#supabaseStatus');
+  if(el){ el.textContent=text; el.style.color=ok?'#237A57':''; }
+}
+async function pkSyncCalendarToSupabase(){
+  const key=pkSupabaseKey();
+  if(!key || pkSupabaseSyncing) return;
+  pkSupabaseSyncing=true;
+  const deviceId=pkSupabaseDeviceId();
+  try{
+    const del=await fetch(`${PK_SUPABASE_URL}/rest/v1/calendar_events?device_id=eq.${encodeURIComponent(deviceId)}`,{
+      method:'DELETE',headers:pkSupabaseHeaders({'Prefer':'return=minimal'})
+    });
+    if(!del.ok) throw new Error(`DELETE ${del.status}`);
+
+    const rows=pkCalendarSyncRecords().map(r=>({
+      local_id:String(r.id),
+      device_id:deviceId,
+      pet_name:petById(r.petId)?.name||'',
+      title:r.title||'Takvim Kaydı',
+      event_type:r.type||'',
+      event_date:r.next,
+      event_time:r.time||null,
+      notes:r.note||'',
+      completed:false,
+      payload:r
+    }));
+    if(rows.length){
+      const ins=await fetch(`${PK_SUPABASE_URL}/rest/v1/calendar_events`,{
+        method:'POST',headers:pkSupabaseHeaders({'Prefer':'return=minimal'}),body:JSON.stringify(rows)
+      });
+      if(!ins.ok) throw new Error(`POST ${ins.status}`);
+    }
+    pkSupabaseStatus('Bağlı • Takvim eşitlendi',true);
+  }catch(err){
+    console.warn('PetKarnem Supabase sync:',err);
+    pkSupabaseStatus('Bağlantı hatası');
+  }finally{ pkSupabaseSyncing=false; }
+}
+function pkQueueCalendarSync(){
+  if(!pkSupabaseKey()) return;
+  clearTimeout(pkSupabaseSyncTimer);
+  pkSupabaseSyncTimer=setTimeout(pkSyncCalendarToSupabase,350);
+}
+async function pkLoadCalendarFromSupabase(){
+  const key=pkSupabaseKey();
+  if(!key) return;
+  const deviceId=pkSupabaseDeviceId();
+  try{
+    pkSupabaseStatus('Bağlanıyor…');
+    const res=await fetch(`${PK_SUPABASE_URL}/rest/v1/calendar_events?device_id=eq.${encodeURIComponent(deviceId)}&select=payload&order=event_date.asc`,{
+      headers:pkSupabaseHeaders()
+    });
+    if(!res.ok) throw new Error(`GET ${res.status}`);
+    const rows=await res.json();
+    const remote=(rows||[]).map(x=>x.payload).filter(Boolean);
+    if(remote.length){
+      const allowed=new Set(['vaccine','internal','external','appointment']);
+      const keep=(state.records||[]).filter(r=>!(r?.next && allowed.has(r.type)));
+      const byId=new Map();
+      [...keep,...remote].forEach(r=>{ if(r?.id) byId.set(String(r.id),r); });
+      state.records=[...byId.values()];
+      localStorage.setItem(storeKey, JSON.stringify(state));
+      renderAll();
+    }else{
+      await pkSyncCalendarToSupabase();
+    }
+    pkSupabaseStatus('Bağlı • Takvim eşitlendi',true);
+  }catch(err){
+    console.warn('PetKarnem Supabase load:',err);
+    pkSupabaseStatus('Bağlantı hatası');
+  }
+}
+function pkBindSupabaseSettings(){
+  const input=document.querySelector('#supabasePublishableKey');
+  const connect=document.querySelector('#connectSupabaseBtn');
+  const disconnect=document.querySelector('#disconnectSupabaseBtn');
+  if(input && !input.dataset.bound){
+    input.dataset.bound='1';
+    input.value=pkSupabaseKey();
+  }
+  if(connect && !connect.dataset.bound){
+    connect.dataset.bound='1';
+    connect.onclick=async()=>{
+      const key=(document.querySelector('#supabasePublishableKey')?.value||'').trim();
+      if(!key){ alert('Publishable Key alanını doldur.'); return; }
+      localStorage.setItem(PK_SUPABASE_KEY_STORE,key);
+      pkSupabaseStatus('Bağlanıyor…');
+      await pkLoadCalendarFromSupabase();
+      if((document.querySelector('#supabaseStatus')?.textContent||'').startsWith('Bağlı')) alert('Supabase takvim bağlantısı tamamlandı.');
     };
   }
-  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',initPetCamera,{once:true});
-  else initPetCamera();
-})();
-
-
-/* v2.76 — Supabase direct test */
-(function(){
-  const endpoint = "https://opjtpujxrveadptsizry.supabase.co/functions/v1/send-push";
-
-  function setStatus(text){
-    const el=document.getElementById('pkSupabaseTestStatus');
-    if(el) el.textContent=text;
+  if(disconnect && !disconnect.dataset.bound){
+    disconnect.dataset.bound='1';
+    disconnect.onclick=()=>{
+      localStorage.removeItem(PK_SUPABASE_KEY_STORE);
+      if(input) input.value='';
+      pkSupabaseStatus('Bağlı değil');
+      alert('Supabase bağlantısı bu cihazda kaldırıldı. Yerel kayıtlar silinmedi.');
+    };
   }
+  pkSupabaseStatus(pkSupabaseKey()?'Bağlı':'Bağlı değil',!!pkSupabaseKey());
+}
 
-  async function runTest(){
-    const btn=document.getElementById('pkSupabaseTestBtn');
-    if(btn) btn.disabled=true;
-    setStatus('Bağlanıyor...');
+// Existing renderAll is preserved; bind the new settings after every render.
+const pkOriginalRenderAll=renderAll;
+renderAll=function(){
+  pkOriginalRenderAll();
+  pkBindSupabaseSettings();
+};
 
-    try {
-      const res = await fetch(endpoint, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ name: 'PetKarnem' })
-      });
+// Existing saveState is preserved; local save remains primary, cloud sync runs after it.
+const pkOriginalSaveState=saveState;
+saveState=function(){
+  pkOriginalSaveState();
+  pkQueueCalendarSync();
+};
 
-      const text = await res.text();
-      let shown = text;
-      try {
-        const data = JSON.parse(text);
-        shown = data.message || JSON.stringify(data);
-      } catch(e) {}
-
-      if(res.ok){
-        setStatus('✅ Bağlantı başarılı: ' + shown);
-      } else {
-        setStatus('❌ Sunucu yanıtı ' + res.status + ': ' + shown);
-      }
-    } catch(err) {
-      setStatus('❌ Bağlantı kurulamadı: ' + (err && err.message ? err.message : String(err)));
-    } finally {
-      if(btn) btn.disabled=false;
-    }
-  }
-
-  function init(){
-    const btn=document.getElementById('pkSupabaseTestBtn');
-    if(btn) btn.addEventListener('click', runTest);
-  }
-
-  if(document.readyState==='loading') {
-    document.addEventListener('DOMContentLoaded', init, {once:true});
-  } else {
-    init();
-  }
-})();
-
-
-
-/* v2.77 — Real Web Push client */
-(function(){
-  const VAPID_PUBLIC_KEY = "BCwRB_OBS4-RoL4orZGqAa4tnxUKufWrkySR6NM0nLFhMYxYmQZYyV1D-YiJQkiMuEziI8Z_e6dOJ48HXLXWXpk";
-  const PUSH_ENDPOINT = "https://opjtpujxrveadptsizry.supabase.co/functions/v1/send-push";
-
-  function status(text){
-    const el=document.getElementById('pkRealPushStatus');
-    if(el) el.textContent=text;
-  }
-
-  function urlBase64ToUint8Array(base64String){
-    const padding='='.repeat((4-base64String.length%4)%4);
-    const base64=(base64String+padding).replace(/-/g,'+').replace(/_/g,'/');
-    const rawData=atob(base64);
-    return Uint8Array.from([...rawData].map(ch=>ch.charCodeAt(0)));
-  }
-
-  async function getRegistration(){
-    if(!('serviceWorker' in navigator)) throw new Error('Bu tarayıcı Service Worker desteklemiyor.');
-    await navigator.serviceWorker.register('./sw.js', {scope:'./'});
-    return await navigator.serviceWorker.ready;
-  }
-
-  async function subscribeForPush(reg){
-    let sub=await reg.pushManager.getSubscription();
-    if(!sub){
-      sub=await reg.pushManager.subscribe({
-        userVisibleOnly:true,
-        applicationServerKey:urlBase64ToUint8Array(VAPID_PUBLIC_KEY)
-      });
-    }
-    return sub;
-  }
-
-  async function runRealPushTest(){
-    const btn=document.getElementById('pkRealPushBtn');
-    if(btn) btn.disabled=true;
-
-    try {
-      if(!('Notification' in window)) throw new Error('Bu tarayıcı bildirimleri desteklemiyor.');
-
-      let permission=Notification.permission;
-      if(permission!=='granted'){
-        permission=await Notification.requestPermission();
-      }
-      if(permission!=='granted'){
-        throw new Error('Bildirim izni verilmedi.');
-      }
-
-      status('Bildirim aboneliği hazırlanıyor...');
-      const reg=await getRegistration();
-      const sub=await subscribeForPush(reg);
-
-      status('✅ Hazır. 15 saniye içinde test bildirimi gelecek. Ekranı kilitleyebilirsin.');
-
-      const res=await fetch(PUSH_ENDPOINT,{
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({
-          action:'send-test',
-          delaySeconds:15,
-          subscription:sub.toJSON()
-        })
-      });
-
-      const text=await res.text();
-      let data=null;
-      try{ data=JSON.parse(text); }catch(e){}
-
-      if(!res.ok){
-        throw new Error((data && (data.error||data.message)) || ('Sunucu yanıtı '+res.status));
-      }
-
-      if(data && data.message){
-        status('✅ '+data.message+' Ekranı kilitle ve bildirimi bekle.');
-      }
-    } catch(err) {
-      console.error(err);
-      status('❌ '+(err && err.message ? err.message : String(err)));
-    } finally {
-      if(btn) btn.disabled=false;
-    }
-  }
-
-  function init(){
-    const btn=document.getElementById('pkRealPushBtn');
-    if(btn && !btn.dataset.bound){
-      btn.dataset.bound='1';
-      btn.addEventListener('click',runRealPushTest);
-    }
-  }
-
-  if(document.readyState==='loading'){
-    document.addEventListener('DOMContentLoaded',init,{once:true});
-  }else init();
-})();
-
+window.addEventListener('DOMContentLoaded',()=>{
+  pkBindSupabaseSettings();
+  if(pkSupabaseKey()) pkLoadCalendarFromSupabase();
+});
