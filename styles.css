@@ -1974,3 +1974,19 @@ body.petDetailMode #petDetailView{
   opacity:.55;
   pointer-events:none;
 }
+
+/* v2.77 — real push test */
+.pkRealPushCard{
+  margin-top:16px;
+  display:grid;
+  gap:12px;
+}
+.pkRealPushStatus{
+  min-height:22px;
+  line-height:1.45;
+  word-break:break-word;
+}
+#pkRealPushBtn:disabled{
+  opacity:.55;
+  pointer-events:none;
+}

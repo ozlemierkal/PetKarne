@@ -1024,14 +1024,8 @@ if(selectedCalendarDate===null){
 renderAll();
 
 if('serviceWorker' in navigator){
-  navigator.serviceWorker.getRegistrations().then(regs=>{
-    regs.forEach(r=>r.unregister());
-  }).catch(()=>{});
-}
-if('caches' in window){
-  caches.keys().then(keys=>{
-    keys.forEach(k=>caches.delete(k));
-  }).catch(()=>{});
+  navigator.serviceWorker.register('./sw.js', {scope:'./'})
+    .catch(err=>console.error('PetKarnem service worker:', err));
 }
 
 setTimeout(()=>{
@@ -1185,5 +1179,104 @@ function pkDueStatus(dateStr){
   } else {
     init();
   }
+})();
+
+
+
+/* v2.77 — Real Web Push client */
+(function(){
+  const VAPID_PUBLIC_KEY = "BCwRB_OBS4-RoL4orZGqAa4tnxUKufWrkySR6NM0nLFhMYxYmQZYyV1D-YiJQkiMuEziI8Z_e6dOJ48HXLXWXpk";
+  const PUSH_ENDPOINT = "https://opjtpujxrveadptsizry.supabase.co/functions/v1/send-push";
+
+  function status(text){
+    const el=document.getElementById('pkRealPushStatus');
+    if(el) el.textContent=text;
+  }
+
+  function urlBase64ToUint8Array(base64String){
+    const padding='='.repeat((4-base64String.length%4)%4);
+    const base64=(base64String+padding).replace(/-/g,'+').replace(/_/g,'/');
+    const rawData=atob(base64);
+    return Uint8Array.from([...rawData].map(ch=>ch.charCodeAt(0)));
+  }
+
+  async function getRegistration(){
+    if(!('serviceWorker' in navigator)) throw new Error('Bu tarayıcı Service Worker desteklemiyor.');
+    await navigator.serviceWorker.register('./sw.js', {scope:'./'});
+    return await navigator.serviceWorker.ready;
+  }
+
+  async function subscribeForPush(reg){
+    let sub=await reg.pushManager.getSubscription();
+    if(!sub){
+      sub=await reg.pushManager.subscribe({
+        userVisibleOnly:true,
+        applicationServerKey:urlBase64ToUint8Array(VAPID_PUBLIC_KEY)
+      });
+    }
+    return sub;
+  }
+
+  async function runRealPushTest(){
+    const btn=document.getElementById('pkRealPushBtn');
+    if(btn) btn.disabled=true;
+
+    try {
+      if(!('Notification' in window)) throw new Error('Bu tarayıcı bildirimleri desteklemiyor.');
+
+      let permission=Notification.permission;
+      if(permission!=='granted'){
+        permission=await Notification.requestPermission();
+      }
+      if(permission!=='granted'){
+        throw new Error('Bildirim izni verilmedi.');
+      }
+
+      status('Bildirim aboneliği hazırlanıyor...');
+      const reg=await getRegistration();
+      const sub=await subscribeForPush(reg);
+
+      status('✅ Hazır. 15 saniye içinde test bildirimi gelecek. Ekranı kilitleyebilirsin.');
+
+      const res=await fetch(PUSH_ENDPOINT,{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({
+          action:'send-test',
+          delaySeconds:15,
+          subscription:sub.toJSON()
+        })
+      });
+
+      const text=await res.text();
+      let data=null;
+      try{ data=JSON.parse(text); }catch(e){}
+
+      if(!res.ok){
+        throw new Error((data && (data.error||data.message)) || ('Sunucu yanıtı '+res.status));
+      }
+
+      if(data && data.message){
+        status('✅ '+data.message+' Ekranı kilitle ve bildirimi bekle.');
+      }
+    } catch(err) {
+      console.error(err);
+      status('❌ '+(err && err.message ? err.message : String(err)));
+    } finally {
+      if(btn) btn.disabled=false;
+    }
+  }
+
+  function init(){
+    const btn=document.getElementById('pkRealPushBtn');
+    if(btn && !btn.dataset.bound){
+      btn.dataset.bound='1';
+      btn.addEventListener('click',runRealPushTest);
+    }
+  }
+
+  if(document.readyState==='loading'){
+    document.addEventListener('DOMContentLoaded',init,{once:true});
+  }else init();
 })();
 

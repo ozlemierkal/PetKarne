@@ -489,3 +489,14 @@ Gerçek bildirim testi native/TestFlight sürümünde yapılacaktır.
 - Dönen HTTP durumunu ve cevabı ekranda gösterir.
 - Supabase dashboard içindeki Test paneli kullanılmaz.
 - Onboarding, pet fotoğrafı ve diğer uygulama akışlarına dokunulmadı.
+
+## v2.77 — Gerçek Web Push hazırlığı
+- v2.76 (v2.74 sağlam taban + çalışan Supabase testi) baz alındı.
+- PWA service worker artık kaldırılmıyor; `sw.js` kaydediliyor.
+- `sw.js` gerçek `push` eventlerini karşılayıp iPhone bildirimi gösterir.
+- Profil'e “İlk Gerçek Bildirimi Gönder” butonu eklendi.
+- PushManager aboneliği VAPID public key ile oluşturulur.
+- Abonelik Supabase `send-push` endpointine `send-test` isteğiyle gönderilir.
+- Sunucudan 15 saniye gecikmeli gerçek push beklenir.
+- VAPID private key ZIP'e KONMADI.
+- Supabase backend kodu ayrı `Supabase_send-push_v2_REAL_PUSH.ts` dosyasındadır.
