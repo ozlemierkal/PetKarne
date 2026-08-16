@@ -326,7 +326,7 @@ window.showPetTodaySummary=(petId)=>{
     const when=r.diff<0?`${Math.abs(r.diff)} gün gecikti`:r.diff===0?'Bugün':`${r.diff} gün sonra`;
     const icon=r.type==='appointment'?'🩺':r.type==='vaccine'?'💉':r.type==='internal'?'🪱':'🛡️';
     const reminderText=r.type==='appointment' && r.reminder!==0
-      ? `<div class="muted">🔔 ${r.reminder===60?'1 saat önce':r.reminder===120?'2 saat önce':'1 gün önce'} hatırlat</div>`
+      ? `<div class="muted">🔔 ${r.reminder===5?'5 dakika önce (TEST)':r.reminder===60?'1 saat önce':r.reminder===120?'2 saat önce':'1 gün önce'} hatırlat</div>`
       : (['vaccine','internal','external'].includes(r.type) && r.reminderDays>0
         ? `<div class="muted">🔔 ${r.reminderDays} gün önce hatırlat</div>` : '');
     rows.push(`<div class="card"><b>${icon} ${r.title}${r.type==='appointment' && r.reminder!==0?' 🔔':''}</b><div class="muted">${fmt(r.next)}${r.time?' • '+r.time:''} • ${when}</div>${reminderText}</div>`);
@@ -596,6 +596,7 @@ window.addAppointment=()=>{
 
     <label>Hatırlatma</label>
     <select id="apptReminder">
+      <option value="5">5 dakika önce (TEST)</option>
       <option value="1500" selected>1 gün önce + 1 saat önce</option>
       <option value="1440">1 gün önce</option>
       <option value="120">2 saat önce</option>
@@ -687,6 +688,7 @@ window.changeRecordDate=(id)=>{
       </select>
       <label>Hatırlatma</label>
       <select id="editCalReminder">
+        <option value="5" ${r.reminder===5?'selected':''}>5 dakika önce (TEST)</option>
         <option value="1500" ${r.reminder===1500?'selected':''}>1 gün önce + 1 saat önce</option>
         <option value="1440" ${(r.reminder??1440)===1440?'selected':''}>1 gün önce</option>
         <option value="120" ${r.reminder===120?'selected':''}>2 saat önce</option>
@@ -745,7 +747,7 @@ window.showCalendarDetail=(id)=>{
       <h3>${pet?.name||''} • ${r.title}</h3>
       <div>📅 ${fmt(r.next)}${r.time?' • '+r.time:''}</div>
       <div>🩺 ${vet?.name||'Klinik seçilmedi'}</div>
-      <div>🔔 ${r.reminder===0?'Hatırlatma yok':r.reminder===1500?'1 gün önce + 1 saat önce':r.reminder===60?'1 saat önce':r.reminder===120?'2 saat önce':'1 gün önce'}</div>
+      <div>🔔 ${r.reminder===0?'Hatırlatma yok':r.reminder===1500?'1 gün önce + 1 saat önce':r.reminder===5?'5 dakika önce (TEST)':r.reminder===60?'1 saat önce':r.reminder===120?'2 saat önce':'1 gün önce'}</div>
       ${r.note?`<div style="margin-top:8px">${r.note}</div>`:''}
     </div>
   `);
@@ -1242,7 +1244,7 @@ function pkDueStatus(dateStr){
 
 
 
-/* ===== PetKarnem v2.77 — Takvim Hatırlatıcı Motoru =====
+/* ===== PetKarnem v2.78 — Takvim Hatırlatıcı Motoru =====
    Web/PWA kısıtı: iOS uygulamayı tamamen kapattığında yalnızca istemci tarafı zamanlayıcıları garanti etmez.
    Bu motor uygulama açıkken zamanı geldiğinde ve uygulama yeniden açıldığında kaçırılan hatırlatmayı yakalar.
 */

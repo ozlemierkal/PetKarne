@@ -498,3 +498,8 @@ Gerçek bildirim testi native/TestFlight sürümünde yapılacaktır.
 - Uygulama yeniden açıldığında, etkinlik henüz geçmediyse kaçırılan hatırlatma yakalanır.
 - Aynı kayıt için kaçırılmış iki hatırlatma üst üste gösterilmez.
 - iOS PWA tamamen kapalıyken zamanında bildirim garanti edilmez; bunun için ileride sunucu tabanlı Web Push/native bildirim gerekir.
+
+
+## v2.78 — 5 Dakika Bildirim Testi
+- Veteriner randevusu hatırlatma seçeneklerine `5 dakika önce (TEST)` eklendi.
+- v2.77 özellikleri, onboarding, kamera/fotoğraf ve Supabase takvim entegrasyonu korunur.
