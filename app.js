@@ -1580,3 +1580,38 @@ window.addEventListener('DOMContentLoaded',()=>{
   renderAll=function(){prev();bindPush();};
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',bindPush,{once:true});else bindPush();
 })();
+
+
+/* ===== PetKarnem v2.80 — Gerçek Web Push Testi ===== */
+(function(){
+  async function sendRealPushTest(){
+    const btn=document.getElementById('realPushTestBtn');
+    if(btn) btn.disabled=true;
+    try{
+      const key=pkSupabaseKey();
+      if(!key) throw new Error('Önce Supabase bağlantısını kur');
+      if(!('serviceWorker' in navigator) || !('PushManager' in window)) throw new Error('Web Push desteklenmiyor');
+      const reg=await navigator.serviceWorker.ready;
+      const sub=await reg.pushManager.getSubscription();
+      if(!sub) throw new Error('Önce Bildirimleri Aç ile cihazı kaydet');
+      const res=await fetch(`${PK_SUPABASE_URL}/functions/v1/send-push`,{
+        method:'POST',
+        headers:pkSupabaseHeaders(),
+        body:JSON.stringify({action:'send-test',subscription:sub.toJSON(),title:'PetKarnem 🔔',body:'Gerçek push testi başarılı! 🐾'})
+      });
+      const text=await res.text();
+      if(!res.ok) throw new Error(`Push servisi ${res.status}: ${text.slice(0,160)}`);
+      alert('Gerçek push isteği Supabase’e gönderildi. Şimdi PetKarnem’i arka plana alıp bildirimi kontrol et.');
+    }catch(err){
+      console.error('PetKarnem real push test',err);
+      alert(err?.message||'Gerçek push testi gönderilemedi.');
+    }finally{if(btn) btn.disabled=false;}
+  }
+  function bind(){
+    const b=document.getElementById('realPushTestBtn');
+    if(b&&!b.dataset.bound){b.dataset.bound='1';b.addEventListener('click',sendRealPushTest);}
+  }
+  const prev=renderAll;
+  renderAll=function(){prev();bind();};
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',bind,{once:true}); else bind();
+})();
