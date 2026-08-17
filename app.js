@@ -642,11 +642,10 @@ window.addAppointment=()=>{
     <div id="apptReminderBlock">
       <label>Hatırlatma</label>
       <select id="apptReminder">
-        <option value="1500" selected>1 gün önce + 1 saat önce</option>
-        <option value="1440">1 gün önce</option>
-        <option value="120">2 saat önce</option>
+        <option value="0" selected>Hatırlatma yok</option>
         <option value="60">1 saat önce</option>
-        <option value="0">Hatırlatma yok</option>
+        <option value="120">2 saat önce</option>
+        <option value="1440">1 gün önce</option>
       </select>
       <div class="muted" style="margin-top:6px">Planlı randevular için hatırlatmalar gerçek bildirim olarak gönderilir.</div>
     </div>
@@ -752,11 +751,10 @@ window.changeRecordDate=(id)=>{
       <div id="editCalReminderBlock">
       <label>Hatırlatma</label>
       <select id="editCalReminder">
-        <option value="1500" ${r.reminder===1500?'selected':''}>1 gün önce + 1 saat önce</option>
-        <option value="1440" ${(r.reminder??1440)===1440?'selected':''}>1 gün önce</option>
-        <option value="120" ${r.reminder===120?'selected':''}>2 saat önce</option>
+        <option value="0" ${(r.reminder??0)===0?'selected':''}>Hatırlatma yok</option>
         <option value="60" ${r.reminder===60?'selected':''}>1 saat önce</option>
-        <option value="0" ${r.reminder===0?'selected':''}>Hatırlatma yok</option>
+        <option value="120" ${r.reminder===120?'selected':''}>2 saat önce</option>
+        <option value="1440" ${r.reminder===1440?'selected':''}>1 gün önce</option>
       </select>
       </div>
       <label>Not</label><textarea id="editCalNote">${r.note||''}</textarea>
@@ -793,7 +791,7 @@ window.changeRecordDate=(id)=>{
     selectedCalendarDate=null;
 
     if(r.type==='appointment'){
-      r.title=$('#editCalTitle').value.trim()||'Veteriner Ziyareti';
+      r.title=$('#editCalTitle').value.trim()||(r.done?'Veteriner Ziyareti':'Veteriner Randevusu');
       r.time=$('#editCalTime').value;
       r.vetId=$('#editCalVet').value;
       r.done=$('#editCalStatus').value==='completed';
@@ -829,7 +827,7 @@ window.showCalendarDetail=(id)=>{
       <div>📅 ${fmt(r.next)}${r.time?' • '+r.time:''}</div>
       <div>🩺 ${vet?.name||'Klinik seçilmedi'}</div>
       <div>${r.done===true?'✅ Tamamlandı':'🕒 Planlı'}</div>
-      <div>🔔 ${r.reminder===0?'Hatırlatma yok':r.reminder===1500?'1 gün önce + 1 saat önce':r.reminder===60?'1 saat önce':r.reminder===120?'2 saat önce':'1 gün önce'}</div>
+      <div>🔔 ${r.reminder===0?'Hatırlatma yok':r.reminder===60?'1 saat önce':r.reminder===120?'2 saat önce':'1 gün önce'}</div>
       <div style="margin-top:12px"><b>Notlar</b><div style="margin-top:5px">${r.note||'Not eklenmemiş.'}</div></div>
     </div>
   `);
@@ -1032,7 +1030,7 @@ window.undoCompleteRecord=(id)=>{
   if(!r || r.type!=='appointment') return;
   r.done=false;
   r.completedAt=null;
-  if(r.reminder===0) r.reminder=1440;
+  if(r.reminder===0) r.reminder=0;
   saveState();
   renderAll();
 };
