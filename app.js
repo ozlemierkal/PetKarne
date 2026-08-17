@@ -25,6 +25,23 @@ function todayISO(){ return new Date().toISOString().slice(0,10); }
 function fmt(d){ if(!d) return '—'; const x=new Date(d+'T12:00:00'); return x.toLocaleDateString('tr-TR'); }
 function petById(id){ return state.pets.find(p=>p.id===id); }
 
+function recordEventDateTime(r){
+  if(!r?.next) return null;
+  const time=(r.time && /^\d{2}:\d{2}$/.test(r.time))?r.time:'23:59';
+  const d=new Date(`${r.next}T${time}:00`);
+  return Number.isFinite(d.getTime())?d:null;
+}
+function appointmentHasPassed(r){
+  if(r?.type!=='appointment') return false;
+  const d=recordEventDateTime(r);
+  return !!d && d.getTime()<=Date.now();
+}
+function isUpcomingCalendarRecord(r){
+  if(!r?.next || r.done===true) return false;
+  if(r.type==='appointment') return !appointmentHasPassed(r);
+  return true;
+}
+
 
 
 
@@ -416,13 +433,13 @@ function renderPets(){
 
   const now=todayISO();
   const future=state.records
-    .filter(r=>r.petId&&r.next&&r.next>=now&&['appointment','vaccine','internal','external'].includes(r.type))
+    .filter(r=>r.petId&&r.next&&r.next>=now&&['appointment','vaccine','internal','external'].includes(r.type)&&isUpcomingCalendarRecord(r))
     .sort((a,b)=>(a.next+(a.time||'')).localeCompare(b.next+(b.time||'')));
 
   upcoming.innerHTML=future.length?future.slice(0,3).map(r=>{
     const p=petById(r.petId), [emoji,cls]=recordIcon(r.type);
     const days=Math.max(0,Math.ceil((new Date(r.next+'T12:00:00')-new Date(now+'T12:00:00'))/86400000));
-    const title=r.type==='appointment'?'Veteriner Randevusu':
+    const title=r.type==='appointment'?'Veteriner Ziyareti':
                 r.type==='vaccine'?(r.title||'Aşı'):
                 r.type==='internal'?'İç Parazit':'Dış Parazit';
     return `<div class="refUpcomingCard">
@@ -548,7 +565,7 @@ function renderHealth(){
     };
   });
   const filters=$('#healthHistoryFilters');
-  const defs=[['all','Tümü'],['internal','İç Parazit'],['external','Dış Parazit'],['vaccine','Aşılar'],['med','İlaçlar'],['weight','Kilo']];
+  const defs=[['all','Tümü'],['appointment','Veteriner Ziyaretleri'],['internal','İç Parazit'],['external','Dış Parazit'],['vaccine','Aşılar'],['med','İlaçlar'],['weight','Kilo']];
   filters.innerHTML=defs.map(([k,l])=>`<button type="button" class="chip ${healthHistoryFilter===k?'active':''}" data-history-filter="${k}">${l}</button>`).join('');
   $$('#healthHistoryFilters [data-history-filter]').forEach(btn=>{
     btn.onclick=(e)=>{ e.preventDefault(); setHealthHistoryFilter(btn.dataset.historyFilter); };
@@ -557,7 +574,7 @@ function renderHealth(){
   const hist=$('#healthHistory');
   if(!selectedPetId){hist.innerHTML='<div class="card empty">Önce bir pet ekle.</div>';return;}
 
-  const recs=state.records.filter(r=>r.petId===selectedPetId && ['vaccine','internal','external'].includes(r.type)).map(r=>({...r,category:r.type}));
+  const recs=state.records.filter(r=>r.petId===selectedPetId && (['vaccine','internal','external'].includes(r.type) || (r.type==='appointment' && r.done===true))).map(r=>({...r,category:r.type}));
   const weights=state.weights.filter(r=>r.petId===selectedPetId).map(w=>({title:`Kilo • ${w.value} kg`,date:w.date,type:'weight',category:'weight'}));
   const meds=state.meds.filter(r=>r.petId===selectedPetId).map(m=>({title:`İlaç • ${m.name}`,date:m.start,type:'med',category:'med'}));
 
@@ -576,20 +593,29 @@ window.addAppointment=()=>{
     return;
   }
 
-  openModal('Veteriner Randevusu',`
+  openModal('Veteriner Randevusu / Ziyareti',`
     <label>Pet *</label>
     <select id="apptPet">
       ${state.pets.map(p=>`<option value="${p.id}">${p.type==='cat'?'🐱':'🐶'} ${p.name}</option>`).join('')}
     </select>
 
-    <label>Randevu başlığı *</label>
-    <input id="apptTitle" value="Veteriner Randevusu">
+    <label>Başlık *</label>
+    <input id="apptTitle" value="Veteriner Ziyareti">
 
     <label>Tarih *</label>
     <input id="apptDate" type="date">
 
-    <label>Saat</label>
-    <input id="apptTime" type="time">
+    <label>Saat *</label>
+    <input id="apptTime" type="time" required>
+
+    <label>Durum</label>
+    <select id="apptStatus">
+      <option value="planned" selected>Planlı randevu</option>
+      <option value="completed">Ziyaret tamamlandı</option>
+    </select>
+    <div class="muted" style="margin-top:6px">
+      Ani bir veteriner ziyaretini sonradan kaydediyorsan “Ziyaret tamamlandı” seçebilirsin.
+    </div>
 
     <label>Klinik</label>
     <select id="apptVet">
@@ -607,7 +633,7 @@ window.addAppointment=()=>{
     </select>
 
     <div class="muted" style="margin-top:6px">
-      Bildirim izni açıksa PetKarnem, uygulama açıkken veya yeniden açıldığında zamanı gelen hatırlatmayı gösterir.
+      Planlı randevular için hatırlatmalar gerçek bildirim olarak gönderilir.
     </div>
 
     <label>Not</label>
@@ -615,9 +641,17 @@ window.addAppointment=()=>{
   `,()=>{
     const title=$('#apptTitle').value.trim();
     const date=$('#apptDate').value;
+    const time=$('#apptTime').value;
+    const status=$('#apptStatus').value;
 
-    if(!title || !date){
-      alert('Randevu başlığı ve tarih gerekli.');
+    if(!title || !date || !time){
+      alert('Başlık, tarih ve saat gerekli.');
+      return false;
+    }
+
+    const eventAt=new Date(`${date}T${time}:00`);
+    if(status==='completed' && eventAt.getTime()>Date.now()){
+      alert('Gelecekteki bir ziyaret tamamlandı olarak kaydedilemez.');
       return false;
     }
 
@@ -630,10 +664,11 @@ window.addAppointment=()=>{
       by:'vet',
       vetId:$('#apptVet').value,
       next:date,
-      time:$('#apptTime').value,
-      reminder:+$('#apptReminder').value,
+      time,
+      reminder: status==='completed' ? 0 : +$('#apptReminder').value,
       note:$('#apptNote').value,
-      done:false
+      done:status==='completed',
+      completedAt:status==='completed'?new Date().toISOString():null
     });
 
     saveState();
@@ -678,11 +713,16 @@ window.changeRecordDate=(id)=>{
   const r=state.records.find(x=>x.id===id);
   if(!r)return;
 
-  openModal(r.type==='appointment'?'Randevuyu Düzenle':'Tarihi Değiştir',`
+  openModal(r.type==='appointment'?'Veteriner Ziyaretini Düzenle':'Tarihi Değiştir',`
     ${r.type==='appointment'?`<label>Başlık</label><input id="editCalTitle" value="${r.title||''}">`:''}
-    <label>Tarih *</label><input id="editCalDate" type="date" min="${todayISO()}" value="${r.next||''}">
+    <label>Tarih *</label><input id="editCalDate" type="date" value="${r.next||''}">
     ${r.type==='appointment'?`
-      <label>Saat</label><input id="editCalTime" type="time" value="${r.time||''}">
+      <label>Saat *</label><input id="editCalTime" type="time" required value="${r.time||''}">
+      <label>Durum</label>
+      <select id="editCalStatus">
+        <option value="planned" ${r.done===true?'':'selected'}>Planlı randevu</option>
+        <option value="completed" ${r.done===true?'selected':''}>Ziyaret tamamlandı</option>
+      </select>
       <label>Klinik</label>
       <select id="editCalVet">
         <option value="">Seçilmedi</option>
@@ -710,7 +750,16 @@ window.changeRecordDate=(id)=>{
   `,()=>{
     const d=$('#editCalDate').value;
     if(!d) return false;
-    if(d<todayISO()){
+    if(r.type==='appointment'){
+      const t=$('#editCalTime').value;
+      if(!t){ alert('Veteriner ziyareti için saat gerekli.'); return false; }
+      const status=$('#editCalStatus').value;
+      const eventAt=new Date(`${d}T${t}:00`);
+      if(status==='completed' && eventAt.getTime()>Date.now()){
+        alert('Gelecekteki bir ziyaret tamamlandı olarak işaretlenemez.');
+        return false;
+      }
+    } else if(d<todayISO()){
       alert('Tarih bugünden eski olamaz.');
       return false;
     }
@@ -721,10 +770,12 @@ window.changeRecordDate=(id)=>{
     selectedCalendarDate=null;
 
     if(r.type==='appointment'){
-      r.title=$('#editCalTitle').value.trim()||'Veteriner Randevusu';
+      r.title=$('#editCalTitle').value.trim()||'Veteriner Ziyareti';
       r.time=$('#editCalTime').value;
       r.vetId=$('#editCalVet').value;
-      r.reminder=+$('#editCalReminder').value;
+      r.done=$('#editCalStatus').value==='completed';
+      r.completedAt=r.done?(r.completedAt||new Date().toISOString()):null;
+      r.reminder=r.done?0:+$('#editCalReminder').value;
       r.note=$('#editCalNote').value;
     } else {
       r.reminderDays=+$('#editHealthReminder').value;
@@ -743,11 +794,12 @@ window.showCalendarDetail=(id)=>{
   const pet=petById(r.petId);
   const vet=state.vets.find(v=>v.id===r.vetId);
 
-  openInfoModal('Randevu Detayı',`
+  openInfoModal('Veteriner Ziyareti Detayı',`
     <div class="card">
       <h3>${pet?.name||''} • ${r.title}</h3>
       <div>📅 ${fmt(r.next)}${r.time?' • '+r.time:''}</div>
       <div>🩺 ${vet?.name||'Klinik seçilmedi'}</div>
+      <div>${r.done===true?'✅ Tamamlandı':'🕒 Planlı'}</div>
       <div>🔔 ${r.reminder===0?'Hatırlatma yok':r.reminder===1500?'1 gün önce + 1 saat önce':r.reminder===60?'1 saat önce':r.reminder===120?'2 saat önce':'1 gün önce'}</div>
       ${r.note?`<div style="margin-top:8px">${r.note}</div>`:''}
     </div>
@@ -818,9 +870,9 @@ function renderCalendar(){
       title.textContent=`${pretty} Kayıtları`;
     }
   }else{
-    // Yaklaşanlar: gecikenler + bugün + önümüzdeki 7 gün.
-    // diff===0 olan bugünkü kayıtlar da bu listeye dahildir.
-    list=list.filter(r=>r.diff<=7);
+    // Yaklaşanlar gerçekten gelecekte olan kayıtları gösterir.
+    // Saati geçmiş veteriner randevuları burada kalmaz ve otomatik tamamlanmaz.
+    list=list.filter(r=>r.diff<=7 && isUpcomingCalendarRecord(r));
     if(title) title.textContent='Yaklaşanlar';
   }
 
@@ -833,12 +885,16 @@ function renderCalendar(){
     const p=petById(r.petId);
     const petIcon=p?.type==='dog'?'🐶':'🐱';
     const typeLabel=
-      r.type==='appointment'?'🩺 Randevu':
+      r.type==='appointment'?'🩺 Veteriner Ziyareti':
       r.type==='vaccine'?'💉 Aşı':
       r.type==='internal'?'🪱 İç Parazit':
       '🛡️ Dış Parazit';
 
-    const status=r.diff<0
+    const status=r.done===true
+      ? {key:'normal',label:'TAMAMLANDI'}
+      : r.type==='appointment' && appointmentHasPassed(r)
+      ? {key:'overdue',label:'SAATİ GEÇTİ'}
+      : r.diff<0
       ? {key:'overdue',label:`${Math.abs(r.diff)} GÜN GECİKTİ`}
       : r.diff===0
       ? {key:'today',label:'BUGÜN'}
@@ -862,7 +918,9 @@ function renderCalendar(){
         ${r.type==='appointment'
           ? `<button class="secondary smallbtn" onclick="showCalendarDetail('${r.id}')">Detay</button>
              <button class="secondary smallbtn" onclick="changeRecordDate('${r.id}')">Düzenle</button>
-             <button class="primary smallbtn ${r.diff>0?'disabledAction':''}" ${r.diff>0?'disabled':''} onclick="completeRecord('${r.id}')">Tamamlandı</button>`
+             ${r.done===true
+               ? `<button class="secondary smallbtn" onclick="undoCompleteRecord('${r.id}')">Tamamlanmadı</button>`
+               : `<button class="primary smallbtn ${r.diff>0?'disabledAction':''}" ${r.diff>0?'disabled':''} onclick="completeRecord('${r.id}')">Tamamlandı</button>`}`
           : `<button class="secondary smallbtn" onclick="showHealthCalendarDetail('${r.id}')">Detay</button>
              <button class="primary smallbtn ${r.diff>0?'disabledAction':''}" ${r.diff>0?'disabled':''} onclick="completeRecord('${r.id}')">Yapıldı</button>
              <button class="secondary smallbtn" onclick="changeRecordDate('${r.id}')">Tarihi Değiştir</button>`
@@ -885,9 +943,16 @@ window.completeRecord=(id)=>{
     return;
   }
 
-  // Randevu tamamlanınca yalnız takvimden kaldırılır.
+  // Veteriner ziyareti tamamlanınca kayıt silinmez; geçmişte ve sağlık geçmişinde kalır.
   if(r.type==='appointment'){
-    state.records=state.records.filter(x=>x.id!==id);
+    const eventAt=recordEventDateTime(r);
+    if(eventAt && eventAt.getTime()>Date.now()){
+      alert('Bu ziyaretin saati henüz gelmedi.');
+      return;
+    }
+    r.done=true;
+    r.completedAt=new Date().toISOString();
+    r.reminder=0;
     saveState();
     renderAll();
     return;
@@ -935,6 +1000,16 @@ window.completeRecord=(id)=>{
   saveState();
   renderAll();
 };
+window.undoCompleteRecord=(id)=>{
+  const r=(state.records||[]).find(x=>x.id===id);
+  if(!r || r.type!=='appointment') return;
+  r.done=false;
+  r.completedAt=null;
+  if(r.reminder===0) r.reminder=1440;
+  saveState();
+  renderAll();
+};
+
 window.snoozeRecord=(id,days)=>{
   const r=state.records.find(x=>x.id===id); if(!r||!r.next)return;
   const d=new Date(r.next+'T12:00:00'); d.setDate(d.getDate()+days); r.next=d.toISOString().slice(0,10); saveState();
@@ -1143,113 +1218,7 @@ function pkDueStatus(dateStr){
 })();
 
 
-/* ===== PetKarnem v2.77 — Takvim Hatırlatıcı Motoru =====
-   Web/PWA kısıtı: iOS uygulamayı tamamen kapattığında yalnızca istemci tarafı zamanlayıcıları garanti etmez.
-   Bu motor uygulama açıkken zamanı geldiğinde ve uygulama yeniden açıldığında kaçırılan hatırlatmayı yakalar.
-*/
-(function(){
-  const FIRED_STORE='petkarnem_calendar_reminders_fired_v1';
-  let reminderTimer=null;
-
-  function readFired(){
-    try{return JSON.parse(localStorage.getItem(FIRED_STORE)||'{}')||{};}catch{return {};}
-  }
-  function writeFired(v){
-    try{localStorage.setItem(FIRED_STORE,JSON.stringify(v));}catch{}
-  }
-  function eventDateTime(r){
-    if(!r?.next) return null;
-    const time=(r.time && /^\d{2}:\d{2}$/.test(r.time))?r.time:'09:00';
-    const d=new Date(`${r.next}T${time}:00`);
-    return Number.isFinite(d.getTime())?d:null;
-  }
-  function reminderOffsets(r){
-    if(r?.type==='appointment'){
-      if(r.reminder===0) return [];
-      if(r.reminder===1500) return [1440,60];
-      const n=Number(r.reminder??1440);
-      return n>0?[n]:[];
-    }
-    if(['vaccine','internal','external'].includes(r?.type)){
-      const d=Number(r.reminderDays||0);
-      return d>0?[d*1440]:[];
-    }
-    return [];
-  }
-  function reminderLabel(minutes){
-    if(minutes===1440) return '1 gün';
-    if(minutes%1440===0) return `${minutes/1440} gün`;
-    if(minutes===60) return '1 saat';
-    if(minutes%60===0) return `${minutes/60} saat`;
-    return `${minutes} dakika`;
-  }
-  function notificationCopy(r, minutes){
-    const pet=(state.pets||[]).find(p=>p.id===r.petId);
-    const petName=pet?.name||'Dostun';
-    const when=r.time?`${fmt(r.next)} • ${r.time}`:fmt(r.next);
-    const kind=r.type==='appointment'?'Veteriner randevusu':r.type==='vaccine'?'Aşı':r.type==='internal'?'İç parazit':'Dış parazit';
-    return {
-      title:`${petName} • ${kind} 🐾`,
-      body:`${r.title||kind} için ${reminderLabel(minutes)} kaldı. ${when}`
-    };
-  }
-  async function getWorker(){
-    if(!('serviceWorker' in navigator)) return null;
-    try{
-      const reg=await navigator.serviceWorker.register('./sw-notifications.js',{scope:'./'});
-      await navigator.serviceWorker.ready;
-      return reg;
-    }catch(err){console.error('PetKarnem reminder worker error',err);return null;}
-  }
-  async function showReminder(r,minutes){
-    if(!('Notification' in window) || Notification.permission!=='granted') return false;
-    const reg=await getWorker();
-    if(!reg) return false;
-    const c=notificationCopy(r,minutes);
-    const msg={type:'PK_SHOW_CALENDAR_REMINDER',title:c.title,body:c.body,tag:`pk-reminder-${r.id}-${minutes}`,url:'./'};
-    try{
-      const active=reg.active || (await navigator.serviceWorker.ready).active;
-      if(!active) return false;
-      active.postMessage(msg);
-      return true;
-    }catch(err){console.error('PetKarnem reminder notify error',err);return false;}
-  }
-  async function checkReminders(){
-    if(!state?.records?.length) return;
-    const now=Date.now();
-    const fired=readFired();
-    let changed=false;
-    const allowed=new Set(['appointment','vaccine','internal','external']);
-    for(const r of state.records){
-      if(!r?.id || !r.next || !allowed.has(r.type)) continue;
-      const eventAt=eventDateTime(r);
-      if(!eventAt || eventAt.getTime()<=now) continue;
-      const candidates=reminderOffsets(r).map(minutes=>({minutes,due:eventAt.getTime()-minutes*60000,key:`${r.id}:${r.next}:${r.time||''}:${minutes}`}));
-      const due=candidates.filter(x=>!fired[x.key] && now>=x.due && now<eventAt.getTime()).sort((a,b)=>b.due-a.due);
-      if(!due.length) continue;
-      // Uygulama uzun süre kapalı kaldıysa aynı kayıt için iki bildirimi üst üste göstermeyelim.
-      const chosen=due[0];
-      const ok=await showReminder(r,chosen.minutes);
-      if(ok){
-        for(const x of due){fired[x.key]=Date.now();changed=true;}
-      }
-    }
-    // 45 günden eski işaretleri temizle.
-    const cutoff=Date.now()-45*86400000;
-    for(const [k,v] of Object.entries(fired)) if(Number(v)<cutoff){delete fired[k];changed=true;}
-    if(changed) writeFired(fired);
-  }
-  function startReminderEngine(){
-    checkReminders();
-    if(reminderTimer) clearInterval(reminderTimer);
-    reminderTimer=setInterval(checkReminders,30000);
-    document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')checkReminders();});
-    window.addEventListener('focus',checkReminders);
-  }
-  window.pkCheckCalendarReminders=checkReminders;
-  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',startReminderEngine,{once:true});
-  else startReminderEngine();
-})();
+/* Yerel takvim bildirim motoru kaldırıldı. Hatırlatmalar Supabase Web Push ile gönderilir. */
 
 /* ===== PetKarnem v2.59 — Supabase Takvim Sync ===== */
 const PK_SUPABASE_URL='https://opjtpujxrveadptsizry.supabase.co';
@@ -1296,7 +1265,7 @@ async function pkSyncCalendarToSupabase(){
       event_date:r.next,
       event_time:r.time||null,
       notes:r.note||'',
-      completed:false,
+      completed:r.done===true,
       payload:r
     }));
     if(rows.length){

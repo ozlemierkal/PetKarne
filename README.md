@@ -504,3 +504,12 @@ Gerçek bildirim testi native/TestFlight sürümünde yapılacaktır.
 - Web Push subscription support added.
 - Push subscription is saved to Supabase push_subscriptions.
 - Server-side sender is NOT included yet.
+
+
+## v2.89
+- Veteriner randevusu/ziyareti akışı birleştirildi.
+- Veteriner kaydında saat zorunlu.
+- Tamamlanan veteriner ziyareti silinmeden geçmişte tutulur ve Sağlık geçmişinde görünür.
+- Saati geçmiş randevular Yaklaşanlar listesinden çıkar, otomatik tamamlanmaz.
+- Eski uygulama-açılış yerel bildirim motoru kaldırıldı; Supabase Web Push korunur.
+- Görünen sürüm etiketi v2.89 olarak güncellendi.
