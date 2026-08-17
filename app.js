@@ -37,7 +37,7 @@ function appointmentHasPassed(r){
   return !!d && d.getTime()<=Date.now();
 }
 function isUpcomingCalendarRecord(r){
-  if(!r?.next || r.done===true) return false;
+  if(!r?.next || r.done===true || r.cancelled===true) return false;
   if(r.type==='appointment') return !appointmentHasPassed(r);
   return true;
 }
@@ -955,8 +955,45 @@ function renderCalendar(){
         }
       </div>
     </div>`;
-  }).join(''):`<div class="card empty">${selectedCalendarDate?'Bu tarihte kayıt yok.':'Yaklaşan veya geciken kayıt yok.'}</div>`;
+  }).join(''):`<div class="card empty">${selectedCalendarDate?'Bu tarihte kayıt yok.':'Yaklaşan kayıt yok.'}</div>`;
+
+  // Saati geçmiş ama sonucu belirtilmemiş veteriner randevuları kaybolmaz.
+  // Yalnız Yaklaşanlar modunda, ayrı ve sadece gerektiğinde görünen bölümde tutulur.
+  const pendingSection=$('#pendingAppointmentsSection');
+  const pendingList=$('#pendingAppointmentsList');
+  if(pendingSection && pendingList){
+    const pending=(calendarListMode==='upcoming' && !selectedCalendarDate)
+      ? items.filter(r=>r.type==='appointment' && r.done!==true && r.cancelled!==true && appointmentHasPassed(r))
+          .sort((a,b)=>(b.calendarDate+(b.time||'')).localeCompare(a.calendarDate+(a.time||'')))
+      : [];
+    pendingSection.style.display=pending.length?'':'none';
+    pendingList.innerHTML=pending.map(r=>{
+      const pet=petById(r.petId);
+      const petIcon=pet?.type==='dog'?'🐶':'🐱';
+      return `<div class="card">
+        <div class="calendarPetTitle">${petIcon} <b>${pet?.name||''}</b></div>
+        <div><b>🩺 Veteriner Randevusu</b> <span class="pkDueBadge overdue">SAATİ GEÇTİ</span></div>
+        <div class="muted">${fmt(r.calendarDate)}${r.time?' • '+r.time:''}</div>
+        ${r.note?`<div class="muted" style="margin-top:6px">📝 ${r.note}</div>`:''}
+        <div class="calendarActions" style="margin-top:10px">
+          <button class="secondary smallbtn" onclick="showCalendarDetail('${r.id}')">Detay</button>
+          <button class="primary smallbtn" onclick="completeRecord('${r.id}')">Tamamlandı</button>
+          <button class="secondary smallbtn" onclick="cancelAppointment('${r.id}')">İptal</button>
+        </div>
+      </div>`;
+    }).join('');
+  }
 }
+
+window.cancelAppointment=(id)=>{
+  const r=(state.records||[]).find(x=>x.id===id);
+  if(!r || r.type!=='appointment') return;
+  if(!confirm('Bu randevu iptal edildi olarak kapatılsın mı?')) return;
+  r.cancelled=true;
+  r.cancelledAt=new Date().toISOString();
+  r.reminder=0;
+  saveState();
+};
 
 window.completeRecord=(id)=>{
   const r=(state.records||[]).find(x=>x.id===id);

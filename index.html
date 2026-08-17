@@ -10,7 +10,7 @@
   <title>PetKarnem</title>
   <link rel="manifest" href="manifest.webmanifest?v=294">
   <link rel="apple-touch-icon" href="icon-192.png">
-  <link rel="stylesheet" href="styles.css?v=294">
+  <link rel="stylesheet" href="styles.css?v=295">
 </head>
 <body>
 <input id="petPhotoPicker" type="file" accept="image/*" style="display:none">
@@ -112,6 +112,10 @@
       <div class="calendarTabs"></div>
       <div id="selectedDayTitle" class="muted selectedDayTitle"></div>
       <div id="calendarList" class="stack"></div>
+      <div id="pendingAppointmentsSection" style="display:none;margin-top:22px">
+        <h3 style="margin:0 0 10px">İşlem Bekleyen Randevular</h3>
+        <div id="pendingAppointmentsList" class="stack"></div>
+      </div>
     </section>
 
     <section id="healthView" class="view healthReferenceView">
@@ -201,7 +205,7 @@
 
       <div class="settingsGroup"><h3>Hakkında</h3><div class="card">
         <div class="settingsRow"><span>Uygulama</span><b>PetKarnem</b></div>
-        <div class="settingsRow"><span>Sürüm</span><b>Web Test v2.94</b></div>
+        <div class="settingsRow"><span>Sürüm</span><b>Web Test v2.95</b></div>
         <div class="settingsRow"><span>Plan</span><b>Basic • Ücretsiz</b></div>
         <div class="settingsLink">Gizlilik Politikası <span>›</span></div>
         <div class="settingsLink">Kullanım Koşulları <span>›</span></div>
@@ -234,7 +238,7 @@
   </form>
 </dialog>
 
-<script src="app.js?v=294"></script>
+<script src="app.js?v=295"></script>
 
 <script>
 (function(){
