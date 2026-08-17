@@ -1393,7 +1393,7 @@ window.addEventListener('DOMContentLoaded',()=>{
 
 /* ===== PetKarnem v2.79 — Web Push Subscription ===== */
 (function(){
-  const PK_VAPID_PUBLIC_KEY='BBIAUtd_9PWOhIMuL-n0fMNK9j8ZtD3pj85Zt9c_MYSN_MuHqRROO66JwxWVZ5ZOyjmpMQDc5J2Uxig4gFYx8Lo';
+  const PK_VAPID_PUBLIC_KEY='BLylZr9miilUDZk7yNqM8HvBfo3Dlkh4C7YTB9BbezpkxLIwpboF4sku8tq3KN8KoiVAJKYqkEy_23pzGVHu4yQ';
 
   function b64ToUint8Array(base64String){
     const padding='='.repeat((4-base64String.length%4)%4);
