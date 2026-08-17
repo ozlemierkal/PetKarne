@@ -1981,3 +1981,11 @@ body.petDetailMode #petDetailView{
 
 /* v2.87 iOS tap reliability */
 #calendarPrevBtn,#calendarNextBtn,.calendarActions button,.dayCell{touch-action:manipulation;-webkit-tap-highlight-color:transparent;}
+
+/* v2.97 — aktif küçük birincil aksiyonlar görünür yeşil */
+button.primary.smallbtn:not(:disabled){
+  background:var(--green)!important;
+  color:#fff!important;
+  font-weight:800;
+  opacity:1!important;
+}
