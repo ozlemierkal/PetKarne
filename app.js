@@ -860,6 +860,18 @@ function calendarItems(){
   return state.records.filter(r=>r.next&&allowed.has(r.type)).map(r=>({...r,calendarDate:r.next}));
 }
 
+
+function pkIsWithinUpcoming7Days(dateValue){
+  if(!dateValue) return false;
+  const d = new Date(String(dateValue).slice(0,10) + "T00:00:00");
+  if(Number.isNaN(d.getTime())) return false;
+  const today = new Date();
+  today.setHours(0,0,0,0);
+  const end = new Date(today);
+  end.setDate(end.getDate() + 7);
+  return d >= today && d <= end;
+}
+
 function renderCalendar(){
   const label=$('#calendarMonthLabel'), grid=$('#monthGrid');
   if(!label || !grid) return;
@@ -904,7 +916,7 @@ function renderCalendar(){
   }else{
     // Yaklaşanlar gerçekten gelecekte olan kayıtları gösterir.
     // Saati geçmiş veteriner randevuları burada kalmaz ve otomatik tamamlanmaz.
-    list=list.filter(r=>r.diff<=7 && isUpcomingCalendarRecord(r));
+    list=list.filter(r=>r.diff>=0 && r.diff<=7 && isUpcomingCalendarRecord(r));
     if(title) title.textContent='Yaklaşanlar';
   }
 
