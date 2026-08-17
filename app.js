@@ -439,7 +439,7 @@ function renderPets(){
   upcoming.innerHTML=future.length?future.slice(0,3).map(r=>{
     const p=petById(r.petId), [emoji,cls]=recordIcon(r.type);
     const days=Math.max(0,Math.ceil((new Date(r.next+'T12:00:00')-new Date(now+'T12:00:00'))/86400000));
-    const title=r.type==='appointment'?'Veteriner Ziyareti':
+    const title=r.type==='appointment'?'Veteriner Randevusu':
                 r.type==='vaccine'?(r.title||'Aşı'):
                 r.type==='internal'?'İç Parazit':'Dış Parazit';
     return `<div class="refUpcomingCard">
@@ -794,14 +794,14 @@ window.showCalendarDetail=(id)=>{
   const pet=petById(r.petId);
   const vet=state.vets.find(v=>v.id===r.vetId);
 
-  openInfoModal('Veteriner Ziyareti Detayı',`
+  openInfoModal(r.done===true?'Veteriner Ziyareti Detayı':'Veteriner Randevusu Detayı',`
     <div class="card">
-      <h3>${pet?.name||''} • ${r.title}</h3>
+      <h3>${pet?.name||''} • ${r.done===true?'Veteriner Ziyareti':'Veteriner Randevusu'}</h3>
       <div>📅 ${fmt(r.next)}${r.time?' • '+r.time:''}</div>
       <div>🩺 ${vet?.name||'Klinik seçilmedi'}</div>
       <div>${r.done===true?'✅ Tamamlandı':'🕒 Planlı'}</div>
       <div>🔔 ${r.reminder===0?'Hatırlatma yok':r.reminder===1500?'1 gün önce + 1 saat önce':r.reminder===60?'1 saat önce':r.reminder===120?'2 saat önce':'1 gün önce'}</div>
-      ${r.note?`<div style="margin-top:8px">${r.note}</div>`:''}
+      <div style="margin-top:12px"><b>Notlar</b><div style="margin-top:5px">${r.note||'Not eklenmemiş.'}</div></div>
     </div>
   `);
 };
@@ -885,7 +885,7 @@ function renderCalendar(){
     const p=petById(r.petId);
     const petIcon=p?.type==='dog'?'🐶':'🐱';
     const typeLabel=
-      r.type==='appointment'?'🩺 Veteriner Ziyareti':
+      r.type==='appointment'?(r.done===true?'🩺 Veteriner Ziyareti':'🩺 Veteriner Randevusu'):
       r.type==='vaccine'?'💉 Aşı':
       r.type==='internal'?'🪱 İç Parazit':
       '🛡️ Dış Parazit';
@@ -945,11 +945,8 @@ window.completeRecord=(id)=>{
 
   // Veteriner ziyareti tamamlanınca kayıt silinmez; geçmişte ve sağlık geçmişinde kalır.
   if(r.type==='appointment'){
-    const eventAt=recordEventDateTime(r);
-    if(eventAt && eventAt.getTime()>Date.now()){
-      alert('Bu ziyaretin saati henüz gelmedi.');
-      return;
-    }
+    // Randevu günü geldiğinde saat henüz gelmemiş olsa bile kullanıcı
+    // ziyareti tamamlandı olarak işaretleyebilir (erken gidilmiş olabilir).
     r.done=true;
     r.completedAt=new Date().toISOString();
     r.reminder=0;
