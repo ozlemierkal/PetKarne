@@ -1,7 +1,7 @@
 {
   "name": "PetKarnem",
   "short_name": "PetKarnem",
-  "start_url": "./?v=298",
+  "start_url": "./?v=299",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#75AF2B",

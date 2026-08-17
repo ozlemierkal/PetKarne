@@ -922,7 +922,7 @@ function renderCalendar(){
       r.type==='internal'?'🪱 İç Parazit':
       '🛡️ Dış Parazit';
 
-    const status=r.done===true
+    const status=(r.type==='appointment' && r.done===true)
       ? {key:'normal',label:'TAMAMLANDI'}
       : r.type==='appointment' && appointmentHasPassed(r)
       ? {key:'overdue',label:'SAATİ GEÇTİ'}
@@ -955,7 +955,6 @@ function renderCalendar(){
                ? `<button class="secondary smallbtn" onclick="undoCompleteRecord('${r.id}')">Tamamlanmadı</button>`
                : `<button class="primary smallbtn ${r.diff>0?'disabledAction':''}" ${r.diff>0?'disabled':''} onclick="completeRecord('${r.id}')">Tamamlandı</button>`}`
           : `<button class="secondary smallbtn" onclick="showHealthCalendarDetail('${r.id}')">Detay</button>
-             <button class="primary smallbtn ${r.diff>0?'disabledAction':''}" ${r.diff>0?'disabled':''} onclick="completeRecord('${r.id}')">Yapıldı</button>
              <button class="secondary smallbtn" onclick="changeRecordDate('${r.id}')">Tarihi Değiştir</button>`
         }
       </div>
