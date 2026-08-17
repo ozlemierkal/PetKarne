@@ -192,7 +192,7 @@ window.healthAction=function healthAction(type){
         <label>Veteriner kliniği</label>
         <select id="recVet"><option value="">Seçiniz</option>${state.vets.map(v=>`<option value="${v.id}" ${v.primary?'selected':''}>${v.primary?'⭐ ':''}${v.name}</option>`).join('')}</select>
       </div>
-      <label>Sonraki tarih</label><input id="recNext" type="date">
+      <label>Sonraki uygulama tarihi</label><input id="recNext" type="date">
       <label>Hatırlatma</label><select id="recReminder">
         <option value="0">Hatırlatma yok</option>
         <option value="1" selected>1 gün önce</option>
@@ -200,6 +200,7 @@ window.healthAction=function healthAction(type){
         <option value="7">7 gün önce</option>
         <option value="14">14 gün önce</option>
       </select>
+      <div class="muted" style="margin-top:-6px;margin-bottom:8px">Hatırlatma, sonraki uygulama tarihine göre gönderilir.</div>
       <label>Not</label><textarea id="recNote"></textarea>
     `,()=>{
       const title=$('#recTitle').value.trim(); if(!title) return false;
@@ -208,24 +209,28 @@ window.healthAction=function healthAction(type){
         return false;
       }
       const by=$('#recBy').value;
+      const next=$('#recNext').value;
       state.records.push({id:uid(),petId:pet.id,type,title,date:$('#recDate').value,by,
-        vetId:by==='vet'?$('#recVet').value:'',next:$('#recNext').value,reminderDays:+$('#recReminder').value,note:$('#recNote').value,done:true});
+        vetId:by==='vet'?$('#recVet').value:'',next,reminderDays:next?+$('#recReminder').value:0,note:$('#recNote').value,done:true});
       saveState();
     });
     setTimeout(()=>{
       const by=$('#recBy'), wrap=$('#vetSelectWrap');
       const rr=$('#recReminder'), nextDate=$('#recNext');
-      if(rr){
+      if(rr && nextDate){
         const preferred=Number(state.settings?.defaultReminder);
         rr.value=String(preferred>0?preferred:1);
-      }
-      if(nextDate && rr){
-        nextDate.addEventListener('change',()=>{
-          if(nextDate.value && Number(rr.value)===0){
-            const preferred=Number(state.settings?.defaultReminder);
+        rr.disabled=!nextDate.value;
+        const syncReminderToNextDate=()=>{
+          rr.disabled=!nextDate.value;
+          if(!nextDate.value){
+            rr.value='0';
+          }else if(Number(rr.value)===0){
             rr.value=String(preferred>0?preferred:1);
           }
-        });
+        };
+        nextDate.addEventListener('change',syncReminderToNextDate);
+        syncReminderToNextDate();
       }
       const sync=()=>wrap.style.display=by.value==='vet'?'block':'none';
       by.addEventListener('change',sync); sync();
@@ -720,7 +725,7 @@ window.showHealthCalendarDetail=(id)=>{
       <div><b>${r.title||''}</b></div>
       ${r.date?`<div class="muted" style="margin-top:6px">Uygulama: ${fmt(r.date)}</div>`:''}
       <div class="muted">Uygulayan: ${r.by==='vet'?'Veteriner':'Evde'}</div>
-      ${r.next?`<div class="muted">Sonraki tarih: ${fmt(r.next)}</div>`:''}
+      ${r.next?`<div class="muted">Sonraki uygulama tarihi: ${fmt(r.next)}</div>`:''}
       ${r.by==='vet'?`<div class="muted">Klinik: ${vet?.name||'Seçilmedi'}</div>`:''}
       <div class="muted">${reminderText}</div>
       ${r.note?`<div style="margin-top:10px">${r.note}</div>`:''}
