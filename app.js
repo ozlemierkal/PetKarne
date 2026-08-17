@@ -962,7 +962,7 @@ function renderCalendar(){
   const pendingSection=$('#pendingAppointmentsSection');
   const pendingList=$('#pendingAppointmentsList');
   if(pendingSection && pendingList){
-    const pending=(calendarListMode==='upcoming' && !selectedCalendarDate)
+    const pending=(calendarListMode==='upcoming')
       ? items.filter(r=>r.type==='appointment' && r.done!==true && r.cancelled!==true && appointmentHasPassed(r))
           .sort((a,b)=>(b.calendarDate+(b.time||'')).localeCompare(a.calendarDate+(a.time||'')))
       : [];
