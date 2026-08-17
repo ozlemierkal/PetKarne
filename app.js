@@ -596,7 +596,10 @@ function renderHealth(){
 
   hist.innerHTML=all.length?all.map(r=>{
     const label=r.type==='vaccine'?'💉 Aşı':r.type==='internal'?'🪱 İç Parazit':r.type==='external'?'🛡️ Dış Parazit':r.type==='med'?'💊 İlaç':r.type==='weight'?'⚖️ Kilo':'🩺 Veteriner';
-    return `<div class="card"><b>${label} • ${r.title}</b><div class="muted">${fmt(r.date||r.next)}${r.next&&r.date?` • Sonraki ${fmt(r.next)}`:''}</div></div>`;
+    const displayTitle=r.type==='appointment'?'Veteriner Ziyareti':r.title;
+    const when=`${fmt(r.date||r.next)}${r.type==='appointment'&&r.time?' • '+r.time:(r.next&&r.date?` • Sonraki ${fmt(r.next)}`:'')}`;
+    const note=r.note?`<div class="healthHistoryNote" style="margin-top:7px">📝 ${r.note}</div>`:'';
+    return `<div class="card"><b>${label} • ${displayTitle}</b><div class="muted">${when}</div>${note}</div>`;
   }).join(''):'<div class="card empty">Bu kategoride henüz kayıt yok.</div>';
 }
 
@@ -636,17 +639,16 @@ window.addAppointment=()=>{
       ${state.vets.map(v=>`<option value="${v.id}" ${v.primary?'selected':''}>${v.primary?'⭐ ':''}${v.name}</option>`).join('')}
     </select>
 
-    <label>Hatırlatma</label>
-    <select id="apptReminder">
-      <option value="1500" selected>1 gün önce + 1 saat önce</option>
-      <option value="1440">1 gün önce</option>
-      <option value="120">2 saat önce</option>
-      <option value="60">1 saat önce</option>
-      <option value="0">Hatırlatma yok</option>
-    </select>
-
-    <div class="muted" style="margin-top:6px">
-      Planlı randevular için hatırlatmalar gerçek bildirim olarak gönderilir.
+    <div id="apptReminderBlock">
+      <label>Hatırlatma</label>
+      <select id="apptReminder">
+        <option value="1500" selected>1 gün önce + 1 saat önce</option>
+        <option value="1440">1 gün önce</option>
+        <option value="120">2 saat önce</option>
+        <option value="60">1 saat önce</option>
+        <option value="0">Hatırlatma yok</option>
+      </select>
+      <div class="muted" style="margin-top:6px">Planlı randevular için hatırlatmalar gerçek bildirim olarak gönderilir.</div>
     </div>
 
     <label>Not</label>
@@ -686,6 +688,12 @@ window.addAppointment=()=>{
 
     saveState();
   });
+  setTimeout(()=>{
+    const status=$('#apptStatus'), block=$('#apptReminderBlock'), reminder=$('#apptReminder');
+    if(!status||!block) return;
+    const sync=()=>{ const completed=status.value==='completed'; block.style.display=completed?'none':''; if(completed&&reminder) reminder.value='0'; };
+    status.addEventListener('change',sync); sync();
+  },0);
 };
 
 
@@ -741,6 +749,7 @@ window.changeRecordDate=(id)=>{
         <option value="">Seçilmedi</option>
         ${state.vets.map(v=>`<option value="${v.id}" ${r.vetId===v.id?'selected':''}>${v.primary?'⭐ ':''}${v.name}</option>`).join('')}
       </select>
+      <div id="editCalReminderBlock">
       <label>Hatırlatma</label>
       <select id="editCalReminder">
         <option value="1500" ${r.reminder===1500?'selected':''}>1 gün önce + 1 saat önce</option>
@@ -749,6 +758,7 @@ window.changeRecordDate=(id)=>{
         <option value="60" ${r.reminder===60?'selected':''}>1 saat önce</option>
         <option value="0" ${r.reminder===0?'selected':''}>Hatırlatma yok</option>
       </select>
+      </div>
       <label>Not</label><textarea id="editCalNote">${r.note||''}</textarea>
     `:`
       <label>Hatırlatma</label>
@@ -798,6 +808,12 @@ window.changeRecordDate=(id)=>{
     renderCalendar();
     return true;
   });
+  if(r.type==='appointment') setTimeout(()=>{
+    const status=$('#editCalStatus'), block=$('#editCalReminderBlock'), reminder=$('#editCalReminder');
+    if(!status||!block) return;
+    const sync=()=>{ const completed=status.value==='completed'; block.style.display=completed?'none':''; if(completed&&reminder) reminder.value='0'; };
+    status.addEventListener('change',sync); sync();
+  },0);
 };
 
 
