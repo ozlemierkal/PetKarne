@@ -161,6 +161,19 @@ if(resetBtn){
   };
 }
 
+const clearAppointmentTestsBtn=$('#clearAppointmentTestsBtn');
+if(clearAppointmentTestsBtn){
+  clearAppointmentTestsBtn.onclick=()=>{
+    const count=(state.records||[]).filter(r=>r.type==='appointment').length;
+    if(!count){ alert('Silinecek veteriner randevu/ziyaret kaydı yok.'); return; }
+    if(confirm(`${count} veteriner randevu/ziyaret kaydı silinsin mi? Duman profili ve diğer sağlık kayıtları korunacak.`)){
+      state.records=(state.records||[]).filter(r=>r.type!=='appointment');
+      saveState();
+      alert('Veteriner randevu/ziyaret test kayıtları temizlendi.');
+    }
+  };
+}
+
 window.healthAction=function healthAction(type){
   if(!selectedPetId && state.pets.length) selectedPetId=state.pets[0].id;
   if(!selectedPetId){ alert('Önce bir pet ekle.'); return; }
@@ -600,7 +613,7 @@ window.addAppointment=()=>{
     </select>
 
     <label>Başlık *</label>
-    <input id="apptTitle" value="Veteriner Ziyareti">
+    <input id="apptTitle" value="Veteriner Randevusu">
 
     <label>Tarih *</label>
     <input id="apptDate" type="date">
@@ -905,13 +918,14 @@ function renderCalendar(){
     const bell=
       (r.type==='appointment'&&r.reminder!==0) ||
       (['vaccine','internal','external'].includes(r.type)&&r.reminderDays>0)
-      ? ' 🔔':'';
+      ? '🔔 ':'';
+    const displayTitle = r.type==='appointment' ? typeLabel : `${typeLabel} • ${r.title}`;
 
     return `<div class="card">
       <div class="calendarPetTitle">${petIcon} <b>${p?.name||''}</b></div>
       <div>
-        <b>${typeLabel} • ${r.title}${bell}</b>
-        ${status.label?`<span class="pkDueBadge ${status.key}">${status.label}</span>`:''}
+        <b>${displayTitle}</b>
+        ${status.label?`<span class="pkDueBadge ${status.key}">${bell}${status.label}</span>`:''}
       </div>
       <div class="muted">${fmt(r.calendarDate)}${r.time?' • '+r.time:''}</div>
       <div class="calendarActions" style="margin-top:10px">
