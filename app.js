@@ -956,7 +956,7 @@ function renderCalendar(){
       <div class="calendarPetTitle">${petIcon} <b>${p?.name||''}</b></div>
       <div>
         <b>${displayTitle}</b>
-        ${status.label?`<span class="pkDueBadge ${status.key}">${bell}${status.label}</span>`:''}
+        ${calendarListMode==='day'?'':(status.label?`<span class="pkDueBadge ${status.key}">${bell}${status.label}</span>`:'')}
       </div>
       <div class="muted">${fmt(r.calendarDate)}${r.time?' • '+r.time:''}</div>
       <div class="calendarActions" style="margin-top:10px">
@@ -971,7 +971,7 @@ function renderCalendar(){
         }
       </div>
     </div>`;
-  }).join(''):`<div class="card empty">${selectedCalendarDate?'Bu tarihte kayıt yok.':'Yaklaşan kayıt yok.'}</div>`;
+  }).join(''):`<div class="card empty">${calendarListMode==='day'?'Bu tarihte plan yok.':'Yaklaşan plan yok.'}</div>`;
 
   // Saati geçmiş ama sonucu belirtilmemiş veteriner randevuları kaybolmaz.
   // Yalnız Yaklaşanlar modunda, ayrı ve sadece gerektiğinde görünen bölümde tutulur.
@@ -1181,7 +1181,7 @@ state.vets=state.vets||[];
 state.meds=state.meds||[];
 state.weights=state.weights||[];
 if(selectedCalendarDate===null){
-  selectedCalendarDate=todayISO();
+  // null = Yaklaşanlar modu. Bugünü otomatik seçme.
   calendarListMode='upcoming';
 }
 renderAll();
