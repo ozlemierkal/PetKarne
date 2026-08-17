@@ -328,7 +328,7 @@ Gerçek bildirim testi native/TestFlight sürümünde yapılacaktır.
 
 ## v2.38
 - Takvimde tek dinamik başlık: Yaklaşanlar.
-- Güne dokununca başlık ör. 18 Eylül Kayıtları olur ve o güne ait kayıtlar gösterilir.
+- Güne dokununca başlık ör. 18 Eylül Planları olur ve o güne ait kayıtlar gösterilir.
 - Aynı güne tekrar dokununca Yaklaşanlar görünümüne dönülür.
 - 7 günden uzak seçili günlerde kayıtlar görünür ama Yaklaşıyor etiketi gösterilmez.
 - Sağlık takvim detayında Uygulama → Uygulayan → Sonraki tarih sırası düzenlendi.
@@ -343,7 +343,7 @@ Gerçek bildirim testi native/TestFlight sürümünde yapılacaktır.
 ## v2.40 — Takvim başlık düzeltmesi
 - Takvimde kalan eski “Yaklaşan” ve “Yaklaşan Kayıtlar” başlıkları kaldırıldı.
 - Tek dinamik başlık bırakıldı: Yaklaşanlar.
-- Bir gün seçildiğinde aynı başlık örn. “18 Eylül Kayıtları” olarak değişmeye devam eder.
+- Bir gün seçildiğinde aynı başlık örn. “18 Eylül Planları” olarak değişmeye devam eder.
 
 ## v2.41 — Toplu düzeltme
 - Takvim açılışındaki yeşil “Yaklaşan” düğmesi kaldırıldı; yalnızca tek dinamik “Yaklaşanlar” başlığı kaldı.

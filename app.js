@@ -899,7 +899,7 @@ function renderCalendar(){
     if(title){
       const pretty=new Intl.DateTimeFormat('tr-TR',{day:'numeric',month:'long'})
         .format(new Date(selectedCalendarDate+'T00:00:00'));
-      title.textContent=`${pretty} Kayıtları`;
+      title.textContent=`${pretty} Planları`;
     }
   }else{
     // Yaklaşanlar gerçekten gelecekte olan kayıtları gösterir.
