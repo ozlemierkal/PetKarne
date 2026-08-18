@@ -277,6 +277,7 @@ window.healthAction=function healthAction(type){
     openModal(`${pet.name} • İlaç Ekle`,`
       <label>İlaç adı *</label><input id="mName">
       <label>Doz</label><input id="mDose" placeholder="Örn. 1/2 tablet">
+      <label>Başlangıç tarihi *</label><input id="mStart" type="date" value="${todayISO()}">
       <label>Saatler</label><input id="mTimes" value="09:00,21:00">
       <label>Kaç gün?</label><input id="mDays" type="number" min="1" value="7">
       <label>Hatırlatma</label><select id="mReminder">
@@ -284,8 +285,29 @@ window.healthAction=function healthAction(type){
         <option value="off">Hatırlatma yok</option>
       </select>
     `,()=>{
-      const name=$('#mName').value.trim(); if(!name) return false;
-      state.meds.push({id:uid(),petId:pet.id,name,dose:$('#mDose').value,times:$('#mTimes').value,days:+$('#mDays').value||7,start:todayISO(),reminder:$('#mReminder').value==='on'}); saveState();
+      const name=$('#mName').value.trim();
+      const start=$('#mStart').value;
+      const days=+$('#mDays').value;
+      if(!name) return false;
+      if(!start){
+        alert('Başlangıç tarihi gerekli.');
+        return false;
+      }
+      if(!Number.isFinite(days) || days<1){
+        alert('Kaç gün alanı 1 veya daha büyük olmalı.');
+        return false;
+      }
+      state.meds.push({
+        id:uid(),
+        petId:pet.id,
+        name,
+        dose:$('#mDose').value,
+        start,
+        times:$('#mTimes').value,
+        days,
+        reminder:$('#mReminder').value==='on'
+      });
+      saveState();
     });
   }
 };
