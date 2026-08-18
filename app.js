@@ -37,9 +37,18 @@ function appointmentHasPassed(r){
   return !!d && d.getTime()<=Date.now();
 }
 function isUpcomingCalendarRecord(r){
-  if(!r?.next || r.done===true || r.cancelled===true) return false;
-  if(r.type==='appointment') return !appointmentHasPassed(r);
-  return true;
+  if(!r?.next || r.cancelled===true) return false;
+
+  // "done" yalnız veteriner randevularında durum bilgisidir.
+  // Aşı / iç parazit / dış parazit kayıtları geçmişte yapılmış sağlık
+  // kaydından bir sonraki uygulama planı üretir; r.done değeri bu planı
+  // Yaklaşanlar listesinden gizlememelidir.
+  if(r.type==='appointment'){
+    if(r.done===true) return false;
+    return !appointmentHasPassed(r);
+  }
+
+  return ['vaccine','internal','external'].includes(r.type);
 }
 
 
