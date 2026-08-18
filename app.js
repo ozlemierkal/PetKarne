@@ -278,82 +278,55 @@ window.healthAction=function healthAction(type){
       <label>İlaç adı *</label><input id="mName">
       <label>Doz</label><input id="mDose" placeholder="Örn. 1/2 tablet">
       <label>Başlangıç tarihi *</label><input id="mStart" type="date" value="${todayISO()}">
-      <label>Saatler</label>
-      <div id="mTimesList">
-        <div class="medTimeRow" style="display:flex;gap:8px;align-items:center;margin-bottom:8px">
-          <input class="mTime" type="time" value="09:00" style="flex:1">
-        </div>
-      </div>
-      <button type="button" class="secondary smallbtn" id="mAddTime" style="margin-bottom:10px">+ Saat Ekle</button>
-      <label>Kaç gün?</label><input id="mDays" type="number" min="1" value="7">
-      <label>Hatırlatma</label><select id="mReminder">
-        <option value="on" selected>İlaç saatlerinde hatırlat</option>
-        <option value="off">Hatırlatma yok</option>
+      <label>Kaç gün? *</label><input id="mDays" type="number" min="1" step="1" inputmode="numeric" value="7">
+      <label>Hatırlatma</label>
+      <select id="mReminder">
+        <option value="off" selected>Hatırlatma yok</option>
+        <option value="on">İlaç saatlerinde hatırlat</option>
       </select>
+      <div id="mTimesBlock" style="display:none">
+        <label>İlaç saatleri *</label>
+        <div id="mTimesList">
+          <div class="medTimeRow" style="display:flex;gap:8px;align-items:center;margin-bottom:8px">
+            <input class="mTime" type="time" style="flex:1">
+          </div>
+        </div>
+        <button type="button" class="secondary smallbtn" id="mAddTime" style="margin-bottom:10px">+ Saat Ekle</button>
+      </div>
     `,()=>{
       const name=$('#mName').value.trim();
       const start=$('#mStart').value;
-      const days=+$('#mDays').value;
+      const daysRaw=$('#mDays').value.trim();
+      const days=Number(daysRaw);
       const reminderOn=$('#mReminder').value==='on';
-      const times=[...document.querySelectorAll('#mTimesList .mTime')]
-        .map(el=>el.value)
-        .filter(Boolean)
-        .join(',');
-
+      const times=[...document.querySelectorAll('#mTimesList .mTime')].map(el=>el.value).filter(Boolean).join(',');
       if(!name) return false;
-      if(!start){
-        alert('Başlangıç tarihi gerekli.');
-        return false;
-      }
-      if(!Number.isFinite(days) || days<1){
-        alert('Kaç gün alanı 1 veya daha büyük olmalı.');
-        return false;
+      if(!start){ alert('Başlangıç tarihi gerekli.'); return false; }
+      if(!daysRaw || !Number.isInteger(days) || days<1){
+        alert('Kaç gün alanı zorunludur ve en az 1 gün olmalıdır.'); return false;
       }
       if(reminderOn && !times){
-        alert('Hatırlatma için en az bir ilaç saati girin.');
-        return false;
+        alert('Hatırlatma için en az bir ilaç saati seçin.'); return false;
       }
-
-      state.meds.push({
-        id:uid(),
-        petId:pet.id,
-        name,
-        dose:$('#mDose').value,
-        start,
-        times,
-        days,
-        reminder:reminderOn
-      });
+      state.meds.push({id:uid(),petId:pet.id,name,dose:$('#mDose').value,start,times,days,reminder:reminderOn});
       saveState();
     });
-
     setTimeout(()=>{
-      const list=$('#mTimesList');
-      const add=$('#mAddTime');
-      if(!list || !add) return;
-
-      const bindRemove=()=>{
-        list.querySelectorAll('.medRemoveTime').forEach(btn=>{
-          btn.onclick=()=>{
-            btn.closest('.medTimeRow')?.remove();
-          };
-        });
-      };
-
+      const reminder=$('#mReminder'), block=$('#mTimesBlock'), list=$('#mTimesList'), add=$('#mAddTime');
+      if(!reminder||!block||!list||!add) return;
+      const sync=()=>{ block.style.display=reminder.value==='on'?'':'none'; };
+      const bindRemove=()=>list.querySelectorAll('.medRemoveTime').forEach(btn=>{
+        btn.onclick=()=>btn.closest('.medTimeRow')?.remove();
+      });
+      reminder.addEventListener('change',sync);
       add.onclick=()=>{
         const row=document.createElement('div');
         row.className='medTimeRow';
         row.style.cssText='display:flex;gap:8px;align-items:center;margin-bottom:8px';
-        row.innerHTML=`
-          <input class="mTime" type="time" style="flex:1">
-          <button type="button" class="secondary smallbtn medRemoveTime">Sil</button>
-        `;
-        list.appendChild(row);
-        bindRemove();
-        row.querySelector('.mTime')?.focus();
+        row.innerHTML=`<input class="mTime" type="time" style="flex:1"><button type="button" class="secondary smallbtn medRemoveTime">Sil</button>`;
+        list.appendChild(row); bindRemove(); row.querySelector('.mTime')?.focus();
       };
-
-      bindRemove();
+      bindRemove(); sync();
     },0);
   }
 };
@@ -575,7 +548,13 @@ function renderHealth(){
   const lastVaccine=lastOf('vaccine');
   const lastInternal=lastOf('internal');
   const lastExternal=lastOf('external');
-  const activeMed=state.meds.find(m=>m.petId===selectedPetId);
+  const activeMed=state.meds.find(m=>{
+    if(m.petId!==selectedPetId) return false;
+    const today=new Date(todayISO()+'T00:00:00');
+    const start=new Date(m.start+'T00:00:00');
+    const end=new Date(start); end.setDate(end.getDate()+(m.days||1)-1);
+    return today>=start && today<=end;
+  });
   const mainVet=state.vets.find(v=>v.primary) || state.vets[0];
 
   const summary=$('#petHealthSummary');
@@ -629,7 +608,7 @@ function renderHealth(){
       </div>
       <div class="healthRefMetric">
         <span class="metricIcon">💊</span>
-        <div><small>Aktif İlaç</small><b>${activeMed?activeMed.name:'Yok'}</b><em>${activeMed?'Aktif':'—'}</em></div>
+        <div><small>Aktif İlaç</small><b>${activeMed?activeMed.name:'Yok'}</b><em>${activeMed?`${activeMed.dose?activeMed.dose+' • ':''}${activeMed.days} gün`:'—'}</em></div>
       </div>
       <div class="healthRefMetric">
         <span class="metricIcon">⚖️</span>
