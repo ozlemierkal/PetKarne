@@ -1989,3 +1989,7 @@ button.primary.smallbtn:not(:disabled){
   font-weight:800;
   opacity:1!important;
 }
+
+/* v2.111 — Profil markası */
+.pkProfileBrandCard{display:flex;align-items:center;gap:14px}
+.pkProfileBrandLogo{width:68px;height:68px;object-fit:cover;border-radius:18px;flex:0 0 68px}

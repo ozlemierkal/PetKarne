@@ -8,9 +8,9 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#237A57">
   <title>PetKarnem</title>
-  <link rel="manifest" href="manifest.webmanifest?v=2110">
-  <link rel="apple-touch-icon" href="icon-192.png">
-  <link rel="stylesheet" href="styles.css?v=2110">
+  <link rel="manifest" href="manifest.webmanifest?v=2111">
+  <link rel="apple-touch-icon" href="icon-192.png?v=2111">
+  <link rel="stylesheet" href="styles.css?v=2111">
 </head>
 <body>
 <input id="petPhotoPicker" type="file" accept="image/*" style="display:none">
@@ -54,7 +54,7 @@
       <div id="refPetsGrid" class="refPetsGrid"></div>
 
       <div class="refSectionHead refUpcomingHead">
-        <h2>Yaklaşanlar</h2>
+        <h2>Yaklaşan Planlar</h2>
         <button type="button" id="goCalendarBtn">Takvime Git ›</button>
       </div>
 
@@ -134,7 +134,7 @@
   </div>
 
   <div class="healthRefCard healthRefAddCard">
-    <div class="healthRefSectionTitle">Kayıt Ekle</div>
+    <div class="healthRefSectionTitle">Sağlık Kaydı Ekle</div>
     <div id="healthActions" class="healthRefActions"></div>
   </div>
 
@@ -163,7 +163,7 @@
 
     <section id="profileView" class="view">
       <h2>Profil & Ayarlar</h2>
-      <div class="card basicCard"><div class="basicBadge">PetKarnem Basic</div><h3>Ücretsiz</h3><div class="muted">Temel sağlık takibi, takvim ve veteriner kayıtları ücretsiz.</div></div>
+      <div class="card basicCard pkProfileBrandCard"><img class="pkProfileBrandLogo" src="petkarnem-approved-art.jpg" alt="PetKarnem"><div><div class="basicBadge">PetKarnem Basic</div><h3>Ücretsiz</h3><div class="muted">Temel sağlık takibi, takvim ve veteriner kayıtları ücretsiz.</div></div></div>
 
       <div class="settingsGroup"><h3>Hesabım</h3><div class="card settingsCard">
         <label>Ad</label><input id="profileName" placeholder="Adınız">
@@ -173,15 +173,7 @@
       </div></div>
 
       <div class="settingsGroup"><h3>Petlerim</h3><div id="profilePetsList" class="stack"></div></div>
-
-      <div class="settingsGroup"><h3>Bildirim Ayarları</h3><div class="card settingsCard">
-        <label>Varsayılan hatırlatma</label>
-        <select id="defaultReminder"><option value="1">1 gün önce</option><option value="3">3 gün önce</option><option value="7">7 gün önce</option><option value="14">14 gün önce</option></select>
-        <label class="toggleRow"><span>Gecikenleri tekrar göster</span><input id="repeatOverdue" type="checkbox"></label>
-        
-      </div></div>
-
-      <div class="settingsGroup"><h3>Bildirimler</h3><div class="card settingsCard">
+<div class="settingsGroup"><h3>Bildirimler</h3><div class="card settingsCard">
         <b>PetKarnem Bildirimleri</b>
         <div class="muted settingsNote">Randevu, aşı ve diğer hatırlatmalar zamanı geldiğinde bildirim gönderilir.</div>
         <div class="settingsRow"><span>Durum</span><b id="pushSubscriptionStatus">Kapalı</b></div>
@@ -205,7 +197,7 @@
 
       <div class="settingsGroup"><h3>Hakkında</h3><div class="card">
         <div class="settingsRow"><span>Uygulama</span><b>PetKarnem</b></div>
-        <div class="settingsRow"><span>Sürüm</span><b>Web Test v2.110</b></div>
+        <div class="settingsRow"><span>Sürüm</span><b>Web Test v2.111</b></div>
         <div class="settingsRow"><span>Plan</span><b>Basic • Ücretsiz</b></div>
         <div class="settingsLink">Gizlilik Politikası <span>›</span></div>
         <div class="settingsLink">Kullanım Koşulları <span>›</span></div>
@@ -238,7 +230,7 @@
   </form>
 </dialog>
 
-<script src="app.js?v=2110"></script>
+<script src="app.js?v=2111"></script>
 
 <script>
 (function(){
