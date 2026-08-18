@@ -1432,11 +1432,6 @@ async function pkSyncCalendarToSupabase(){
   pkSupabaseSyncing=true;
   const deviceId=pkSupabaseDeviceId();
   try{
-    const del=await fetch(`${PK_SUPABASE_URL}/rest/v1/calendar_events?device_id=eq.${encodeURIComponent(deviceId)}`,{
-      method:'DELETE',headers:pkSupabaseHeaders({'Prefer':'return=minimal'})
-    });
-    if(!del.ok) throw new Error(`DELETE ${del.status}`);
-
     const rows=pkCalendarSyncRecords().map(r=>({
       local_id:String(r.id),
       device_id:deviceId,
@@ -1449,11 +1444,35 @@ async function pkSyncCalendarToSupabase(){
       completed:r.done===true,
       payload:r
     }));
-    if(rows.length){
-      const ins=await fetch(`${PK_SUPABASE_URL}/rest/v1/calendar_events`,{
-        method:'POST',headers:pkSupabaseHeaders({'Prefer':'return=minimal'}),body:JSON.stringify(rows)
-      });
-      if(!ins.ok) throw new Error(`POST ${ins.status}`);
+
+    // Mevcut kayıtları silip yeniden oluşturmak yerine local_id üzerinden tek tek
+    // güncelle/ekle. Böylece Supabase id sabit kalır ve push log geçerliliğini korur.
+    for(const row of rows){
+      const existing=await fetch(
+        `${PK_SUPABASE_URL}/rest/v1/calendar_events?device_id=eq.${encodeURIComponent(deviceId)}&local_id=eq.${encodeURIComponent(row.local_id)}&select=id&limit=1`,
+        {headers:pkSupabaseHeaders()}
+      );
+      if(!existing.ok) throw new Error(`LOOKUP ${existing.status}`);
+      const found=await existing.json();
+
+      if(found.length){
+        const upd=await fetch(
+          `${PK_SUPABASE_URL}/rest/v1/calendar_events?id=eq.${encodeURIComponent(found[0].id)}`,
+          {
+            method:'PATCH',
+            headers:pkSupabaseHeaders({'Prefer':'return=minimal'}),
+            body:JSON.stringify(row)
+          }
+        );
+        if(!upd.ok) throw new Error(`PATCH ${upd.status}`);
+      }else{
+        const ins=await fetch(`${PK_SUPABASE_URL}/rest/v1/calendar_events`,{
+          method:'POST',
+          headers:pkSupabaseHeaders({'Prefer':'return=minimal'}),
+          body:JSON.stringify(row)
+        });
+        if(!ins.ok) throw new Error(`POST ${ins.status}`);
+      }
     }
     pkSupabaseStatus('Bağlı • Takvim eşitlendi',true);
   }catch(err){
