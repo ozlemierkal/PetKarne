@@ -278,7 +278,13 @@ window.healthAction=function healthAction(type){
       <label>İlaç adı *</label><input id="mName">
       <label>Doz</label><input id="mDose" placeholder="Örn. 1/2 tablet">
       <label>Başlangıç tarihi *</label><input id="mStart" type="date" value="${todayISO()}">
-      <label>Saatler</label><input id="mTimes" value="09:00,21:00">
+      <label>Saatler</label>
+      <div id="mTimesList">
+        <div class="medTimeRow" style="display:flex;gap:8px;align-items:center;margin-bottom:8px">
+          <input class="mTime" type="time" value="09:00" style="flex:1">
+        </div>
+      </div>
+      <button type="button" class="secondary smallbtn" id="mAddTime" style="margin-bottom:10px">+ Saat Ekle</button>
       <label>Kaç gün?</label><input id="mDays" type="number" min="1" value="7">
       <label>Hatırlatma</label><select id="mReminder">
         <option value="on" selected>İlaç saatlerinde hatırlat</option>
@@ -289,7 +295,10 @@ window.healthAction=function healthAction(type){
       const start=$('#mStart').value;
       const days=+$('#mDays').value;
       const reminderOn=$('#mReminder').value==='on';
-      const times=$('#mTimes').value.trim();
+      const times=[...document.querySelectorAll('#mTimesList .mTime')]
+        .map(el=>el.value)
+        .filter(Boolean)
+        .join(',');
 
       if(!name) return false;
       if(!start){
@@ -317,6 +326,35 @@ window.healthAction=function healthAction(type){
       });
       saveState();
     });
+
+    setTimeout(()=>{
+      const list=$('#mTimesList');
+      const add=$('#mAddTime');
+      if(!list || !add) return;
+
+      const bindRemove=()=>{
+        list.querySelectorAll('.medRemoveTime').forEach(btn=>{
+          btn.onclick=()=>{
+            btn.closest('.medTimeRow')?.remove();
+          };
+        });
+      };
+
+      add.onclick=()=>{
+        const row=document.createElement('div');
+        row.className='medTimeRow';
+        row.style.cssText='display:flex;gap:8px;align-items:center;margin-bottom:8px';
+        row.innerHTML=`
+          <input class="mTime" type="time" style="flex:1">
+          <button type="button" class="secondary smallbtn medRemoveTime">Sil</button>
+        `;
+        list.appendChild(row);
+        bindRemove();
+        row.querySelector('.mTime')?.focus();
+      };
+
+      bindRemove();
+    },0);
   }
 };
 
