@@ -288,6 +288,9 @@ window.healthAction=function healthAction(type){
       const name=$('#mName').value.trim();
       const start=$('#mStart').value;
       const days=+$('#mDays').value;
+      const reminderOn=$('#mReminder').value==='on';
+      const times=$('#mTimes').value.trim();
+
       if(!name) return false;
       if(!start){
         alert('Başlangıç tarihi gerekli.');
@@ -297,15 +300,20 @@ window.healthAction=function healthAction(type){
         alert('Kaç gün alanı 1 veya daha büyük olmalı.');
         return false;
       }
+      if(reminderOn && !times){
+        alert('Hatırlatma için en az bir ilaç saati girin.');
+        return false;
+      }
+
       state.meds.push({
         id:uid(),
         petId:pet.id,
         name,
         dose:$('#mDose').value,
         start,
-        times:$('#mTimes').value,
+        times,
         days,
-        reminder:$('#mReminder').value==='on'
+        reminder:reminderOn
       });
       saveState();
     });
