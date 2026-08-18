@@ -1360,6 +1360,8 @@ const PK_SUPABASE_KEY_STORE='petkarnem_supabase_publishable_key';
 const PK_SUPABASE_DEVICE_STORE='petkarnem_supabase_device_id';
 let pkSupabaseSyncTimer=null;
 let pkSupabaseSyncing=false;
+let pkMedicationSyncTimer=null;
+let pkMedicationSyncing=false;
 
 function pkSupabaseKey(){ return (localStorage.getItem(PK_SUPABASE_KEY_STORE)||'').trim(); }
 function pkSupabaseDeviceId(){
@@ -1374,6 +1376,51 @@ function pkSupabaseHeaders(extra={}){
 function pkCalendarSyncRecords(){
   const allowed=new Set(['vaccine','internal','external','appointment']);
   return (state.records||[]).filter(r=>r && r.id && r.next && allowed.has(r.type));
+}
+function pkMedicationSyncRecords(){
+  return (state.meds||[]).filter(m=>m && m.id && m.start && Number(m.days)>=1);
+}
+async function pkSyncMedicationsToSupabase(){
+  const key=pkSupabaseKey();
+  if(!key || pkMedicationSyncing) return;
+  pkMedicationSyncing=true;
+  const deviceId=pkSupabaseDeviceId();
+  try{
+    const del=await fetch(`${PK_SUPABASE_URL}/rest/v1/medication_schedules?device_id=eq.${encodeURIComponent(deviceId)}`,{
+      method:'DELETE',headers:pkSupabaseHeaders({'Prefer':'return=minimal'})
+    });
+    if(!del.ok) throw new Error(`MED DELETE ${del.status}`);
+
+    const rows=pkMedicationSyncRecords().map(m=>({
+      local_id:String(m.id),
+      device_id:deviceId,
+      pet_name:petById(m.petId)?.name||'',
+      medicine_name:m.name||'İlaç',
+      dose:m.dose||null,
+      start_date:m.start,
+      days:Number(m.days),
+      times:(m.times||'').split(',').map(x=>x.trim()).filter(Boolean),
+      reminder_enabled:m.reminder===true,
+      updated_at:new Date().toISOString()
+    }));
+    if(rows.length){
+      const ins=await fetch(`${PK_SUPABASE_URL}/rest/v1/medication_schedules`,{
+        method:'POST',
+        headers:pkSupabaseHeaders({'Prefer':'return=minimal'}),
+        body:JSON.stringify(rows)
+      });
+      if(!ins.ok) throw new Error(`MED POST ${ins.status}`);
+    }
+  }catch(err){
+    console.warn('PetKarnem medication sync:',err);
+  }finally{
+    pkMedicationSyncing=false;
+  }
+}
+function pkQueueMedicationSync(){
+  if(!pkSupabaseKey()) return;
+  clearTimeout(pkMedicationSyncTimer);
+  pkMedicationSyncTimer=setTimeout(pkSyncMedicationsToSupabase,450);
 }
 function pkSupabaseStatus(text,ok=false){
   const el=document.querySelector('#supabaseStatus');
@@ -1464,6 +1511,7 @@ function pkBindSupabaseSettings(){
       localStorage.setItem(PK_SUPABASE_KEY_STORE,key);
       pkSupabaseStatus('Bağlanıyor…');
       await pkLoadCalendarFromSupabase();
+      await pkSyncMedicationsToSupabase();
       if((document.querySelector('#supabaseStatus')?.textContent||'').startsWith('Bağlı')) alert('Supabase takvim bağlantısı tamamlandı.');
     };
   }
@@ -1491,6 +1539,7 @@ const pkOriginalSaveState=saveState;
 saveState=function(){
   pkOriginalSaveState();
   pkQueueCalendarSync();
+  pkQueueMedicationSync();
 };
 
 window.addEventListener('DOMContentLoaded',()=>{
