@@ -1586,7 +1586,8 @@ window.addEventListener('DOMContentLoaded',()=>{
   }
   async function getPushWorker(){
     if(!('serviceWorker' in navigator)) throw new Error('Service Worker desteklenmiyor');
-    await navigator.serviceWorker.register('./sw-notifications.js',{scope:'./'});
+    const reg=await navigator.serviceWorker.register('./sw-notifications.js?v=2115',{scope:'./'});
+    try{ await reg.update(); }catch(e){}
     return await navigator.serviceWorker.ready;
   }
   async function saveSubscriptionToSupabase(sub){
