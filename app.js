@@ -500,11 +500,17 @@ function renderPets(){
   const add=$('#refAddPet'); if(add) add.onclick=()=>$('#addPetBtn').click();
 
   const now=todayISO();
+  // Ana sayfa: bugün dahil tam 3 takvim günü (bugün + 2 gün).
+  // Kayıt sayısını 3 ile sınırlamıyoruz; pencere içindeki tüm planları gösteriyoruz.
+  const endDate=new Date(now+'T12:00:00');
+  endDate.setDate(endDate.getDate()+2);
+  const endISO=endDate.getFullYear()+'-'+String(endDate.getMonth()+1).padStart(2,'0')+'-'+String(endDate.getDate()).padStart(2,'0');
+
   const future=state.records
-    .filter(r=>r.petId&&r.next&&r.next>=now&&['appointment','vaccine','internal','external'].includes(r.type)&&isUpcomingCalendarRecord(r))
+    .filter(r=>r.petId&&r.next&&r.next>=now&&r.next<=endISO&&['appointment','vaccine','internal','external'].includes(r.type)&&isUpcomingCalendarRecord(r))
     .sort((a,b)=>(a.next+(a.time||'')).localeCompare(b.next+(b.time||'')));
 
-  upcoming.innerHTML=future.length?future.slice(0,3).map(r=>{
+  upcoming.innerHTML=future.length?future.map(r=>{
     const p=petById(r.petId), [emoji,cls]=recordIcon(r.type);
     const days=Math.max(0,Math.ceil((new Date(r.next+'T12:00:00')-new Date(now+'T12:00:00'))/86400000));
     const title=r.type==='appointment'?'Veteriner Randevusu':
