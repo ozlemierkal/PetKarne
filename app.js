@@ -21,7 +21,13 @@ function loadState(){
 function baseState(){ return {pets:[], records:[], vets:[], meds:[], weights:[], docs:[], profile:{name:'',email:'',phone:''}, settings:{defaultReminder:1,repeatOverdue:true}}; }
 function saveState(){ localStorage.setItem(storeKey, JSON.stringify(state)); renderAll(); }
 function uid(){ return crypto.randomUUID ? crypto.randomUUID() : String(Date.now()+Math.random()); }
-function todayISO(){ return new Date().toISOString().slice(0,10); }
+function todayISO(){
+  const d=new Date();
+  const y=d.getFullYear();
+  const m=String(d.getMonth()+1).padStart(2,'0');
+  const day=String(d.getDate()).padStart(2,'0');
+  return `${y}-${m}-${day}`;
+}
 function fmt(d){ if(!d) return '—'; const x=new Date(d+'T12:00:00'); return x.toLocaleDateString('tr-TR'); }
 function petById(id){ return state.pets.find(p=>p.id===id); }
 
@@ -1586,7 +1592,7 @@ window.addEventListener('DOMContentLoaded',()=>{
   }
   async function getPushWorker(){
     if(!('serviceWorker' in navigator)) throw new Error('Service Worker desteklenmiyor');
-    const reg=await navigator.serviceWorker.register('./sw-notifications.js?v=2115',{scope:'./'});
+    const reg=await navigator.serviceWorker.register('./sw-notifications.js?v=2116',{scope:'./'});
     try{ await reg.update(); }catch(e){}
     return await navigator.serviceWorker.ready;
   }
