@@ -1,4 +1,4 @@
-const PK_SW_VERSION = '2.116';
+const PK_SW_VERSION = '2.117';
 
 self.addEventListener('install', () => {
   self.skipWaiting();

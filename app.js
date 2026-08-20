@@ -560,7 +560,7 @@ function renderHealth(){
   const lastVaccine=lastOf('vaccine');
   const lastInternal=lastOf('internal');
   const lastExternal=lastOf('external');
-  const activeMed=state.meds.find(m=>{
+  const activeMed=[...state.meds].reverse().find(m=>{
     if(m.petId!==selectedPetId) return false;
     const today=new Date(todayISO()+'T00:00:00');
     const start=new Date(m.start+'T00:00:00');
