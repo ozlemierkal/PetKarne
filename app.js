@@ -1592,13 +1592,11 @@ window.addEventListener('DOMContentLoaded',()=>{
   }
   async function getPushWorker(){
     if(!('serviceWorker' in navigator)) throw new Error('Service Worker desteklenmiyor');
-    const reg=await navigator.serviceWorker.register('./sw-notifications.js?v=2118',{scope:'./'});
+    const reg=await navigator.serviceWorker.register('./sw-notifications.js?v=2119',{scope:'./'});
     try{ await reg.update(); }catch(e){}
     return await navigator.serviceWorker.ready;
   }
   async function saveSubscriptionToSupabase(sub){
-    const key=pkSupabaseKey();
-    if(!key) throw new Error('Önce Supabase bağlantısını kur');
     const j=sub.toJSON();
     const row={
       device_id:pkSupabaseDeviceId(),
@@ -1608,12 +1606,38 @@ window.addEventListener('DOMContentLoaded',()=>{
       enabled:true,
       updated_at:new Date().toISOString()
     };
-    const res=await fetch(`${PK_SUPABASE_URL}/rest/v1/push_subscriptions?on_conflict=endpoint`,{
+
+    // Eski/bağlı cihazlarda mevcut REST yolu korunur.
+    const key=pkSupabaseKey();
+    if(key){
+      const res=await fetch(`${PK_SUPABASE_URL}/rest/v1/push_subscriptions?on_conflict=endpoint`,{
+        method:'POST',
+        headers:pkSupabaseHeaders({'Prefer':'resolution=merge-duplicates,return=minimal'}),
+        body:JSON.stringify(row)
+      });
+      if(!res.ok) throw new Error(`Supabase ${res.status}`);
+      return;
+    }
+
+    // Yeni cihaz: kullanıcıya teknik Supabase anahtarı sormadan
+    // aboneliği send-push Edge Function üzerinden kaydet.
+    const res=await fetch(`${PK_SUPABASE_URL}/functions/v1/send-push`,{
       method:'POST',
-      headers:pkSupabaseHeaders({'Prefer':'resolution=merge-duplicates,return=minimal'}),
-      body:JSON.stringify(row)
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        action:'register-subscription',
+        device_id:row.device_id,
+        subscription:{
+          endpoint:row.endpoint,
+          keys:{p256dh:row.p256dh,auth:row.auth}
+        }
+      })
     });
-    if(!res.ok) throw new Error(`Supabase ${res.status}`);
+    let data={};
+    try{ data=await res.json(); }catch(e){}
+    if(!res.ok || data.ok===false){
+      throw new Error(data.error||`Bildirim bağlantısı kurulamadı (${res.status})`);
+    }
   }
   async function enablePush(){
     const btn=document.getElementById('enablePushBtn'); if(btn) btn.disabled=true;
@@ -1644,8 +1668,8 @@ window.addEventListener('DOMContentLoaded',()=>{
         setPushStatus('Bildirimler Kapalı');
         alert('Bildirim izni kapalı. iPhone/iPad Ayarlar > Bildirimler > PetKarnem bölümünden bildirimlere izin verebilirsin.');
       }else{
-        setPushStatus('Hata');
-        alert(err?.message||'Bildirim aboneliği oluşturulamadı.');
+        setPushStatus('Bağlantı Kurulamadı');
+        alert(err?.message||'Bildirim bağlantısı kurulamadı. Lütfen biraz sonra tekrar dene.');
       }
     }finally{if(btn) btn.disabled=false;}
   }
