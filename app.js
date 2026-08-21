@@ -1592,7 +1592,7 @@ window.addEventListener('DOMContentLoaded',()=>{
   }
   async function getPushWorker(){
     if(!('serviceWorker' in navigator)) throw new Error('Service Worker desteklenmiyor');
-    const reg=await navigator.serviceWorker.register('./sw-notifications.js?v=2120',{scope:'./'});
+    const reg=await navigator.serviceWorker.register('./sw-notifications.js?v=2121',{scope:'./'});
     try{ await reg.update(); }catch(e){}
     return await navigator.serviceWorker.ready;
   }
@@ -1639,78 +1639,51 @@ window.addEventListener('DOMContentLoaded',()=>{
       throw new Error(data.error||`Bildirim bağlantısı kurulamadı (${res.status})`);
     }
   }
-  async function enablePush(){
-    const btn=document.getElementById('enablePushBtn'); if(btn) btn.disabled=true;
-    try{
-      if(!('PushManager' in window) || !('Notification' in window)) throw new Error('Bu cihaz bildirimleri desteklemiyor');
-      let perm=Notification.permission;
-      if(perm!=='granted') perm=await Notification.requestPermission();
-
-      if(perm!=='granted'){
-        setPushStatus('Bildirimler Kapalı');
-        alert(
-          perm==='denied'
-            ? 'Bildirim izni kapalı. iPhone/iPad Ayarlar > Bildirimler > PetKarnem bölümünden bildirimlere izin verebilirsin.'
-            : 'Bildirim izni verilmedi.'
-        );
-        return;
-      }
-
-      const reg=await getPushWorker();
-      let sub=await reg.pushManager.getSubscription();
-      if(!sub) sub=await reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:b64ToUint8Array(PK_VAPID_PUBLIC_KEY)});
-      await saveSubscriptionToSupabase(sub);
-      setPushStatus('Açık',true);
-      alert('Bildirimler açıldı.');
-    }catch(err){
-      console.error('PetKarnem push subscribe',err);
-      if('Notification' in window && Notification.permission==='denied'){
-        setPushStatus('Bildirimler Kapalı');
-        alert('Bildirim izni kapalı. iPhone/iPad Ayarlar > Bildirimler > PetKarnem bölümünden bildirimlere izin verebilirsin.');
-      }else{
-        setPushStatus('Bağlantı Kurulamadı');
-        alert(err?.message||'Bildirim bağlantısı kurulamadı. Lütfen biraz sonra tekrar dene.');
-      }
-    }finally{if(btn) btn.disabled=false;}
-  }
-  async function disablePush(){
-    try{
-      const reg=await getPushWorker();
-      const sub=await reg.pushManager.getSubscription();
-      if(sub){
-        const endpoint=sub.endpoint;
-        await sub.unsubscribe();
-        const key=pkSupabaseKey();
-        if(key) await fetch(`${PK_SUPABASE_URL}/rest/v1/push_subscriptions?endpoint=eq.${encodeURIComponent(endpoint)}`,{method:'PATCH',headers:pkSupabaseHeaders({'Prefer':'return=minimal'}),body:JSON.stringify({enabled:false,updated_at:new Date().toISOString()})});
-      }
-      setPushStatus('Kapalı');
-    }catch(err){console.error(err);setPushStatus('Hata');}
-  }
-  async function refreshPushStatus(){
+  async function ensurePushSubscription(){
     try{
       if(!('PushManager' in window) || !('Notification' in window)){
         setPushStatus('Desteklenmiyor');
         return;
       }
-      const permission=Notification.permission;
-      if(permission!=='granted'){
+
+      // PetKarnem artık kullanıcıdan uygulama içinde izin istemez.
+      // Cihaz ayarında izin açıksa aboneliği otomatik olarak hazırlar/kaydeder.
+      if(Notification.permission!=='granted'){
         setPushStatus('Kapalı');
         return;
       }
+
       const reg=await getPushWorker();
-      const sub=await reg.pushManager.getSubscription();
-      setPushStatus(sub?'Açık':'Kapalı',!!sub);
-    }catch{
+      let sub=await reg.pushManager.getSubscription();
+      if(!sub){
+        sub=await reg.pushManager.subscribe({
+          userVisibleOnly:true,
+          applicationServerKey:b64ToUint8Array(PK_VAPID_PUBLIC_KEY)
+        });
+      }
+
+      await saveSubscriptionToSupabase(sub);
+      setPushStatus('Açık',true);
+    }catch(err){
+      console.error('PetKarnem automatic push sync',err);
       setPushStatus('Kapalı');
     }
   }
+
+  async function refreshPushStatus(){
+    await ensurePushSubscription();
+  }
+
   function bindPush(){
-    const a=document.getElementById('enablePushBtn'), d=document.getElementById('disablePushBtn');
-    if(a&&!a.dataset.bound){a.dataset.bound='1';a.addEventListener('click',enablePush);}
-    if(d&&!d.dataset.bound){d.dataset.bound='1';d.addEventListener('click',disablePush);}
     refreshPushStatus();
   }
   const prev=renderAll;
   renderAll=function(){prev();bindPush();};
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',bindPush,{once:true});else bindPush();
+
+  // iPhone/iPad Ayarlar ekranından uygulamaya dönüldüğünde durumu hemen yenile.
+  document.addEventListener('visibilitychange',()=>{
+    if(document.visibilityState==='visible') refreshPushStatus();
+  });
+  window.addEventListener('pageshow',()=>refreshPushStatus());
 })();
