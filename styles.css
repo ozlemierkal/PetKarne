@@ -2025,3 +2025,17 @@ button.primary.smallbtn:not(:disabled){
   appearance:none !important;
   -webkit-appearance:none !important;
 }
+
+/* v2.122 — Ana Sayfa yaklaşan plan açıklaması */
+.refUpcomingDetail{
+  display:block;
+  margin-top:2px;
+  color:var(--muted);
+  font-size:13px;
+  font-weight:500;
+  line-height:1.25;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  max-width:100%;
+}

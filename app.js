@@ -522,9 +522,17 @@ function renderPets(){
     const title=r.type==='appointment'?'Veteriner Randevusu':
                 r.type==='vaccine'?(r.title||'Aşı'):
                 r.type==='internal'?'İç Parazit':'Dış Parazit';
+    const detailText = r.type==='appointment'
+      ? ''
+      : (r.title && r.title!==title ? r.title : '');
+
     return `<div class="refUpcomingCard">
       <div class="refUpcomingIcon ${cls}">${emoji}</div>
-      <div class="refUpcomingText"><b>${p?.name||''} – ${title}</b><span>${fmt(r.next)}${r.time?' • '+r.time:''}</span></div>
+      <div class="refUpcomingText">
+        <b>${p?.name||''} – ${title}</b>
+        ${detailText?`<small class="refUpcomingDetail">${detailText}</small>`:''}
+        <span>${fmt(r.next)}${r.time?' • '+r.time:''}</span>
+      </div>
       <em>${days===0?'Bugün':`${days} gün kaldı`}</em>
     </div>`;
   }).join(''):'<div class="refUpcomingEmpty">Henüz yaklaşan kayıt yok.</div>';
@@ -1592,7 +1600,7 @@ window.addEventListener('DOMContentLoaded',()=>{
   }
   async function getPushWorker(){
     if(!('serviceWorker' in navigator)) throw new Error('Service Worker desteklenmiyor');
-    const reg=await navigator.serviceWorker.register('./sw-notifications.js?v=2121',{scope:'./'});
+    const reg=await navigator.serviceWorker.register('./sw-notifications.js?v=2122',{scope:'./'});
     try{ await reg.update(); }catch(e){}
     return await navigator.serviceWorker.ready;
   }
