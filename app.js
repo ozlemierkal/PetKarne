@@ -1592,7 +1592,7 @@ window.addEventListener('DOMContentLoaded',()=>{
   }
   async function getPushWorker(){
     if(!('serviceWorker' in navigator)) throw new Error('Service Worker desteklenmiyor');
-    const reg=await navigator.serviceWorker.register('./sw-notifications.js?v=2119',{scope:'./'});
+    const reg=await navigator.serviceWorker.register('./sw-notifications.js?v=2120',{scope:'./'});
     try{ await reg.update(); }catch(e){}
     return await navigator.serviceWorker.ready;
   }
@@ -1692,15 +1692,16 @@ window.addEventListener('DOMContentLoaded',()=>{
         setPushStatus('Desteklenmiyor');
         return;
       }
-      if(Notification.permission==='denied'){
-        setPushStatus('Bildirimler Kapalı');
+      const permission=Notification.permission;
+      if(permission!=='granted'){
+        setPushStatus('Kapalı');
         return;
       }
       const reg=await getPushWorker();
       const sub=await reg.pushManager.getSubscription();
       setPushStatus(sub?'Açık':'Kapalı',!!sub);
     }catch{
-      setPushStatus('Desteklenmiyor');
+      setPushStatus('Kapalı');
     }
   }
   function bindPush(){
