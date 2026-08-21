@@ -1592,7 +1592,7 @@ window.addEventListener('DOMContentLoaded',()=>{
   }
   async function getPushWorker(){
     if(!('serviceWorker' in navigator)) throw new Error('Service Worker desteklenmiyor');
-    const reg=await navigator.serviceWorker.register('./sw-notifications.js?v=2116',{scope:'./'});
+    const reg=await navigator.serviceWorker.register('./sw-notifications.js?v=2118',{scope:'./'});
     try{ await reg.update(); }catch(e){}
     return await navigator.serviceWorker.ready;
   }
@@ -1621,7 +1621,17 @@ window.addEventListener('DOMContentLoaded',()=>{
       if(!('PushManager' in window) || !('Notification' in window)) throw new Error('Bu cihaz bildirimleri desteklemiyor');
       let perm=Notification.permission;
       if(perm!=='granted') perm=await Notification.requestPermission();
-      if(perm!=='granted') throw new Error('Bildirim izni verilmedi');
+
+      if(perm!=='granted'){
+        setPushStatus('Bildirimler Kapalı');
+        alert(
+          perm==='denied'
+            ? 'Bildirim izni kapalı. iPhone/iPad Ayarlar > Bildirimler > PetKarnem bölümünden bildirimlere izin verebilirsin.'
+            : 'Bildirim izni verilmedi.'
+        );
+        return;
+      }
+
       const reg=await getPushWorker();
       let sub=await reg.pushManager.getSubscription();
       if(!sub) sub=await reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:b64ToUint8Array(PK_VAPID_PUBLIC_KEY)});
@@ -1630,8 +1640,13 @@ window.addEventListener('DOMContentLoaded',()=>{
       alert('Bildirimler açıldı.');
     }catch(err){
       console.error('PetKarnem push subscribe',err);
-      setPushStatus('Hata');
-      alert(err?.message||'Bildirim aboneliği oluşturulamadı.');
+      if('Notification' in window && Notification.permission==='denied'){
+        setPushStatus('Bildirimler Kapalı');
+        alert('Bildirim izni kapalı. iPhone/iPad Ayarlar > Bildirimler > PetKarnem bölümünden bildirimlere izin verebilirsin.');
+      }else{
+        setPushStatus('Hata');
+        alert(err?.message||'Bildirim aboneliği oluşturulamadı.');
+      }
     }finally{if(btn) btn.disabled=false;}
   }
   async function disablePush(){
@@ -1648,7 +1663,21 @@ window.addEventListener('DOMContentLoaded',()=>{
     }catch(err){console.error(err);setPushStatus('Hata');}
   }
   async function refreshPushStatus(){
-    try{const reg=await getPushWorker();const sub=await reg.pushManager.getSubscription();setPushStatus(sub?'Açık':'Kapalı',!!sub);}catch{setPushStatus('Desteklenmiyor');}
+    try{
+      if(!('PushManager' in window) || !('Notification' in window)){
+        setPushStatus('Desteklenmiyor');
+        return;
+      }
+      if(Notification.permission==='denied'){
+        setPushStatus('Bildirimler Kapalı');
+        return;
+      }
+      const reg=await getPushWorker();
+      const sub=await reg.pushManager.getSubscription();
+      setPushStatus(sub?'Açık':'Kapalı',!!sub);
+    }catch{
+      setPushStatus('Desteklenmiyor');
+    }
   }
   function bindPush(){
     const a=document.getElementById('enablePushBtn'), d=document.getElementById('disablePushBtn');

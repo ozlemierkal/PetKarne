@@ -1993,3 +1993,35 @@ button.primary.smallbtn:not(:disabled){
 /* v2.116 — Profil markası */
 .pkProfileBrandCard{display:flex;align-items:center;gap:14px}
 .pkProfileBrandLogo{width:68px;height:68px;object-fit:cover;border-radius:18px;flex:0 0 68px}
+
+/* v2.118 — iPhone/iPad modal kapatma butonu */
+.modalHead{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+}
+.modalHead h3{
+  min-width:0;
+  margin-right:8px;
+}
+.modalCloseBtn{
+  width:40px !important;
+  height:40px !important;
+  min-width:40px !important;
+  min-height:40px !important;
+  flex:0 0 40px !important;
+  display:grid !important;
+  place-items:center !important;
+  padding:0 !important;
+  margin:0 !important;
+  border:1px solid var(--line) !important;
+  border-radius:50% !important;
+  background:#fff !important;
+  color:var(--text) !important;
+  font-size:20px !important;
+  line-height:1 !important;
+  box-sizing:border-box !important;
+  appearance:none !important;
+  -webkit-appearance:none !important;
+}
