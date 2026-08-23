@@ -2067,3 +2067,10 @@ button.primary.smallbtn:not(:disabled){
   margin-top:2px;padding:12px 14px;border-radius:14px;background:#eef7f2;
   font-size:13px;line-height:1.45;color:#49645a;
 }
+
+/* v2.123 — Ana Sayfa hızlı rehber */
+.pkHomeGuideBtn{
+  margin-top:9px;border:0;background:#eef7f2;color:#49645a;border-radius:999px;
+  padding:7px 11px;font:inherit;font-size:12px;font-weight:700;white-space:nowrap;
+}
+.pkHomeGuideBtn:active{transform:scale(.98)}

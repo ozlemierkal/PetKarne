@@ -1254,6 +1254,8 @@ function openUsageGuide(){
 }
 
 function bindProfileSettings(){
+  const homeGuide=$('#openHomeUsageGuideBtn');
+  if(homeGuide&&!homeGuide.dataset.bound){homeGuide.dataset.bound='1';homeGuide.onclick=openUsageGuide;}
   const guide=$('#openUsageGuideBtn');
   if(guide&&!guide.dataset.bound){guide.dataset.bound='1';guide.onclick=openUsageGuide;}
   const save=$('#saveProfileBtn');
@@ -1614,7 +1616,7 @@ window.addEventListener('DOMContentLoaded',()=>{
   }
   async function getPushWorker(){
     if(!('serviceWorker' in navigator)) throw new Error('Service Worker desteklenmiyor');
-    const reg=await navigator.serviceWorker.register('./sw-notifications.js?v=2123',{scope:'./'});
+    const reg=await navigator.serviceWorker.register('./sw-notifications.js?v=21231',{scope:'./'});
     try{ await reg.update(); }catch(e){}
     return await navigator.serviceWorker.ready;
   }
