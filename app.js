@@ -1241,7 +1241,21 @@ function renderProfile(){
       <div class="petmeta"><div class="petname">${p.name}</div><div class="muted">${p.type==='cat'?'Kedi':'Köpek'} • ${p.sex}</div></div><div>›</div>
     </div>`).join(''):'<div class="card empty">Henüz bir pet eklenmedi.</div>';
 }
+function openUsageGuide(){
+  openInfoModal('Nasıl Kullanılır?',`
+    <div class="pkUsageGuide">
+      <div class="pkGuideStep"><span>🐾</span><div><b>Dostunu ekle</b><p>Kedi veya köpeğinin temel bilgilerini kaydet.</p></div></div>
+      <div class="pkGuideStep"><span>💉</span><div><b>Sağlık kayıtlarını gir</b><p>Aşı, iç/dış parazit, ilaç ve kilo bilgilerini ekle. Sonraki uygulama tarihini girersen PetKarnem takvimine ekler.</p></div></div>
+      <div class="pkGuideStep"><span>🩺</span><div><b>Randevunu planla</b><p>Veteriner randevunu tarih ve saatiyle kaydet, istersen hatırlatma seç.</p></div></div>
+      <div class="pkGuideStep"><span>🔔</span><div><b>Bildirimlerini açık tut</b><p>Hatırlatmaları alabilmek için cihazında PetKarnem bildirimlerinin açık olduğundan emin ol.</p></div></div>
+      <div class="pkGuideTip">Yaklaşan işlemler Ana Sayfa ve Takvim’de görünür; tamamlanan veteriner ziyaretleri Sağlık Geçmişi’nde saklanır.</div>
+    </div>
+  `);
+}
+
 function bindProfileSettings(){
+  const guide=$('#openUsageGuideBtn');
+  if(guide&&!guide.dataset.bound){guide.dataset.bound='1';guide.onclick=openUsageGuide;}
   const save=$('#saveProfileBtn');
   if(save&&!save.dataset.bound){save.dataset.bound='1';save.onclick=()=>{state.profile={name:$('#profileName').value.trim(),email:$('#profileEmail').value.trim(),phone:$('#profilePhone').value.trim()};saveState();alert('Profil bilgileri kaydedildi.');};}
   const rem=$('#defaultReminder');
@@ -1600,7 +1614,7 @@ window.addEventListener('DOMContentLoaded',()=>{
   }
   async function getPushWorker(){
     if(!('serviceWorker' in navigator)) throw new Error('Service Worker desteklenmiyor');
-    const reg=await navigator.serviceWorker.register('./sw-notifications.js?v=2122',{scope:'./'});
+    const reg=await navigator.serviceWorker.register('./sw-notifications.js?v=2123',{scope:'./'});
     try{ await reg.update(); }catch(e){}
     return await navigator.serviceWorker.ready;
   }

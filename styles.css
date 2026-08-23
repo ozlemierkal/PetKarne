@@ -2026,7 +2026,7 @@ button.primary.smallbtn:not(:disabled){
   -webkit-appearance:none !important;
 }
 
-/* v2.122 — Ana Sayfa yaklaşan plan açıklaması */
+/* v2.123 — Ana Sayfa yaklaşan plan açıklaması */
 .refUpcomingDetail{
   display:block;
   margin-top:2px;
@@ -2038,4 +2038,32 @@ button.primary.smallbtn:not(:disabled){
   overflow:hidden;
   text-overflow:ellipsis;
   max-width:100%;
+}
+
+/* v2.123 — Profil mini kullanım rehberi */
+.pkGuideOpen{
+  width:100%;border:0;background:transparent;padding:2px 0;display:flex;
+  align-items:center;gap:12px;text-align:left;color:inherit;font:inherit;
+}
+.pkGuideOpenIcon{
+  width:42px;height:42px;border-radius:14px;display:grid;place-items:center;
+  background:#f3f7f5;font-size:22px;flex:0 0 auto;
+}
+.pkGuideOpen span:nth-child(2){display:flex;flex-direction:column;gap:3px;flex:1;min-width:0}
+.pkGuideOpen small{color:var(--muted);font-size:13px;font-weight:500}
+.pkGuideOpen strong{font-size:25px;font-weight:400;color:var(--muted)}
+.pkUsageGuide{display:grid;gap:10px}
+.pkGuideStep{
+  display:flex;gap:12px;align-items:flex-start;padding:14px;border-radius:16px;
+  background:#f7f9f8;
+}
+.pkGuideStep>span{
+  width:38px;height:38px;border-radius:12px;background:#fff;display:grid;
+  place-items:center;font-size:20px;flex:0 0 auto;
+}
+.pkGuideStep b{display:block;margin:1px 0 4px}
+.pkGuideStep p{margin:0;color:var(--muted);font-size:14px;line-height:1.4}
+.pkGuideTip{
+  margin-top:2px;padding:12px 14px;border-radius:14px;background:#eef7f2;
+  font-size:13px;line-height:1.45;color:#49645a;
 }
