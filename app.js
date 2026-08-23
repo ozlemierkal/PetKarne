@@ -670,7 +670,16 @@ function renderHealth(){
 
   const recs=state.records.filter(r=>r.petId===selectedPetId && (['vaccine','internal','external'].includes(r.type) || (r.type==='appointment' && r.done===true))).map(r=>({...r,category:r.type}));
   const weights=state.weights.filter(r=>r.petId===selectedPetId).map(w=>({title:`Kilo • ${w.value} kg`,date:w.date,type:'weight',category:'weight'}));
-  const meds=state.meds.filter(r=>r.petId===selectedPetId).map(m=>({title:`İlaç • ${m.name}`,date:m.start,type:'med',category:'med'}));
+  const meds=state.meds.filter(r=>r.petId===selectedPetId).map(m=>({
+    title:m.name||'İlaç',
+    date:m.start,
+    type:'med',
+    category:'med',
+    dose:m.dose||'',
+    times:m.times||'',
+    days:Number(m.days)||1,
+    reminder:m.reminder===true
+  }));
 
   let all=[...recs,...weights,...meds].sort((a,b)=>(b.date||b.next||'').localeCompare(a.date||a.next||''));
   if(healthHistoryFilter!=='all') all=all.filter(r=>r.category===healthHistoryFilter);
@@ -680,6 +689,24 @@ function renderHealth(){
     const displayTitle=r.type==='appointment'?'Veteriner Ziyareti':r.title;
     const when=`${fmt(r.date||r.next)}${r.type==='appointment'&&r.time?' • '+r.time:(r.next&&r.date?` • Sonraki ${fmt(r.next)}`:'')}`;
     const note=r.note?`<div class="healthHistoryNote" style="margin-top:7px">📝 ${r.note}</div>`:'';
+
+    if(r.type==='med'){
+      const timeList=(r.times||'').split(',').map(x=>x.trim()).filter(Boolean);
+      const medMeta=[
+        r.dose?`Doz: ${r.dose}`:'',
+        `Süre: ${r.days||1} gün`
+      ].filter(Boolean).join(' • ');
+      const medTimes=timeList.length?`Saatler: ${timeList.join(' • ')}`:'Saat: Belirtilmedi';
+      const medReminder=r.reminder?'🔔 Hatırlatma açık':'🔕 Hatırlatma kapalı';
+      return `<div class="card">
+        <b>💊 İlaç • ${displayTitle}</b>
+        <div class="muted">Başlangıç: ${fmt(r.date)}</div>
+        <div class="muted">${medMeta}</div>
+        <div class="muted">${medTimes}</div>
+        <div class="muted">${medReminder}</div>
+      </div>`;
+    }
+
     return `<div class="card"><b>${label} • ${displayTitle}</b><div class="muted">${when}</div>${note}</div>`;
   }).join(''):'<div class="card empty">Bu kategoride henüz kayıt yok.</div>';
 }
@@ -1015,7 +1042,7 @@ function renderCalendar(){
       : r.type==='appointment' && appointmentHasPassed(r)
       ? {key:'overdue',label:'SAATİ GEÇTİ'}
       : r.diff<0
-      ? {key:'overdue',label:`${Math.abs(r.diff)} GÜN GECİKTİ`}
+      ? {key:'overdue',label:'GEÇMİŞ'}
       : r.diff===0
       ? {key:'today',label:'BUGÜN'}
       : r.diff<=7
@@ -1329,7 +1356,7 @@ function pkDueStatus(dateStr){
   const due=new Date(String(dateStr).slice(0,10)+'T00:00:00');
   if(Number.isNaN(due.getTime())) return {key:'normal',label:'',diff:null};
   const diff=Math.round((due-today)/86400000);
-  if(diff<0) return {key:'overdue',label:`${Math.abs(diff)} GÜN GECİKTİ`,diff};
+  if(diff<0) return {key:'overdue',label:'GEÇMİŞ',diff};
   if(diff===0) return {key:'today',label:'BUGÜN',diff};
   if(diff<=7) return {key:'soon',label:`${diff} GÜN KALDI`,diff};
   return {key:'normal',label:'',diff};
@@ -1616,7 +1643,7 @@ window.addEventListener('DOMContentLoaded',()=>{
   }
   async function getPushWorker(){
     if(!('serviceWorker' in navigator)) throw new Error('Service Worker desteklenmiyor');
-    const reg=await navigator.serviceWorker.register('./sw-notifications.js?v=21231',{scope:'./'});
+    const reg=await navigator.serviceWorker.register('./sw-notifications.js?v=21241',{scope:'./'});
     try{ await reg.update(); }catch(e){}
     return await navigator.serviceWorker.ready;
   }

@@ -2026,7 +2026,7 @@ button.primary.smallbtn:not(:disabled){
   -webkit-appearance:none !important;
 }
 
-/* v2.123 — Ana Sayfa yaklaşan plan açıklaması */
+/* v2.124 — Ana Sayfa yaklaşan plan açıklaması */
 .refUpcomingDetail{
   display:block;
   margin-top:2px;
@@ -2040,7 +2040,7 @@ button.primary.smallbtn:not(:disabled){
   max-width:100%;
 }
 
-/* v2.123 — Profil mini kullanım rehberi */
+/* v2.124 — Profil mini kullanım rehberi */
 .pkGuideOpen{
   width:100%;border:0;background:transparent;padding:2px 0;display:flex;
   align-items:center;gap:12px;text-align:left;color:inherit;font:inherit;
@@ -2068,7 +2068,7 @@ button.primary.smallbtn:not(:disabled){
   font-size:13px;line-height:1.45;color:#49645a;
 }
 
-/* v2.123 — Ana Sayfa hızlı rehber */
+/* v2.124 — Ana Sayfa hızlı rehber */
 .pkHomeGuideBtn{
   margin-top:9px;border:0;background:#eef7f2;color:#49645a;border-radius:999px;
   padding:7px 11px;font:inherit;font-size:12px;font-weight:700;white-space:nowrap;
