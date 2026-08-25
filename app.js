@@ -1292,25 +1292,51 @@ function pkCreateBackup(){
   }catch(err){ console.error('PetKarnem backup:',err); alert('Yedek oluşturulamadı. Lütfen tekrar dene.'); }
 }
 async function pkRestoreBackupFile(file){
-  if(!file) return;
+  if(!file) return false;
   try{
     const parsed=JSON.parse(await file.text());
-    if(parsed?.app!=='PetKarnem'||!parsed?.data||!Array.isArray(parsed.data.pets)) throw new Error('invalid backup');
-    if(!confirm('Bu işlem mevcut PetKarnem verilerinin yerine seçtiğin yedeği yükleyecek. Devam edilsin mi?')) return;
-    const restored=parsed.data;
-    for(const k of ['pets','records','vets','meds','weights','docs']) if(!Array.isArray(restored[k])) restored[k]=[];
-    restored.profile=(restored.profile&&typeof restored.profile==='object')?restored.profile:{name:'',email:'',phone:''};
-    restored.settings=(restored.settings&&typeof restored.settings==='object')?restored.settings:{defaultReminder:1,repeatOverdue:true};
-    state=restored; normalizeState(); selectedPetId=state.pets[0]?.id||null;
-    localStorage.setItem(storeKey,JSON.stringify(state)); renderAll(); pkQueueCalendarSync(); pkQueueMedicationSync();
+    if(parsed?.app!=='PetKarnem'||!parsed?.data||!Array.isArray(parsed.data.pets)) throw new Error('invalid');
+
+    const r=parsed.data;
+    for(const k of ['pets','records','vets','meds','weights','docs']) if(!Array.isArray(r[k])) r[k]=[];
+    r.profile=(r.profile&&typeof r.profile==='object')?r.profile:{name:'',email:'',phone:''};
+    r.settings=(r.settings&&typeof r.settings==='object')?r.settings:{defaultReminder:1,repeatOverdue:true};
+
+    state=r;
+    normalizeState();
+    selectedPetId=state.pets[0]?.id||null;
+    localStorage.setItem(storeKey,JSON.stringify(state));
+    renderAll();
+    pkQueueCalendarSync();
+    pkQueueMedicationSync();
+
     alert('PetKarnem yedeğin başarıyla geri yüklendi.');
-  }catch(err){ console.error('PetKarnem restore:',err); alert('Bu dosya geçerli bir PetKarnem yedeği değil.'); }
+    return true;
+  }catch(e){
+    console.error('PetKarnem restore:',e);
+    alert('Bu dosya geçerli bir PetKarnem yedeği değil.');
+    return false;
+  }
 }
 
 function bindProfileSettings(){
   const backup=$('#backupDataBtn'), restore=$('#restoreDataBtn'), restoreInput=$('#restoreDataInput');
   if(backup&&!backup.dataset.bound){backup.dataset.bound='1';backup.onclick=pkCreateBackup;}
-  if(restore&&restoreInput&&!restore.dataset.bound){restore.dataset.bound='1';restore.onclick=()=>{restoreInput.value='';restoreInput.click();};restoreInput.onchange=()=>pkRestoreBackupFile(restoreInput.files?.[0]);}
+  if(restore&&restoreInput&&!restore.dataset.bound){
+    restore.dataset.bound='1';
+    restore.onclick=()=>{
+      const ok=confirm('Bu işlem mevcut PetKarnem verilerinin yerine seçeceğin yedeği yükleyecek. Devam edilsin mi?');
+      if(!ok) return;
+      restoreInput.value='';
+      restoreInput.click();
+    };
+    restoreInput.onchange=async()=>{
+      const file=restoreInput.files && restoreInput.files[0];
+      if(!file) return;
+      await pkRestoreBackupFile(file);
+      restoreInput.value='';
+    };
+  }
   const homeGuide=$('#openHomeUsageGuideBtn');
   if(homeGuide&&!homeGuide.dataset.bound){homeGuide.dataset.bound='1';homeGuide.onclick=openUsageGuide;}
   const guide=$('#openUsageGuideBtn');
@@ -1673,7 +1699,7 @@ window.addEventListener('DOMContentLoaded',()=>{
   }
   async function getPushWorker(){
     if(!('serviceWorker' in navigator)) throw new Error('Service Worker desteklenmiyor');
-    const reg=await navigator.serviceWorker.register('./sw-notifications.js?v=2125',{scope:'./'});
+    const reg=await navigator.serviceWorker.register('./sw-notifications.js?v=2126',{scope:'./'});
     try{ await reg.update(); }catch(e){}
     return await navigator.serviceWorker.ready;
   }
