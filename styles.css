@@ -2075,5 +2075,12 @@ button.primary.smallbtn:not(:disabled){
 }
 .pkHomeGuideBtn:active{transform:scale(.98)}
 
-/* v2.127 — Manuel yedekleme */
+/* v2.128 — Manuel yedekleme */
 .pkDataAction{width:100%;border:0;background:transparent;padding:5px 0;display:flex;align-items:center;gap:12px;text-align:left;color:inherit;font:inherit}.pkDataAction>span:nth-child(2){display:flex;flex:1;min-width:0;flex-direction:column;gap:3px}.pkDataAction small{color:var(--muted);font-size:12px;font-weight:500;line-height:1.35}.pkDataAction strong{font-size:25px;font-weight:400;color:var(--muted)}.pkDataIcon{width:42px;height:42px;border-radius:14px;background:#f3f7f5;display:grid;place-items:center;font-size:21px;flex:0 0 auto}.pkDataDivider{height:1px;background:rgba(0,0,0,.06);margin:10px 0}.pkDataNote{margin-top:12px;padding:11px 12px;border-radius:13px;background:#eef7f2;color:#49645a;font-size:12px;line-height:1.4}
+
+/* v2.128 — Gizlilik / koşullar */
+.pkDangerAction b{color:#b42318}
+.legalText{line-height:1.55}
+.legalText h3{margin:18px 0 6px;font-size:16px}
+.legalText p{margin:7px 0}
+.legalText a{color:inherit;text-decoration:underline}

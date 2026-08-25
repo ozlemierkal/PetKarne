@@ -1241,6 +1241,69 @@ function renderVet(){
 
 
 
+
+window.pkShowPrivacyPolicy=()=>openInfoModal('Gizlilik Politikası',`
+<div class="legalText">
+<p><b>Son güncelleme: 25 Ağustos 2026</b></p>
+<p>PetKarnem, evcil hayvanlarının sağlık ve bakım bilgilerini düzenlemene yardımcı olmak için tasarlanmıştır.</p>
+<h3>Hangi bilgiler işlenir?</h3>
+<p>Uygulamaya senin girdiğin pet profili, fotoğraf, aşı ve parazit kayıtları, veteriner randevuları/ziyaretleri, ilaç planları, kilo kayıtları, veteriner bilgileri, notlar ve profil bilgileri işlenebilir.</p>
+<h3>Veriler nerede tutulur?</h3>
+<p>PetKarnem'in temel kayıtları öncelikle kullandığın cihazın yerel depolamasında tutulur. Takvim ve ilaç hatırlatmalarının çalışması için gerekli sınırlı planlama verileri ile bildirim aboneliğine ait teknik bilgiler PetKarnem'in Supabase altyapısına gönderilebilir.</p>
+<h3>Bildirimler</h3>
+<p>Hatırlatma seçtiğinde PetKarnem, cihazının bildirim sistemi ve Web Push altyapısını kullanabilir. Bildirim izni cihaz ayarlarından yönetilir.</p>
+<h3>Yedekleme</h3>
+<p>“Yedek Oluştur” özelliğini kullandığında kayıtların bir PetKarnem yedek dosyasına aktarılır. Dosyayı nerede saklayacağını sen seçersin. PetKarnem bu manuel yedek dosyasını senin adına otomatik olarak bir bulut hesabına yüklemez.</p>
+<h3>Veri paylaşımı</h3>
+<p>PetKarnem kişisel verilerini reklam amacıyla satmaz. Teknik hizmetlerin sağlanması için gerekli veriler, yalnızca uygulamanın çalışmasını sağlayan altyapı hizmetleri kapsamında işlenebilir.</p>
+<h3>Verilerini silme</h3>
+<p>Profildeki “Tüm Verilerimi Sil” seçeneğiyle bu cihazdaki PetKarnem kayıtlarını silebilirsin. Manuel olarak oluşturup başka bir yerde sakladığın yedek dosyaları ayrıca kendin silmelisin.</p>
+<h3>İletişim</h3>
+<p>Gizlilik ile ilgili soruların için: <a href="mailto:petkarnem07@gmail.com">petkarnem07@gmail.com</a></p>
+<p class="muted">Bu metin, PetKarnem'in mevcut ücretsiz sürümündeki özelliklere göre hazırlanmıştır. Yeni hesap, bulut senkronizasyonu veya paylaşım özellikleri eklenirse politika güncellenecektir.</p>
+</div>
+`);
+window.pkShowTerms=()=>openInfoModal('Kullanım Koşulları',`
+<div class="legalText">
+<p><b>Son güncelleme: 25 Ağustos 2026</b></p>
+<p>PetKarnem'i kullanarak aşağıdaki koşulları kabul etmiş olursun.</p>
+<h3>Hizmetin amacı</h3>
+<p>PetKarnem; evcil hayvanların aşı, parazit uygulaması, ilaç, kilo, veteriner ve takvim kayıtlarını düzenlemeye yardımcı olan bir takip aracıdır.</p>
+<h3>Veterinerlik hizmeti değildir</h3>
+<p>PetKarnem veteriner hekimlik hizmeti sunmaz; tanı, tedavi veya acil sağlık hizmetinin yerine geçmez. Evcil hayvanının sağlığıyla ilgili kararlar için veteriner hekime başvurmalısın.</p>
+<h3>Kayıtların doğruluğu</h3>
+<p>Uygulamaya girilen bilgilerin, tarihlerinin, ilaç saatlerinin ve hatırlatma tercihlerinin doğruluğundan kullanıcı sorumludur.</p>
+<h3>Hatırlatmalar</h3>
+<p>Bildirimlerin ulaşması cihaz ayarları, internet bağlantısı ve işletim sistemi gibi PetKarnem dışındaki koşullardan etkilenebilir. Kritik sağlık işlemlerinde yalnızca uygulama bildirimlerine güvenilmemelidir.</p>
+<h3>Yedekleme ve veri kaybı</h3>
+<p>Ücretsiz sürümde kayıtların temel olarak cihazında tutulur. Düzenli olarak “Yedek Oluştur” özelliğini kullanman önerilir. Cihazın kaybolması, değiştirilmesi, uygulama/site verilerinin silinmesi veya teknik sorunlar veri kaybına yol açabilir.</p>
+<h3>Değişiklikler</h3>
+<p>PetKarnem'in özellikleri ve bu koşullar zaman içinde güncellenebilir. Önemli değişikliklerde metnin güncel sürümü uygulamada yayımlanır.</p>
+<h3>İletişim</h3>
+<p>Destek ve sorular için: <a href="mailto:petkarnem07@gmail.com">petkarnem07@gmail.com</a></p>
+</div>
+`);
+
+window.pkDeleteAllData=()=>{
+  const first=confirm('Bu cihazdaki tüm PetKarnem kayıtları kalıcı olarak silinecek. Devam edilsin mi?');
+  if(!first) return;
+  const second=confirm('Bu işlem geri alınamaz. Yedeğin yoksa verilerini geri getiremezsin. Tüm veriler silinsin mi?');
+  if(!second) return;
+
+  state=baseState();
+  normalizeState();
+  selectedPetId=null;
+  detailPetId=null;
+  healthHistoryFilter='all';
+  selectedCalendarDate=null;
+  calendarListMode='upcoming';
+  localStorage.setItem(storeKey,JSON.stringify(state));
+  pkQueueCalendarSync();
+  pkQueueMedicationSync();
+  renderAll();
+  alert('Bu cihazdaki PetKarnem kayıtların silindi.');
+};
+
 function renderProfile(){
   normalizeState();
   if($('#profileName')) $('#profileName').value=state.profile.name||'';
@@ -1308,6 +1371,13 @@ async function pkRestoreBackupFile(file){
 }
 
 function bindProfileSettings(){
+  const privacy=$('#privacyPolicyBtn');
+  if(privacy&&!privacy.dataset.bound){privacy.dataset.bound='1';privacy.onclick=pkShowPrivacyPolicy;}
+  const terms=$('#termsBtn');
+  if(terms&&!terms.dataset.bound){terms.dataset.bound='1';terms.onclick=pkShowTerms;}
+  const deleteAll=$('#deleteAllDataBtn');
+  if(deleteAll&&!deleteAll.dataset.bound){deleteAll.dataset.bound='1';deleteAll.onclick=pkDeleteAllData;}
+
   const backup=$('#backupDataBtn'), restore=$('#restoreDataBtn'), restoreInput=$('#restoreDataInput');
   if(backup&&!backup.dataset.bound){backup.dataset.bound='1';backup.onclick=pkCreateBackup;}
   if(restore&&restoreInput&&!restore.dataset.bound){
@@ -1687,7 +1757,7 @@ window.addEventListener('DOMContentLoaded',()=>{
   }
   async function getPushWorker(){
     if(!('serviceWorker' in navigator)) throw new Error('Service Worker desteklenmiyor');
-    const reg=await navigator.serviceWorker.register('./sw-notifications.js?v=2127',{scope:'./'});
+    const reg=await navigator.serviceWorker.register('./sw-notifications.js?v=2128',{scope:'./'});
     try{ await reg.update(); }catch(e){}
     return await navigator.serviceWorker.ready;
   }
