@@ -176,18 +176,6 @@ if(resetBtn){
   };
 }
 
-const clearAppointmentTestsBtn=$('#clearAppointmentTestsBtn');
-if(clearAppointmentTestsBtn){
-  clearAppointmentTestsBtn.onclick=()=>{
-    const count=(state.records||[]).filter(r=>r.type==='appointment').length;
-    if(!count){ alert('Silinecek veteriner randevu/ziyaret kaydı yok.'); return; }
-    if(confirm(`${count} veteriner randevu/ziyaret kaydı silinsin mi? Duman profili ve diğer sağlık kayıtları korunacak.`)){
-      state.records=(state.records||[]).filter(r=>r.type!=='appointment');
-      saveState();
-      alert('Veteriner randevu/ziyaret test kayıtları temizlendi.');
-    }
-  };
-}
 
 window.healthAction=function healthAction(type){
   if(!selectedPetId && state.pets.length) selectedPetId=state.pets[0].id;
@@ -1699,7 +1687,7 @@ window.addEventListener('DOMContentLoaded',()=>{
   }
   async function getPushWorker(){
     if(!('serviceWorker' in navigator)) throw new Error('Service Worker desteklenmiyor');
-    const reg=await navigator.serviceWorker.register('./sw-notifications.js?v=2126',{scope:'./'});
+    const reg=await navigator.serviceWorker.register('./sw-notifications.js?v=2127',{scope:'./'});
     try{ await reg.update(); }catch(e){}
     return await navigator.serviceWorker.ready;
   }
