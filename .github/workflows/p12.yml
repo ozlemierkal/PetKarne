@@ -1,0 +1,26 @@
+name: Create Apple Distribution P12
+
+on:
+  workflow_dispatch:
+
+jobs:
+  create-p12:
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Create P12
+        run: |
+          openssl pkcs12 -export \
+            -inkey distribution \
+            -in distribution.cer \
+            -out distribution.p12 \
+            -passout pass:PetKarnem2026
+
+      - name: Upload P12
+        uses: actions/upload-artifact@v4
+        with:
+          name: PetKarnem-Distribution-P12
+          path: distribution.p12
