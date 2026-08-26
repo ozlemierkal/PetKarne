@@ -1,0 +1,56 @@
+name: PetKarnem iOS Build Test
+
+on:
+  workflow_dispatch:
+
+jobs:
+  ios-build-test:
+    runs-on: macos-latest
+
+    steps:
+      - name: Get PetKarnem code
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Create Capacitor project
+        run: |
+          mkdir ios-wrapper
+          cd ios-wrapper
+
+          npm init -y
+          npm install @capacitor/core @capacitor/cli @capacitor/ios
+
+          mkdir www
+
+          cp ../index.html www/
+          cp ../app.js www/
+          cp ../styles.css www/
+          cp ../manifest.webmanifest www/
+          cp ../sw.js www/ || true
+          cp ../sw-notifications.js www/ || true
+
+          find .. -maxdepth 1 \( -name "*.jpg" -o -name "*.jpeg" -o -name "*.png" -o -name "*.svg" -o -name "*.html" -o -name "*.json" \) -exec cp {} www/ \;
+
+          npx cap init PetKarnem com.petkarnem.app --web-dir=www
+          npx cap add ios
+
+      - name: Build iOS simulator version
+        run: |
+          cd ios-wrapper
+          xcodebuild \
+            -workspace ios/App/App.xcworkspace \
+            -scheme App \
+            -configuration Debug \
+            -sdk iphonesimulator \
+            CODE_SIGNING_ALLOWED=NO \
+            build
+
+      - name: Save generated iOS project
+        uses: actions/upload-artifact@v4
+        with:
+          name: PetKarnem-iOS-Test
+          path: ios-wrapper/ios
