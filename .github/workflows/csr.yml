@@ -1,0 +1,47 @@
+name: Create Apple Distribution CSR
+
+on:
+  workflow_dispatch:
+
+jobs:
+  create-csr:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Create encrypted private key
+        env:
+          CERT_KEY_PASSWORD: ${{ secrets.CERT_KEY_PASSWORD }}
+        run: |
+          if [ -z "$CERT_KEY_PASSWORD" ]; then
+            echo "CERT_KEY_PASSWORD secret is missing."
+            exit 1
+          fi
+
+          openssl genrsa \
+            -aes256 \
+            -passout env:CERT_KEY_PASSWORD \
+            -out distribution.key 2048
+
+      - name: Create Certificate Signing Request
+        env:
+          CERT_KEY_PASSWORD: ${{ secrets.CERT_KEY_PASSWORD }}
+        run: |
+          openssl req \
+            -new \
+            -key distribution.key \
+            -passin env:CERT_KEY_PASSWORD \
+            -out PetKarnem.certSigningRequest \
+            -subj "/CN=PetKarnem Distribution/O=PetKarnem/C=TR"
+
+      - name: Package signing files
+        run: |
+          mkdir signing-files
+          cp PetKarnem.certSigningRequest signing-files/
+          cp distribution.key signing-files/
+
+      - name: Upload CSR and encrypted private key
+        uses: actions/upload-artifact@v4
+        with:
+          name: PetKarnem-Apple-Signing-Files
+          path: signing-files/
+          retention-days: 1
