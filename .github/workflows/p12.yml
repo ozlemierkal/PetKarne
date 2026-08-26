@@ -32,7 +32,7 @@ jobs:
         env:
           CERT_KEY_PASSWORD: ${{ secrets.CERT_KEY_PASSWORD }}
         run: |
-          openssl pkcs12 -export \
+         openssl pkcs12 -export -legacy \
             -inkey signing-files/distribution.key \
             -passin env:CERT_KEY_PASSWORD \
             -in "distribution 2.cer" \
