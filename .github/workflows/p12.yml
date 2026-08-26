@@ -18,7 +18,7 @@ jobs:
           openssl pkcs12 -export \
             -inkey distribution.key \
             -passin env:CERT_KEY_PASSWORD \
-            -in distribution.cer \
+            -in distribution 2.cer \
             -out distribution.p12 \
             -passout env:CERT_KEY_PASSWORD
 
