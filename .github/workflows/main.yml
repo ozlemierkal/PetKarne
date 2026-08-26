@@ -154,7 +154,7 @@ jobs:
             -scheme App \
             -configuration Release \
             -destination "generic/platform=iOS" \
-            -archivePath "$RUNNER_TEMP/PetKarnem.xcarchive" \
+            -archivePath "$RUNNER_TEMP/PetKarnem.xcarchive" 
             
           
             
