@@ -154,12 +154,8 @@ jobs:
             -scheme App \
             -configuration Release \
             -destination "generic/platform=iOS" \
-            -archivePath "$RUNNER_TEMP/PetKarnem.xcarchive" 
-            
-          
-            
-          
-            archive
+            -archivePath "$RUNNER_TEMP/PetKarnem.xcarchive" \
+           archive
 
       - name: Export IPA
         run: |
