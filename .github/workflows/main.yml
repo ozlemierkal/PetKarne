@@ -14,7 +14,7 @@ jobs:
       - name: Set up Node
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
 
       - name: Create Capacitor project
         run: |
@@ -22,7 +22,7 @@ jobs:
           cd ios-wrapper
 
           npm init -y
-          npm install @capacitor/core @capacitor/cli @capacitor/ios
+          npm install @capacitor/core@7 @capacitor/cli@7 @capacitor/ios@7
 
           mkdir www
 
