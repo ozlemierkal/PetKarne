@@ -1807,7 +1807,7 @@ window.addEventListener('DOMContentLoaded',()=>{
   async function ensurePushSubscription(){
     try{
       if(!('PushManager' in window) || !('Notification' in window)){
-        setPushStatus('Desteklenmiyor');
+        setPushStatus('Kullanılamıyor');
         return;
       }
 
