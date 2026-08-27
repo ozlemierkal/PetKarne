@@ -334,9 +334,10 @@ function editPet(id){
     <label>Cinsi</label><input id="editPetBreed" value="${p.breed||''}">
     <label>Doğum tarihi</label><input id="editPetBirthDate" type="date" value="${p.birthDate||''}">
     <label>Kısırlaştırma</label><select id="editPetNeutered"><option value="" ${!p.neutered?'selected':''}>Belirtilmedi</option><option value="yes" ${p.neutered==='yes'?'selected':''}>Kısır</option><option value="no" ${p.neutered==='no'?'selected':''}>Kısır değil</option></select>
-    <label>Notlar</label><textarea id="editPetNote">${p.note||''}</textarea>
+   
     <label>Kilo (kg)</label><input id="editPetWeight" value="${p.weight||''}">
     <label>Mikroçip no</label><input id="editPetChip" value="${p.chip||''}">
+    <label>Notlar</label><textarea id="editPetNote">${p.note||''}</textarea>
     <button type="button" class="danger big" id="deletePetBtn" style="margin-top:18px">Profili Sil</button>
   `,()=>{
     const name=$('#editPetName').value.trim(); if(!name)return false;
