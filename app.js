@@ -1849,6 +1849,30 @@ window.addEventListener('DOMContentLoaded',()=>{
   }
   async function ensurePushSubscription(){
     try{
+      if(window.Capacitor?.isNativePlatform()){
+  const PushNotifications=window.Capacitor?.Plugins?.PushNotifications;
+
+  if(!PushNotifications){
+    setPushStatus('Kullanılamıyor');
+    return;
+  }
+
+  let permission=await PushNotifications.checkPermissions();
+
+  if(permission.receive==='prompt' || permission.receive==='prompt-with-rationale'){
+    permission=await PushNotifications.requestPermissions();
+  }
+
+  if(permission.receive!=='granted'){
+    setPushStatus('Kapalı');
+    return;
+  }
+
+  await PushNotifications.register();
+  setPushStatus('Açık',true);
+  return;
+}
+
       if(!('PushManager' in window) || !('Notification' in window)){
         setPushStatus('Kullanılamıyor');
         return;
