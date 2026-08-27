@@ -279,8 +279,8 @@ dialog{
 /* v2.12 Home + Dost Bilgileri reference */
 
 .refTopbar{
-  min-height:66px;
-  padding:7px 14px;
+  min-height:calc(66px + env(safe-area-inset-top));
+  padding:calc(7px + env(safe-area-inset-top)) 14px 7px;
   background:#fff;
   border-bottom:1px solid #EFF0EB;
   box-shadow:none;
