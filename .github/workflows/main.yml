@@ -43,7 +43,41 @@ jobs:
         run: |
           /usr/libexec/PlistBuddy -c "Add :NSCameraUsageDescription string 'Pet profil fotoğrafı çekmek için kamera erişimi gereklidir.'" ios-wrapper/ios/App/App/Info.plist
 
-      - name: Download latest P12
+      - name: Wire native push registration
+      run: |
+        python3 - <<'PY'
+        from pathlib import Path
+
+        p = Path("ios-wrapper/ios/App/App/AppDelegate.swift")
+        s = p.read_text()
+
+        if "capacitorDidRegisterForRemoteNotifications" not in s:
+        block = '''
+
+        func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+            NotificationCenter.default.post(
+                name: .capacitorDidRegisterForRemoteNotifications,
+                object: deviceToken
+            )
+        }
+
+        func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
+            NotificationCenter.default.post(
+                name: .capacitorDidFailToRegisterForRemoteNotifications,
+                object: error
+            )
+        }
+        '''
+
+           pos = s.rfind("\\n}")
+           if pos == -1:
+            raise RuntimeError("AppDelegate.swift closing brace not found")
+
+        s = s[:pos] + block + s[pos:]
+        p.write_text(s)
+        PY
+  
+        - name: Download latest P12
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
