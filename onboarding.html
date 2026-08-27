@@ -55,9 +55,26 @@ html,body{
 .c2{background-position:-100vw 0}
 .c3{background-position:-200vw 0}
 .skip{
-  position:absolute;right:4.8%;top:3.5%;
-  width:22%;height:7%;border:0;background:transparent;color:transparent;z-index:5;
-  touch-action:manipulation
+  position:absolute;
+  right:0;
+  top:0;
+  width:30%;
+  height:10%;
+  border:0;
+  background:#fff;
+  z-index:5;
+  display:flex;
+  justify-content:flex-end;
+  align-items:flex-end;
+  padding:0 18px 10px 0;
+  touch-action:manipulation;
+}
+
+.skip::after{
+  content:"Atla";
+  color:#16582B;
+  font-size:18px;
+  font-weight:800;
 }
 .next{
   position:absolute;right:4.7%;bottom:calc(env(safe-area-inset-bottom) + 3.2%);
