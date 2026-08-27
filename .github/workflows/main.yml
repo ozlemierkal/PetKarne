@@ -140,6 +140,22 @@ jobs:
           project = Xcodeproj::Project.open('ios-wrapper/ios/App/App.xcodeproj')
           target = project.targets.find { |t| t.name == 'App' }
 
+          entitlements_path = 'ios-wrapper/ios/App/App/App.entitlements'
+
+          File.write(entitlements_path, <<~PLIST)
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+          <key>aps-environment</key>
+          <string>production</string>
+          </dict>
+          </plist>
+          PLIST
+
+
+
+          
           target.build_configurations.each do |config|
             config.build_settings['DEVELOPMENT_TEAM'] = '82TXB5XMLS'
             config.build_settings['PRODUCT_BUNDLE_IDENTIFIER'] = 'com.petkarnem.app'
@@ -147,6 +163,8 @@ jobs:
             config.build_settings['CODE_SIGN_IDENTITY[sdk=iphoneos*]'] = 'Apple Distribution'
             config.build_settings['PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]'] = 'PetKarnem App Store'
             config.build_settings['CURRENT_PROJECT_VERSION'] = ENV.fetch('GITHUB_RUN_NUMBER')
+
+            config.build_settings['CODE_SIGN_ENTITLEMENTS'] = 'App/App.entitlements'
           end
 
           project.save
