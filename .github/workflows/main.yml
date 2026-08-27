@@ -27,6 +27,7 @@ jobs:
           mkdir www
 
           cp ../index.html www/
+          cp ../onboarding.html www/
           cp ../app.js www/
           cp ../styles.css www/
           cp ../manifest.webmanifest www/
