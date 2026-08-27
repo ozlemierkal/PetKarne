@@ -39,11 +39,11 @@ h2{font-size:24px;margin:10px 0 14px} h3{margin:0 0 10px}
 label{display:block;font-size:13px;font-weight:700;margin:10px 0 6px}
 input,select,textarea{width:100%;padding:12px;border:1px solid var(--line);border-radius:14px;background:#fff}
 textarea{min-height:80px}
-#editPetBirthDate{
-  height:52px;
-  min-height:52px;
-  padding:12px;
+input[type="date"]{
+  min-height:0;
+  height:auto;
 }
+
 .bottomnav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:min(540px,100%);display:grid;grid-template-columns:repeat(5,1fr);background:#fff;border-top:1px solid var(--line);padding:8px 6px calc(8px + env(safe-area-inset-bottom));z-index:6}
 .navitem{background:transparent;border:0;color:var(--muted);display:grid;gap:3px;place-items:center;font-size:18px}
 .navitem span{font-size:10px}.navitem.active{color:var(--green);font-weight:700}
