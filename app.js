@@ -138,10 +138,10 @@ $('#addPetBtn').onclick = ()=>openModal('Pet Ekle',`
   <label>Cinsiyet</label><select id="petSex"><option>Dişi</option><option>Erkek</option></select>
   <label>Cinsi</label><input id="petBreed" placeholder="Örn. Tekir, Golden Retriever, Melez">
   <label>Doğum tarihi</label><input id="petBirthDate" type="date">
-  <label>Kısırlaştırma</label><select id="petNeutered"><option value="">Belirtilmedi</option><option value="yes">Kısır</option><option value="no">Kısır değil</option></select>
-  <label>Notlar</label><textarea id="petNote" placeholder="İsteğe bağlı"></textarea>
+  <label>Kısırlaştırma</label><select id="petNeutered"><option value="">Belirtilmedi</option><option value="yes">Kısır</option><option value="no">Kısır değil</option></select> 
   <label>Kilo (kg)</label><input id="petWeight" inputmode="decimal" placeholder="4,8">
   <label>Mikroçip no (isteğe bağlı)</label><input id="petChip">
+  <label>Notlar</label><textarea id="petNote" placeholder="İsteğe bağlı"></textarea>
 `,()=>{
   const name=$('#petName').value.trim(); if(!name) return false;
   const petWeightRaw=$('#petWeight').value.trim();
