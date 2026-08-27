@@ -1332,17 +1332,59 @@ function openUsageGuide(){
   `);
 }
 
-function pkCreateBackup(){
+async function pkCreateBackup(){
   try{
-    const backup={app:'PetKarnem',backupVersion:1,createdAt:new Date().toISOString(),data:state};
-    const blob=new Blob([JSON.stringify(backup,null,2)],{type:'application/json'});
-    const url=URL.createObjectURL(blob), a=document.createElement('a');
-    const d=new Date(), stamp=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
-    a.href=url; a.download=`PetKarnem-Yedek-${stamp}.json`; document.body.appendChild(a); a.click(); a.remove();
+    const backup={
+      app:'PetKarnem',
+      backupVersion:1,
+      createdAt:new Date().toISOString(),
+      data:state
+    };
+
+    const d=new Date();
+    const stamp=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+    const fileName=`PetKarnem-Yedek-${stamp}.json`;
+    const json=JSON.stringify(backup,null,2);
+
+    if(window.Capacitor?.isNativePlatform()){
+      const Filesystem=window.Capacitor.Plugins.Filesystem;
+      const Share=window.Capacitor.Plugins.Share;
+
+      const result=await Filesystem.writeFile({
+        path:fileName,
+        data:json,
+        directory:'CACHE',
+        encoding:'utf8'
+      });
+
+      await Share.share({
+        title:'PetKarnem Yedeği',
+        text:'PetKarnem yedek dosyası',
+        url:result.uri,
+        dialogTitle:'Yedeği Kaydet'
+      });
+
+      return;
+    }
+
+    const blob=new Blob([json],{type:'application/json'});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');
+    a.href=url;
+    a.download=fileName;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
     setTimeout(()=>URL.revokeObjectURL(url),1500);
-    alert('Yedek hazırlandı. Dosyayı Dosyalar / iCloud Drive gibi güvenli bir yerde sakla.');
-  }catch(err){ console.error('PetKarnem backup:',err); alert('Yedek oluşturulamadı. Lütfen tekrar dene.'); }
+
+  }catch(err){
+    console.error('PetKarnem backup:',err);
+    alert('Yedek oluşturulamadı. Lütfen tekrar dene.');
+  }
 }
+
+
+
 async function pkRestoreBackupFile(file){
   if(!file) return false;
   try{
