@@ -22,7 +22,7 @@ jobs:
           cd ios-wrapper
 
           npm init -y
-          npm install @capacitor/core@7 @capacitor/cli@7 @capacitor/ios@7 @capacitor/filesystem@7 @capacitor/share@7
+          npm install @capacitor/core@7 @capacitor/cli@7 @capacitor/ios@7 @capacitor/filesystem@7 @capacitor/share@7 @capacitor/push-notifications@7
 
           mkdir www
 
