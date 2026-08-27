@@ -1868,6 +1868,33 @@ window.addEventListener('DOMContentLoaded',()=>{
     return;
   }
 
+        if(!window.__pkNativePushBound){
+  window.__pkNativePushBound=true;
+
+  await PushNotifications.addListener('registration', async(token)=>{
+    try{
+      await fetch(`${PK_SUPABASE_URL}/functions/v1/send-push`,{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({
+          action:'register-native-token',
+          device_id:pkSupabaseDeviceId(),
+          token:token.value,
+          platform:'ios'
+        })
+      });
+      console.log('PetKarnem APNs token kaydedildi');
+    }catch(e){
+      console.error('PetKarnem native token kayıt hatası',e);
+    }
+  });
+
+  await PushNotifications.addListener('registrationError',(err)=>{
+    console.error('PetKarnem APNs registration error',err);
+  });
+}
+
+        
   await PushNotifications.register();
   setPushStatus('Açık',true);
   return;
