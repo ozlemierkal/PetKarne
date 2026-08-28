@@ -1579,7 +1579,11 @@ let pkSupabaseSyncing=false;
 let pkMedicationSyncTimer=null;
 let pkMedicationSyncing=false;
 
-function pkSupabaseKey(){ return (localStorage.getItem(PK_SUPABASE_KEY_STORE)||'').trim(); }
+const PK_SUPABASE_PUBLISHABLE_KEY='sb_publishable_8M76QEZS3lr-pbdpQ3DvSw_gOm37x1G';
+
+function pkSupabaseKey(){
+  return (localStorage.getItem(PK_SUPABASE_KEY_STORE)||PK_SUPABASE_PUBLISHABLE_KEY).trim();
+}
 function pkSupabaseDeviceId(){
   let id=localStorage.getItem(PK_SUPABASE_DEVICE_STORE);
   if(!id){ id=uid(); localStorage.setItem(PK_SUPABASE_DEVICE_STORE,id); }
