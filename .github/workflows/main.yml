@@ -69,12 +69,7 @@ jobs:
                   )
               }
 
-              func applicationDidBecomeActive(_ application: UIApplication) {
-                  application.applicationIconBadgeNumber = 0
-              }
-              
-
-
+             
               '''
 
               pos = s.rfind("\n}")
