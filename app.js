@@ -108,51 +108,110 @@ function resetModalActions(){
   save.style.display='';
   if(cancel) cancel.textContent='Vazgeç';
 }
-window.showNotifications=()=>{
-  const items=[];
 
-  state.records
-    .filter(r=>['appointment','vaccine','internal','external'].includes(r.type))
-    .slice()
-    .sort((a,b)=>String(b.date||b.next||'').localeCompare(String(a.date||a.next||'')))
-    .slice(0,8)
-    .forEach(r=>{
-      const pet=petById(r.petId);
-      const typeLabel=
-        r.type==='appointment'?'Veteriner Randevusu':
-        r.type==='vaccine'?'Aşı':
-        r.type==='internal'?'İç Parazit':
-        'Dış Parazit';
+function pkNotificationEscape(value){
+  return String(value ?? '')
+    .replaceAll('&','&amp;')
+    .replaceAll('<','&lt;')
+    .replaceAll('>','&gt;')
+    .replaceAll('"','&quot;')
+    .replaceAll("'",'&#039;');
+}
 
-      items.push(`
-        <div class="card">
-          <b>🔔 ${pet?.name||'Dostun'} • ${typeLabel}</b>
-          <div class="muted">${fmt(r.date||r.next)}</div>
-        </div>
-      `);
-    });
+function pkSetNotificationBadge(count){
+  const badge=$('#notificationsBadge');
+  if(!badge) return;
 
-  state.meds
-    .slice()
-    .sort((a,b)=>String(b.date||'').localeCompare(String(a.date||'')))
-    .slice(0,5)
-    .forEach(m=>{
-      const pet=petById(m.petId);
-      items.push(`
-        <div class="card">
-          <b>💊 ${pet?.name||'Dostun'} • ${m.name||'İlaç'}</b>
-          <div class="muted">${fmt(m.date)}</div>
-        </div>
-      `);
-    });
+  const n=Number(count)||0;
 
-  openInfoModal(
-    'Bildirimler',
-    items.length
-      ? `<div class="stack">${items.join('')}</div>`
-      : `<div class="empty">Henüz gösterilecek bildirim yok.</div>`
+  if(n>0){
+    badge.textContent=n>99?'99+':String(n);
+    badge.style.display='block';
+  }else{
+    badge.textContent='';
+    badge.style.display='none';
+  }
+}
+
+async function pkNotificationRequest(action){
+  const deviceId=pkSupabaseDeviceId();
+
+  const res=await fetch(
+    `${PK_SUPABASE_URL}/functions/v1/notification-inbox`,
+    {
+      method:'POST',
+      headers:pkSupabaseHeaders(),
+      body:JSON.stringify({
+        action,
+        device_id:deviceId
+      })
+    }
   );
+
+  if(!res.ok){
+    throw new Error(`Bildirim isteği başarısız: ${res.status}`);
+  }
+
+  return await res.json();
+}
+
+async function pkRefreshNotificationBadge(){
+  try{
+    const data=await pkNotificationRequest('list');
+    pkSetNotificationBadge(data.unread_count||0);
+  }catch(err){
+    console.warn('Bildirim sayacı alınamadı:',err);
+  }
+}
+
+window.showNotifications=async()=>{
+  try{
+    const data=await pkNotificationRequest('list');
+    const notifications=Array.isArray(data.notifications)
+      ? data.notifications
+      : [];
+
+    const html=notifications.length
+      ? `<div class="stack">${
+          notifications.map(n=>{
+            const when=n.created_at
+              ? new Date(n.created_at).toLocaleString('tr-TR',{
+                  day:'2-digit',
+                  month:'2-digit',
+                  year:'numeric',
+                  hour:'2-digit',
+                  minute:'2-digit'
+                })
+              : '';
+
+            return `
+              <div class="card">
+                <b>${pkNotificationEscape(n.title)}</b>
+                <div>${pkNotificationEscape(n.body)}</div>
+                <div class="muted">${pkNotificationEscape(when)}</div>
+              </div>
+            `;
+          }).join('')
+        }</div>`
+      : '<div class="empty">Henüz gösterilecek bildirim yok.</div>';
+
+    openInfoModal('Bildirimler',html);
+
+    if((data.unread_count||0)>0){
+      await pkNotificationRequest('mark-read');
+      pkSetNotificationBadge(0);
+    }
+  }catch(err){
+    console.error('Bildirimler yüklenemedi:',err);
+    openInfoModal(
+      'Bildirimler',
+      '<div class="empty">Bildirimler şu anda yüklenemedi.</div>'
+    );
+  }
 };
+
+pkRefreshNotificationBadge();
+
 const notificationsBtn=$('#notificationsBtn');
 if(notificationsBtn){
   notificationsBtn.onclick=()=>window.showNotifications();
