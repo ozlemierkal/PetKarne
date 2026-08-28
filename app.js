@@ -410,9 +410,9 @@ window.showPetTodaySummary=(petId)=>{
     const icon=r.type==='appointment'?'🩺':r.type==='vaccine'?'💉':r.type==='internal'?'🪱':'🛡️';
     
     const reminderText=r.type==='appointment' && r.reminder!==0
- ? `<div class="muted">🔔 Hatırlatma açık • ${r.reminder===60?'1 saat önce':r.reminder===120?'2 saat önce':'1 gün önce'}</div>`
+ ? `<div class="muted">🔔 ${r.reminder===60?'1 saat önce':r.reminder===120?'2 saat önce':'1 gün önce'} hatırlat</div>`
  : (['vaccine','internal','external'].includes(r.type) && r.reminderDays>0
- ? `<div class="muted">🔔 Hatırlatma açık • ${r.reminderDays} gün önce</div>` : '');
+ ? `<div class="muted">🔔 ${r.reminderDays} gün önce hatırlat</div>` : '');
 
     
     rows.push(`<div class="card"><b>${icon} ${r.title}${r.type==='appointment' && r.reminder!==0?' 🔔':''}</b><div class="muted">${fmt(r.next)}${r.time?' • '+r.time:''} • ${when}</div>${reminderText}</div>`);
@@ -518,12 +518,6 @@ function renderPets(){
       ? ''
       : (r.title && r.title!==title ? r.title : '');
     
-const reminderText =
-  r.type==='appointment' && r.reminder!==0
-    ? `🔔 Hatırlatma açık • ${r.reminder===60?'1 saat önce':r.reminder===120?'2 saat önce':'1 gün önce'}`
-    : (['vaccine','internal','external'].includes(r.type) && r.reminderDays>0
-        ? `🔔 Hatırlatma açık • ${r.reminderDays} gün önce`
-        : '');
 
     
     return `<div class="refUpcomingCard">
@@ -532,7 +526,6 @@ const reminderText =
         <b>${p?.name||''} – ${title}</b>
         ${detailText?`<small class="refUpcomingDetail">${detailText}</small>`:''}
         <span>${fmt(r.next)}${r.time?' • '+r.time:''}</span>
-        ${reminderText?`<small class="refUpcomingDetail">${reminderText}</small>`:''}
       </div>
       <em>${days===0?'Bugün':`${days} gün kaldı`}</em>
     </div>`;
@@ -707,8 +700,11 @@ function renderHealth(){
         <div class="muted">${medReminder}</div>
       </div>`;
     }
-
-    return `<div class="card"><b>${label} • ${displayTitle}</b><div class="muted">${when}</div>${note}</div>`;
+const healthReminder=(['vaccine','internal','external'].includes(r.type) && Number(r.reminderDays)>0)
+  ? `<div class="muted">🔔 Hatırlatma açık • ${r.reminderDays} gün önce</div>`
+  : '';
+    
+    return `<div class="card"><b>${label} • ${displayTitle}</b><div class="muted">${when}</div>${healthReminder}${note}</div>`;
   }).join(''):'<div class="card empty">Bu kategoride henüz kayıt yok.</div>';
 }
 
