@@ -488,9 +488,10 @@ function petAgeLabel(p){
 
 function recordIcon(type){
   if(type==='appointment') return ['🩺','purple'];
-  if(type==='vaccine') return ['🗓️','green'];
-  if(type==='internal') return ['💊','blue'];
-  if(type==='external') return ['🛡️','aqua'];
+  if(type==='vaccine') return ['🛡️','green'];
+  if(type==='internal') return ['🪱','blue'];
+  if(type==='external') return ['🐞','aqua'];
+
   return ['🔔','green'];
 }
 
