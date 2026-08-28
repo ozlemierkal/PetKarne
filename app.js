@@ -783,6 +783,7 @@ window.addAppointment=()=>{
     });
 
     saveState();
+    pkQueueCalendarSync();
   });
   setTimeout(()=>{
     const status=$('#apptStatus'), block=$('#apptReminderBlock'), reminder=$('#apptReminder');
