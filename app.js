@@ -408,10 +408,13 @@ window.showPetTodaySummary=(petId)=>{
   [...s.late,...s.today,...s.upcoming].forEach(r=>{
     const when=r.diff<0?`${Math.abs(r.diff)} gün gecikti`:r.diff===0?'Bugün':`${r.diff} gün sonra`;
     const icon=r.type==='appointment'?'🩺':r.type==='vaccine'?'💉':r.type==='internal'?'🪱':'🛡️';
+    
     const reminderText=r.type==='appointment' && r.reminder!==0
-      ? `<div class="muted">🔔 ${r.reminder===60?'1 saat önce':r.reminder===120?'2 saat önce':'1 gün önce'} hatırlat</div>`
-      : (['vaccine','internal','external'].includes(r.type) && r.reminderDays>0
-        ? `<div class="muted">🔔 ${r.reminderDays} gün önce hatırlat</div>` : '');
+ ? `<div class="muted">🔔 Hatırlatma açık • ${r.reminder===60?'1 saat önce':r.reminder===120?'2 saat önce':'1 gün önce'}</div>`
+ : (['vaccine','internal','external'].includes(r.type) && r.reminderDays>0
+ ? `<div class="muted">🔔 Hatırlatma açık • ${r.reminderDays} gün önce</div>` : '');
+
+    
     rows.push(`<div class="card"><b>${icon} ${r.title}${r.type==='appointment' && r.reminder!==0?' 🔔':''}</b><div class="muted">${fmt(r.next)}${r.time?' • '+r.time:''} • ${when}</div>${reminderText}</div>`);
   });
   s.meds.forEach(m=>{
@@ -514,13 +517,22 @@ function renderPets(){
     const detailText = r.type==='appointment'
       ? ''
       : (r.title && r.title!==title ? r.title : '');
+    
+const reminderText =
+  r.type==='appointment' && r.reminder!==0
+    ? `🔔 Hatırlatma açık • ${r.reminder===60?'1 saat önce':r.reminder===120?'2 saat önce':'1 gün önce'}`
+    : (['vaccine','internal','external'].includes(r.type) && r.reminderDays>0
+        ? `🔔 Hatırlatma açık • ${r.reminderDays} gün önce`
+        : '');
 
+    
     return `<div class="refUpcomingCard">
       <div class="refUpcomingIcon ${cls}">${emoji}</div>
       <div class="refUpcomingText">
         <b>${p?.name||''} – ${title}</b>
         ${detailText?`<small class="refUpcomingDetail">${detailText}</small>`:''}
         <span>${fmt(r.next)}${r.time?' • '+r.time:''}</span>
+        ${reminderText?`<small class="refUpcomingDetail">${reminderText}</small>`:''}
       </div>
       <em>${days===0?'Bugün':`${days} gün kaldı`}</em>
     </div>`;
