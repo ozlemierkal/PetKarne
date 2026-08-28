@@ -108,7 +108,55 @@ function resetModalActions(){
   save.style.display='';
   if(cancel) cancel.textContent='Vazgeç';
 }
+window.showNotifications=()=>{
+  const items=[];
 
+  state.records
+    .filter(r=>['appointment','vaccine','internal','external'].includes(r.type))
+    .slice()
+    .sort((a,b)=>String(b.date||b.next||'').localeCompare(String(a.date||a.next||'')))
+    .slice(0,8)
+    .forEach(r=>{
+      const pet=petById(r.petId);
+      const typeLabel=
+        r.type==='appointment'?'Veteriner Randevusu':
+        r.type==='vaccine'?'Aşı':
+        r.type==='internal'?'İç Parazit':
+        'Dış Parazit';
+
+      items.push(`
+        <div class="card">
+          <b>🔔 ${pet?.name||'Dostun'} • ${typeLabel}</b>
+          <div class="muted">${fmt(r.date||r.next)}</div>
+        </div>
+      `);
+    });
+
+  state.meds
+    .slice()
+    .sort((a,b)=>String(b.date||'').localeCompare(String(a.date||'')))
+    .slice(0,5)
+    .forEach(m=>{
+      const pet=petById(m.petId);
+      items.push(`
+        <div class="card">
+          <b>💊 ${pet?.name||'Dostun'} • ${m.name||'İlaç'}</b>
+          <div class="muted">${fmt(m.date)}</div>
+        </div>
+      `);
+    });
+
+  openInfoModal(
+    'Bildirimler',
+    items.length
+      ? `<div class="stack">${items.join('')}</div>`
+      : `<div class="empty">Henüz gösterilecek bildirim yok.</div>`
+  );
+};
+const notificationsBtn=$('#notificationsBtn');
+if(notificationsBtn){
+  notificationsBtn.onclick=()=>window.showNotifications();
+}
 const modalCloseX=$('#modalCloseX');
 if(modalCloseX) modalCloseX.onclick=(e)=>{ e.preventDefault(); $('#modal').close(); };
 
