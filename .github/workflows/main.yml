@@ -82,7 +82,24 @@ jobs:
               s = s[:pos] + block + s[pos:]
               p.write_text(s)
           PY
+          
+      - name: Clear app icon badge
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
 
+          p = Path("ios-wrapper/ios/App/App/AppDelegate.swift")
+          s = p.read_text()
+
+          needle = "    func applicationDidBecomeActive(_ application: UIApplication) {\n"
+          badge_line = "        application.applicationIconBadgeNumber = 0\n"
+
+          if badge_line not in s:
+              if needle not in s:
+                  raise RuntimeError("applicationDidBecomeActive not found")
+              s = s.replace(needle, needle + badge_line, 1)
+              p.write_text(s)
+          PY
           
       - name: Download latest P12
         env:
