@@ -211,6 +211,7 @@ window.showNotifications=async()=>{
 };
 
 pkRefreshNotificationBadge();
+setTimeout(pkRefreshNotificationBadge, 2000);
 
 const notificationsBtn=$('#notificationsBtn');
 if(notificationsBtn){
