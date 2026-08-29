@@ -213,6 +213,13 @@ window.showNotifications=async()=>{
 pkRefreshNotificationBadge();
 setTimeout(pkRefreshNotificationBadge, 2000);
 
+document.addEventListener('visibilitychange',()=>{
+  if(document.visibilityState==='visible'){
+    pkRefreshNotificationBadge();
+    setTimeout(pkRefreshNotificationBadge, 1000);
+  }
+});
+
 const notificationsBtn=$('#notificationsBtn');
 if(notificationsBtn){
   notificationsBtn.onclick=()=>window.showNotifications();
