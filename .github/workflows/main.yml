@@ -39,9 +39,14 @@ jobs:
           npx cap init PetKarnem com.petkarnem.app --web-dir=www
           npx cap add ios
 
+  
           echo "----- AppDelegate.swift -----"
           cat ios/App/App/AppDelegate.swift
-
+          
+      - name: Set PetKarnem app icon
+        run: |
+         cp petkarnem-appicon-1024.png ios-wrapper/ios/App/App/Assets.xcassets/AppIcon.appiconset/AppIcon-512@2x.png
+  
       - name: Add camera permission
         run: |
           /usr/libexec/PlistBuddy -c "Add :NSCameraUsageDescription string 'Pet profil fotoğrafı çekmek için kamera erişimi gereklidir.'" ios-wrapper/ios/App/App/Info.plist
