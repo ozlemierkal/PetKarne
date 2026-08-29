@@ -1568,7 +1568,18 @@ function bindProfileSettings(){
   const guide=$('#openUsageGuideBtn');
   if(guide&&!guide.dataset.bound){guide.dataset.bound='1';guide.onclick=openUsageGuide;}
   const save=$('#saveProfileBtn');
-  if(save&&!save.dataset.bound){save.dataset.bound='1';save.onclick=()=>{state.profile={name:$('#profileName').value.trim(),email:$('#profileEmail').value.trim(),phone:$('#profilePhone').value.trim()};saveState();alert('Profil bilgileri kaydedildi.');};}
+  if(save&&!save.dataset.bound){
+  save.dataset.bound='1';
+  save.onclick=()=>{
+    state.profile={
+      name:$('#profileName').value.trim(),
+      email:'',
+      phone:''
+    };
+    saveState();
+    alert('Profil bilgileri kaydedildi.');
+  };
+}
   const rem=$('#defaultReminder');
   if(rem&&!rem.dataset.bound){rem.dataset.bound='1';rem.onchange=()=>{state.settings.defaultReminder=+rem.value;saveState();};}
   const rep=$('#repeatOverdue');
